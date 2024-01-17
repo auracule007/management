@@ -13,6 +13,7 @@ from . models import *
 # users profile
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
+        ref_name= 'djoserUser'
         fields=('id','username','first_name','last_name','email', 'phone', 'profile_img','user_type')
 
 class SendEmailResetSerializer(BaseSendEmailResetSerializer):
@@ -84,6 +85,19 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         if not Enrollment.objects.filter(courses=value).exists():
             return serializers.ValidationError("The Course you are trying to register for is not available")
         return value 
+
+# content upload
+class ContentUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContentUpload
+        fields = ['id','user_id','content','content_title','content_description','date_uploaded','date_updated']
+
+# content management
+class ContentManagementSerializer(serializers.ModelSerializer):
+    content_uploads = ContentUploadSerializer(many=True, required=False)
+    class Meta:
+        model = ContentManagement
+        fields = ['id','course_id','content_uploads','date_uploaded','date_updated']
 
 # create user 
 class UserCreateSerializer(BaseUserCreateSerializer):

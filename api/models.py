@@ -88,3 +88,25 @@ class CourseManagement(models.Model):
     ])
 
 
+class ContentUpload(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.FileField(upload_to='content/',validators= [
+        validate_file_size, FileExtensionValidator(allowed_extensions=['mp4', 'mkv', 'webm', 'avi', 'pdf','txt','jpg', 'png', 'docx','xlsx','doc'])
+    ])
+    content_title = models.CharField(max_length=250)
+    content_description = models.TextField(blank=True, null=True)
+    date_uploaded = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return f'content: {self.content_title}'
+
+
+class ContentManagement(models.Model):    
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    content_uploads = models.ManyToManyField(ContentUpload)
+    date_uploaded = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateField(auto_now=True)
+    
+    def __str__(self):
+        return f'{self.course.name}'
