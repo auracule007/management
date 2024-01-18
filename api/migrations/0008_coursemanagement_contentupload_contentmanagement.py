@@ -8,42 +8,130 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0007_alter_enrollment_student'),
+        ("api", "0007_alter_enrollment_student"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CourseManagement',
+            name="CourseManagement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('course_doc', models.FileField(default='course_doc.jpg', upload_to='course_doc', validators=[api.validators.validate_file_size, django.core.validators.FileExtensionValidator(allowed_extensions=['png', 'jpg', 'svg', 'webp'])])),
-                ('course_video', models.FileField(default='course_doc.mp4', upload_to='course_doc', validators=[api.validators.validate_file_size, django.core.validators.FileExtensionValidator(allowed_extensions=['mp4', 'mkv', 'webm', 'avi'])])),
-                ('courses', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.courses')),
-                ('instructor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.instructor')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "course_doc",
+                    models.FileField(
+                        default="course_doc.jpg",
+                        upload_to="course_doc",
+                        validators=[
+                            api.validators.validate_file_size,
+                            django.core.validators.FileExtensionValidator(
+                                allowed_extensions=["png", "jpg", "svg", "webp"]
+                            ),
+                        ],
+                    ),
+                ),
+                (
+                    "course_video",
+                    models.FileField(
+                        default="course_doc.mp4",
+                        upload_to="course_doc",
+                        validators=[
+                            api.validators.validate_file_size,
+                            django.core.validators.FileExtensionValidator(
+                                allowed_extensions=["mp4", "mkv", "webm", "avi"]
+                            ),
+                        ],
+                    ),
+                ),
+                (
+                    "courses",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.courses"
+                    ),
+                ),
+                (
+                    "instructor",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.instructor"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ContentUpload',
+            name="ContentUpload",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.FileField(upload_to='content/', validators=[api.validators.validate_file_size, django.core.validators.FileExtensionValidator(allowed_extensions=['mp4', 'mkv', 'webm', 'avi', 'pdf', 'txt', 'jpg', 'png'])])),
-                ('content_title', models.CharField(max_length=250)),
-                ('content_description', models.TextField(blank=True, null=True)),
-                ('date_uploaded', models.DateTimeField(auto_now_add=True)),
-                ('date_updated', models.DateField(auto_now=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "content",
+                    models.FileField(
+                        upload_to="content/",
+                        validators=[
+                            api.validators.validate_file_size,
+                            django.core.validators.FileExtensionValidator(
+                                allowed_extensions=[
+                                    "mp4",
+                                    "mkv",
+                                    "webm",
+                                    "avi",
+                                    "pdf",
+                                    "txt",
+                                    "jpg",
+                                    "png",
+                                ]
+                            ),
+                        ],
+                    ),
+                ),
+                ("content_title", models.CharField(max_length=250)),
+                ("content_description", models.TextField(blank=True, null=True)),
+                ("date_uploaded", models.DateTimeField(auto_now_add=True)),
+                ("date_updated", models.DateField(auto_now=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ContentManagement',
+            name="ContentManagement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_uploaded', models.DateTimeField(auto_now_add=True)),
-                ('date_updated', models.DateField(auto_now=True)),
-                ('content_upload', models.ManyToManyField(to='api.contentupload')),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.courses')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date_uploaded", models.DateTimeField(auto_now_add=True)),
+                ("date_updated", models.DateField(auto_now=True)),
+                ("content_upload", models.ManyToManyField(to="api.contentupload")),
+                (
+                    "course",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.courses"
+                    ),
+                ),
             ],
         ),
     ]

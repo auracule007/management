@@ -2,32 +2,38 @@ from django.shortcuts import render, HttpResponse
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework import status 
+from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
-from . serializers import *
-from . permissions import * 
-from . models import * 
-
+from .serializers import *
+from .permissions import *
+from .models import *
+from django.db.models import Subquery, OuterRef, Q
+from rest_framework.decorators import action
 
 # Create your views here.
+
 
 # Category viewset
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all().order_by("name")
-    serializer_class = CategorySerializer 
+    serializer_class = CategorySerializer
 
-# Courses viewset 
+
+# Courses viewset
 class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     search_fields = ["category__name", "name"]
 
     def get_queryset(self):
         queryset = Courses.objects.all().order_by("name")
-        course_id = self.request.query_params.get('category_id')
+        course_id = self.request.query_params.get("category_id")
         if course_id:
-            queryset = Courses.objects.filter(category_id=self.request.query_params.get('category_id'))
+            queryset = Courses.objects.filter(
+                category_id=self.request.query_params.get("category_id")
+            )
         return queryset
+
 
 # create course viewset
 class CreateCoursesViewSet(ModelViewSet):
@@ -42,15 +48,18 @@ class CreateCoursesViewSet(ModelViewSet):
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
             return Response(serializers.error, status=status.HTTP_400_BAD_REQUEST)
-    
-# enroll for a course viewset 
-class EnrollmentViewSet(ModelViewSet):   
+
+
+# enroll for a course viewset
+class EnrollmentViewSet(ModelViewSet):
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Enrollment.objects.filter(courses_id=self.kwargs.get('courses_pk')).select_related('courses')
-    
+        return Enrollment.objects.filter(
+            courses_id=self.kwargs.get("courses_pk")
+        ).select_related("courses")
+
     def create(self, request):
         serializers = EnrollmentSerializer(data=request.data)
         if serializers.is_valid():
@@ -58,27 +67,116 @@ class EnrollmentViewSet(ModelViewSet):
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-# content management
+
+
+class ContentUploadViewSet(ModelViewSet):
+    http_method_names = ["get", "post", "delete", "patch", "put"]
+    queryset = ContentUpload.objects.select_related("user")
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return GetContentUploadSerializer
+
+        return ContentUploadSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user.id)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        content = request.data.get("content", None)
+        content_title = request.data.get("content_title", None)
+        content_description = request.data.get("content_description", None)
+        if content:
+            setattr(instance, "content", content)
+        if content_title:
+            setattr(instance, "content_title", content_title)
+        if content_description:
+            setattr(instance, "content_description", content_description)
+        instance.save()
+        serializer = ContentUploadSerializer(instance)
+        return Response(serializer.data)
+
+
 class ContentManagementViewSet(ModelViewSet):
-    http_method_names = ["get", "post", "patch", "delete"]
-    serializer_class = ContentManagementSerializer
-    queryset = ContentManagement.objects.all()
+    http_method_names = ["get", "post", "delete", "patch", "put"]
+    queryset = ContentManagement.objects.prefetch_related("content_uploads")
+    permission_classes = [permissions.IsAuthenticated]
 
-    @transaction.atomic
-    def create(self, request, *args, **kwargs):
-        content_uploads_data = request.data.get('content_uploads', [])
-        request.data.pop("content_uploads", None)
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return GetContentManagementSerializer
+        return ContentManagementSerializer
 
-        content_uploads = []
-        for tech_category_data in content_uploads_data:
-            tech_category, created = ContentUpload.objects.get_or_create(**tech_category_data)
-            content_uploads.append(tech_category)
 
-        user.content_uploads.set(content_uploads)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
+# chat viewsets
+class ChatMessageView(generics.ListAPIView):
+    serializer_class = ChatMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.kwargs["user_id"]
+
+        messages = ChatMessage.object.filter(
+            id__in=Subquery(
+                User.objects.filter(
+                    Q(sender__receiver=user_id)
+                    | Q(receiver__sender=user_id)
+                    .distinct()
+                    .annotate(
+                        last_msg=Subquery(
+                            ChatMessage.objects.filter(
+                                Q(sender=OuterRef("id"), receiver=user_id)
+                                | Q(receiver=OuterRef("id"), sender=user_id)
+                                .order_by("-id")[:1]
+                                .values_list("id", flat=True)
+                            )
+                        )
+                        .values_list("last_msg", flat=True)
+                        .order_by("-id")
+                    )
+                )
+            )
+        ).order_by("-id")
+        return messages
+
+
+class GetAllMessagesView(generics.ListAPIView):
+    serializer_class = ChatMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        sender_id = self.kwargs["sender_id"]
+        receiver_id = self.kwargs["receiver_id"]
+
+        messages = ChatMessage.objects.filter(
+            sender__in=[sender_id, receiver_id], receiver__in=[sender_id, receiver_id]
+        )
+        return messages
+
+
+class SendMessageView(generics.CreateAPIView):
+    serializer_class = ChatMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class SearchUserView(generics.ListAPIView):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_list(self, request, *args, **kwargs):
+        username = self.kwargs.get("username")
+        logged_in_user = self.request.user
+        users = Profile.objects.filter(
+            Q(user__username__icontains=username) | Q(full_name__icontains=username)
+        ).exclude(user=logged_in_user)
+
+        if not users.exists():
+            return Response(
+                {"detail": "No users found"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = self.get_serializer(users, many=True)
+        return Response(serializer.data)

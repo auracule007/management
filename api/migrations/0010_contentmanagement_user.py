@@ -6,15 +6,19 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0009_rename_content_upload_contentmanagement_content_uploads'),
+        ("api", "0009_rename_content_upload_contentmanagement_content_uploads"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='contentmanagement',
-            name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="contentmanagement",
+            name="user",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]
