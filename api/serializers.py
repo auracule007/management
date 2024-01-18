@@ -24,7 +24,6 @@ class PasswordResetConfirmSerializer(BasePasswordResetConfirmSerializer):
     class Meta(BasePasswordResetConfirmSerializer):
         fields = ('new_password', 're_new_password')
 
-
 # course category serializer 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -104,6 +103,4 @@ class UserCreateSerializer(BaseUserCreateSerializer):
     user_type = serializers.ChoiceField(choices=User.USER_TYPE_CHOICES)
     class Meta(BaseUserCreateSerializer.Meta):
         fields = ('username','first_name','last_name','email', 'phone', 'profile_img','user_type', 'password')
-
-
 

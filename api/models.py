@@ -90,7 +90,7 @@ class CourseManagement(models.Model):
 
 class ContentUpload(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.FileField(upload_to='content/',validators= [
+    content = models.FileField(upload_to='content/', validators= [
         validate_file_size, FileExtensionValidator(allowed_extensions=['mp4', 'mkv', 'webm', 'avi', 'pdf','txt','jpg', 'png', 'docx','xlsx','doc'])
     ])
     content_title = models.CharField(max_length=250)
@@ -110,3 +110,74 @@ class ContentManagement(models.Model):
     
     def __str__(self):
         return f'{self.course.name}'
+
+class QuestionBank(models.Model):
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
+    course = models.ManyToManyField(Courses)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+    def __str__(self):
+        return f'{self.course.name}'
+
+class Question(models.Model):
+    QUESTION_CHOICES = [
+        ('multiple_choice', 'Multiple Choice'),
+        ('essay', 'Essay')
+    ]
+    question_bank = models.ForeignKey(QuestionBank, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    text = models.TextField()
+    question_type = models.CharField(max_length=50, choices=QUESTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.question_bank.course}"
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    text = models.TextField()
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.text}"
+
+class Assessment(models.Model):
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    questions = models.ManyToManyField(Question)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    time_limit = models.DurationField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.title}"
+
+class Submission(models.Model):
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.assessment}"
+
+class Answer(models.Model):
+    submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    text = models.TextField(null=True, blank=True)
+    selected_choice = models.ForeignKey(Choice, on_delete=models.CASCADE, null=True, blank=True)
+    is_correct = models.BooleanField(null=True, blank=True)
+    points = models.FloatField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.student}"
+
+
+class Grading(models.Model):
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    score = models.FloatField()
+    feedback = models.TextField(null=True, blank=True)
