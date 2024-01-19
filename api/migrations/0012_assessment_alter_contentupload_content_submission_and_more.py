@@ -8,95 +8,249 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0011_remove_contentmanagement_user'),
+        ("api", "0011_remove_contentmanagement_user"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Assessment',
+            name="Assessment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField()),
-                ('time_limit', models.DurationField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('course', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.courses')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255)),
+                ("description", models.TextField()),
+                ("time_limit", models.DurationField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "course",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.courses"
+                    ),
+                ),
             ],
         ),
         migrations.AlterField(
-            model_name='contentupload',
-            name='content',
-            field=models.FileField(upload_to='content/', validators=[api.validators.validate_file_size, django.core.validators.FileExtensionValidator(allowed_extensions=['mp4', 'mkv', 'webm', 'avi', 'pdf', 'txt', 'jpg', 'png', 'docx', 'xlsx', 'doc'])]),
+            model_name="contentupload",
+            name="content",
+            field=models.FileField(
+                upload_to="content/",
+                validators=[
+                    api.validators.validate_file_size,
+                    django.core.validators.FileExtensionValidator(
+                        allowed_extensions=[
+                            "mp4",
+                            "mkv",
+                            "webm",
+                            "avi",
+                            "pdf",
+                            "txt",
+                            "jpg",
+                            "png",
+                            "docx",
+                            "xlsx",
+                            "doc",
+                        ]
+                    ),
+                ],
+            ),
         ),
         migrations.CreateModel(
-            name='Submission',
+            name="Submission",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('submitted_at', models.DateTimeField(auto_now_add=True)),
-                ('assessment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.assessment')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("submitted_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "assessment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.assessment"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='QuestionBank',
+            name="QuestionBank",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('description', models.TextField()),
-                ('course', models.ManyToManyField(to='api.courses')),
-                ('instructor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.instructor')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("description", models.TextField()),
+                ("course", models.ManyToManyField(to="api.courses")),
+                (
+                    "instructor",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.instructor"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Question',
+            name="Question",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField()),
-                ('question_type', models.CharField(choices=[('multiple_choice', 'Multiple Choice'), ('essay', 'Essay')], max_length=50)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('question_bank', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.questionbank')),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.student')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField()),
+                (
+                    "question_type",
+                    models.CharField(
+                        choices=[
+                            ("multiple_choice", "Multiple Choice"),
+                            ("essay", "Essay"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "question_bank",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.questionbank",
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.student"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Grading',
+            name="Grading",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('score', models.FloatField()),
-                ('feedback', models.TextField(blank=True, null=True)),
-                ('assessment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.assessment')),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.student')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("score", models.FloatField()),
+                ("feedback", models.TextField(blank=True, null=True)),
+                (
+                    "assessment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.assessment"
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.student"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Choice',
+            name="Choice",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField()),
-                ('is_correct', models.BooleanField(default=False)),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.question')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField()),
+                ("is_correct", models.BooleanField(default=False)),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.question"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='assessment',
-            name='questions',
-            field=models.ManyToManyField(to='api.question'),
+            model_name="assessment",
+            name="questions",
+            field=models.ManyToManyField(to="api.question"),
         ),
         migrations.CreateModel(
-            name='Answer',
+            name="Answer",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(blank=True, null=True)),
-                ('is_correct', models.BooleanField(blank=True, null=True)),
-                ('points', models.FloatField(blank=True, null=True)),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.question')),
-                ('selected_choice', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='api.choice')),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.student')),
-                ('submission', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.submission')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField(blank=True, null=True)),
+                ("is_correct", models.BooleanField(blank=True, null=True)),
+                ("points", models.FloatField(blank=True, null=True)),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.question"
+                    ),
+                ),
+                (
+                    "selected_choice",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.choice",
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.student"
+                    ),
+                ),
+                (
+                    "submission",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="api.submission"
+                    ),
+                ),
             ],
         ),
     ]

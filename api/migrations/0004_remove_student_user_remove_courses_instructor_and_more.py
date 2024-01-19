@@ -4,24 +4,23 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0003_courses_instructor'),
+        ("api", "0003_courses_instructor"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='student',
-            name='user',
+            model_name="student",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='courses',
-            name='instructor',
+            model_name="courses",
+            name="instructor",
         ),
         migrations.DeleteModel(
-            name='Instructor',
+            name="Instructor",
         ),
         migrations.DeleteModel(
-            name='Student',
+            name="Student",
         ),
     ]

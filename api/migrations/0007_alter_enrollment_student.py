@@ -5,15 +5,16 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0006_rename_course_enrollment_courses'),
+        ("api", "0006_rename_course_enrollment_courses"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='enrollment',
-            name='student',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.student'),
+            model_name="enrollment",
+            name="student",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="api.student"
+            ),
         ),
     ]

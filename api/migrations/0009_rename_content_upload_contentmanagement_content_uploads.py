@@ -4,15 +4,14 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0008_coursemanagement_contentupload_contentmanagement'),
+        ("api", "0008_coursemanagement_contentupload_contentmanagement"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='contentmanagement',
-            old_name='content_upload',
-            new_name='content_uploads',
+            model_name="contentmanagement",
+            old_name="content_upload",
+            new_name="content_uploads",
         ),
     ]

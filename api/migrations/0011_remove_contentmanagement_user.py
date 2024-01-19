@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0010_contentmanagement_user'),
+        ("api", "0010_contentmanagement_user"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='contentmanagement',
-            name='user',
+            model_name="contentmanagement",
+            name="user",
         ),
     ]
