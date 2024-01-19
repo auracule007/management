@@ -168,13 +168,13 @@ class GetContentUploadSerializer(serializers.ModelSerializer):
 
 
 class ContentUploadSerializer(serializers.ModelSerializer):
-    user_id = serializers.IntegerField(read_only=True)
+    user = serializers.CharField(source="user.username", read_only=True)
 
     class Meta:
         model = ContentUpload
         fields = [
             "id",
-            "user_id",
+            "user",
             "content",
             "content_title",
             "content_description",
@@ -188,12 +188,20 @@ class ContentUploadSerializer(serializers.ModelSerializer):
 
 
 class GetContentManagementSerializer(serializers.ModelSerializer):
-    course = serializers.SerializerMethodField()
+    # course = serializers.SerializerMethodField()
     content_uploads = serializers.SerializerMethodField()
+    user = serializers.CharField(source="user.username")
 
     class Meta:
         model = ContentManagement
-        fields = ["id", "course", "content_uploads", "date_uploaded", "date_updated"]
+        fields = [
+            "id",
+            "user",
+            "course_id",
+            "content_uploads",
+            "date_uploaded",
+            "date_updated",
+        ]
 
     def get_content_uploads(self, obj):
         return obj.content_uploads.values(
@@ -206,8 +214,8 @@ class GetContentManagementSerializer(serializers.ModelSerializer):
             "date_updated",
         )
 
-    def get_course(self, obj):
-        return obj.course.name
+    # def get_course(self, obj):
+    #     return obj.course.name
 
 
 class ContentManagementSerializer(serializers.ModelSerializer):
@@ -217,6 +225,11 @@ class ContentManagementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContentManagement
         fields = ["id", "course_id", "content_uploads", "date_uploaded", "date_updated"]
+
+    def validate_course_id(self, value):
+        if not Courses.objects.filter(id=value).exists():
+            raise serializers.ValidationError("Course with the given ID does not exist")
+        return value
 
     def create(self, validated_data):
         course_id = validated_data["course_id"]
@@ -228,11 +241,6 @@ class ContentManagementSerializer(serializers.ModelSerializer):
             content_uploads = ContentUpload.objects.filter(**x)
             content_management.content_uploads.set(content_uploads)
         return content_management
-
-    def validate_course_id(self, value):
-        if not Courses.object.filter(id=value).exists():
-            raise serializers.ValidationError("Course with the given ID does not exist")
-        return value
 
     def save(self, **kwargs):
         course_id = self.validated_data["course_id"]

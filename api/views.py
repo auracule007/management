@@ -71,8 +71,14 @@ class EnrollmentViewSet(ModelViewSet):
 
 class ContentUploadViewSet(ModelViewSet):
     http_method_names = ["get", "post", "delete", "patch", "put"]
-    queryset = ContentUpload.objects.select_related("user")
+
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = ContentUpload.objects.filter(
+            user_id=self.request.user
+        ).select_related("user")
+        return queryset
 
     def get_serializer_class(self):
         if self.request.method == "GET":
@@ -101,13 +107,23 @@ class ContentUploadViewSet(ModelViewSet):
 
 class ContentManagementViewSet(ModelViewSet):
     http_method_names = ["get", "post", "delete", "patch", "put"]
-    queryset = ContentManagement.objects.prefetch_related("content_uploads")
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = (
+            ContentManagement.objects.filter(is_approved=True)
+            .filter(user_id=self.request.user)
+            .prefetch_related("content_uploads")
+        )
+        return queryset
 
     def get_serializer_class(self):
         if self.request.method == "GET":
             return GetContentManagementSerializer
         return ContentManagementSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user_id=self.request.user)
 
 
 # chat viewsets
