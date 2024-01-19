@@ -1,7 +1,6 @@
+from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
-from django.conf import settings
-
 
 # def password_reset_mail(request):
 #     subject= "This is a password reset"

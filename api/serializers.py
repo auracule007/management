@@ -1,10 +1,11 @@
-from rest_framework import serializers
+from djoser.serializers import \
+    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer
+from djoser.serializers import \
+    SendEmailResetSerializer as BaseSendEmailResetSerializer
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
-from djoser.serializers import SendEmailResetSerializer as BaseSendEmailResetSerializer
-from djoser.serializers import (
-    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer,
-)
+from rest_framework import serializers
+
 from .models import *
 
 
@@ -275,6 +276,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
         )
 
 
+<<<<<<< HEAD
 # question bank serializer for all course module
 class QuestionBankSerializer(serializers.ModelSerializer):
     class Meta:
@@ -321,11 +323,17 @@ class GradingSerializer(serializers.ModelSerializer):
         model = Grading
         fields = ["assessment", "student", "score", "feedback"]
 
+=======
+>>>>>>> 7ff368ac53328d338c7c08ccea813fc1920fba3f
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = "__all__"
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7ff368ac53328d338c7c08ccea813fc1920fba3f
 class ChatMessageSerializer(serializers.ModelSerializer):
     receiver_profile = ProfileSerializer(read_only=True)
     sender_profile = ProfileSerializer(read_only=True)
@@ -336,10 +344,18 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             "id",
             "user",
             "sender",
+<<<<<<< HEAD
             "receiver",
             "message",
             "is_read",
             "receiver_profile",
             "sender_profile",
+=======
+            "sender_profile",
+            "receiver",
+            "receiver_profile",
+            "message",
+            "is_read",
+>>>>>>> 7ff368ac53328d338c7c08ccea813fc1920fba3f
             "date_messaged",
         )

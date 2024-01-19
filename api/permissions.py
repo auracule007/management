@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
+from rest_framework.permissions import DjangoModelPermissions, IsAuthenticated
 
 
 class IsStudentOrInstructor(permissions.BasePermission):
