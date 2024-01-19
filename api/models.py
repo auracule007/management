@@ -1,7 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import FileExtensionValidator, MinValueValidator
+from django.db import models
+
 from .validators import validate_file_size
-from django.core.validators import MinValueValidator, FileExtensionValidator
 
 
 # Create your models here.
@@ -41,6 +42,9 @@ class Student(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=50)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Instructor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -49,13 +53,18 @@ class Instructor(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=50)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.user.username
+        if self.full_name == "" or self.full_name == None:
+            return self.user.username
+        return self.full_name
 
 
 class Category(models.Model):
@@ -97,6 +106,9 @@ class Enrollment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     courses = models.ForeignKey(Courses, on_delete=models.CASCADE)
     date_enrolled = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.courses.name} - {self.student.first_name}"
 
 
 class CourseManagement(models.Model):

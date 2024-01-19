@@ -1,10 +1,11 @@
-from rest_framework import serializers
+from djoser.serializers import \
+    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer
+from djoser.serializers import \
+    SendEmailResetSerializer as BaseSendEmailResetSerializer
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
-from djoser.serializers import SendEmailResetSerializer as BaseSendEmailResetSerializer
-from djoser.serializers import (
-    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer,
-)
+from rest_framework import serializers
+
 from .models import *
 
 
@@ -274,3 +275,27 @@ class UserCreateSerializer(BaseUserCreateSerializer):
             "password",
         )
 
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    receiver_profile = ProfileSerializer(read_only=True)
+    sender_profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = (
+            "id",
+            "user",
+            "sender",
+            "sender_profile",
+            "receiver",
+            "receiver_profile",
+            "message",
+            "is_read",
+            "date_messaged",
+        )
