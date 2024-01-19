@@ -104,3 +104,8 @@ class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         fields = ('username','first_name','last_name','email', 'phone', 'profile_img','user_type', 'password')
 
+# question bank serializer for all course module
+class QuestionBankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionBank
+        fields = []
