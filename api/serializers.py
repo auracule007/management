@@ -274,3 +274,72 @@ class UserCreateSerializer(BaseUserCreateSerializer):
             "password",
         )
 
+
+# question bank serializer for all course module
+class QuestionBankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionBank
+        fields = ["instructor", "course", "name", "description"]
+
+    def validate_course__id(self, value):
+        if not QuestionBank.objects.filter(course__id=value).exists():
+            return serializers.ValidationError("The course ID you are trying to get isn't available")
+        raise value 
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ["question_bank", "student", "text", "question_type", "created_at", "updated_at"]
+
+    
+class ChoicesSerializer(serializers.ModelSerializer):
+    question = QuestionSerializer(many=True, required=True)
+    class Meta:
+        model = Choice
+        fields = ["question", "text", "is_correct"] 
+
+class AssessmentSerialier(serializers.ModelSerializer):
+    class Meta:
+        model = Assessment
+        fields = ["course", "questions", "title", "descrpition", "time_limit", "created_at", "updated_at"]
+
+class SubmissionSerializer(serializers.ModelSerializer):
+    assessment = AssessmentSerialier(many=True, required=True)
+    course = CourseSerializer()
+
+    class Meta:
+        model = Submission
+        fields = ["assessment", "user", "submitted_at"]
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = ["submission", "student", "question", "text", "selected_choice", "is_correct", "points"]
+
+class GradingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Grading
+        fields = ["assessment", "student", "score", "feedback"]
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    receiver_profile = ProfileSerializer(read_only=True)
+    sender_profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = (
+            "id",
+            "user",
+            "sender",
+            "receiver",
+            "message",
+            "is_read",
+            "receiver_profile",
+            "sender_profile",
+            "date_messaged",
+        )

@@ -175,6 +175,7 @@ class ChatMessage(models.Model):
     is_read = models.BooleanField(default=False)
     date_messaged = models.DateTimeField(auto_now_add=True)
 
+
     class Meta:
         ordering = ["date_messaged"]
 
@@ -233,12 +234,13 @@ class Assessment(models.Model):
 
     def __str__(self):
         return f"{self.title}"
-
+    
 
 class Submission(models.Model):
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     submitted_at = models.DateTimeField(auto_now_add=True)
+    
 
     def __str__(self):
         return f"{self.assessment}"
@@ -255,6 +257,7 @@ class Answer(models.Model):
     is_correct = models.BooleanField(null=True, blank=True)
     points = models.FloatField(null=True, blank=True)
 
+    
     def __str__(self):
         return f"{self.student}"
 
@@ -264,3 +267,4 @@ class Grading(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     score = models.FloatField()
     feedback = models.TextField(null=True, blank=True)
+
