@@ -44,6 +44,10 @@ INSTALLED_APPS = [
     "djoser",
     "django_filters",
     "drf_yasg",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 MIDDLEWARE = [
@@ -54,6 +58,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "management.urls"
@@ -63,7 +69,7 @@ AUTH_USER_MODEL = "api.User"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [ BASE_DIR / "templates" ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -71,6 +77,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
             ],
         },
     },
@@ -164,6 +171,35 @@ DJOSER = {
     },
 }
 
+# SSO authentication integration
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '123',
+            'secret': '456',
+            'key': ''
+        }
+    }
+}
+# SSO authentication integration done 
+
+
+# Django AllAuth settings
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # You can set it to 'mandatory' if you want email verification
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'  # Same here, you can set it to 'mandatory' if needed
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+# LOGIN_REDIRECT_URL = '/accounts/profile' 
+# SIGNUP_REDIRECT_URL = "/accounts/signup"
+# LOGOUT_REDIRECT_URL = "/api/courses"
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
