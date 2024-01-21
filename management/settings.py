@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "djoser",
     "django_filters",
     "drf_yasg",
+    
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
