@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+from .dev import *
 
 from decouple import config
 
@@ -165,8 +166,8 @@ DJOSER = {
     },
 }
 
-# SSO authentication integration
 SITE_ID = 1
+# SSO authentication integration
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -186,14 +187,11 @@ SOCIALACCOUNT_PROVIDERS = {
 
 
 # Django AllAuth settings
-ACCOUNT_EMAIL_VERIFICATION = 'none'  # You can set it to 'mandatory' if you want email verification
+ACCOUNT_EMAIL_VERIFICATION = 'none'  
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
-SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'  # Same here, you can set it to 'mandatory' if needed
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_EMAIL_REQUIRED = False
-# LOGIN_REDIRECT_URL = '/accounts/profile' 
-# SIGNUP_REDIRECT_URL = "/accounts/signup"
-# LOGOUT_REDIRECT_URL = "/api/courses"
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -209,3 +207,4 @@ try:
     from .dev import *
 except ImportError:
     pass
+
