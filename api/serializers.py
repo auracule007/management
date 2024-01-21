@@ -121,7 +121,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         model = Enrollment
         fields = ["courses", "date_enrolled"]
 
-    def validate_course(self, value):
+    def validate_courses(self, value):
         if not Enrollment.objects.filter(courses=value).exists():
             return serializers.ValidationError(
                 "The Course you are trying to register for is not available"
