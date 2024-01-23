@@ -10,19 +10,16 @@ from .models import *
 
 
 # users profile
-class UserSerializer(BaseUserSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+class UserSerializer(BaseUserSerializer): 
+    profile = ProfileSerializer()
     class Meta(BaseUserSerializer.Meta):
-        ref_name = "djoserUser"
-        fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "email",
-            "phone",
-            "profile_img",
-            "user_type",
-        )
+        ref_name = 'Profile User'
+        fields = BaseUserSerializer.Meta.fields + ("profile",)
 
 
 class SendEmailResetSerializer(BaseSendEmailResetSerializer):
@@ -374,3 +371,9 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             "is_read",
             "date_messaged",
         )
+
+
+class AdminUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id','first_name','last_name','username','email','is_staff')

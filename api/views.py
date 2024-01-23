@@ -1,18 +1,31 @@
 from django.db import transaction
 from django.db.models import OuterRef, Q, Subquery
 from django.shortcuts import HttpResponse, render
-from rest_framework import generics, status
+from rest_framework import generics, status, filters
 from rest_framework.decorators import action
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import *
 from .permissions import *
 from .serializers import *
+from djoser.views import UserViewSet as DjoserUserViewSet
 
-# Create your views here.
+
+
+
+class UserViewSet(ModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all().select_related('profile')
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ("username", "first_name", "last_name", "email")
+    search_fields = ("username", "first_name", "last_name", "email")
+
+    def get_permission_class(self):
+        if self.request.method in ['DELETE']:
+            return [permissions.IsAdminUser()]
+        return permissions.AllowAny()
 
 
 # Category viewset
@@ -24,8 +37,14 @@ class CategoryViewSet(ModelViewSet):
 # Courses viewset
 class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["category__name", "name"]
 
+    def get_permissions(self):
+        if self.request.method in ['POST','PATCH','PUT','DELETE']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+    
     def get_queryset(self):
         queryset = Courses.objects.all().order_by("name")
         course_id = self.request.query_params.get("category_id")
@@ -293,3 +312,26 @@ class GradeSubmissionView(generics.CreateAPIView):
         )
 
         return Response({"success": "Submission graded successfully", "score": grading.score}, status=status.HTTP_201_CREATED)
+    
+
+# Admin dashboard
+class AdminDashboardViewSet(ModelViewSet):
+    http_method_names = ['get','post','put','delete','patch']
+    serializer_class = AdminUserSerializer
+    permission_class = [permissions.IsAdminUser]
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id).get(is_staff=True)
+
+    def get_serializer_class(self):
+        if self.action =='user_management':
+            return UserSerializer
+        return self.serializer_class
+
+    @action(detail=False, methods=['get'],permission_classes=[permissions.IsAuthenticated], url_path='user-managements', url_name='user-managements')
+    def user_management(self, request, *args, **kwargs):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+  

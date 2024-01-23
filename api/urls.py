@@ -18,6 +18,8 @@ router.register(
 router.register("content-upload", views.ContentUploadViewSet, basename="content-upload")
 router.register("question-bank", views.QuestionBankViewSet, basename="question-bank")
 router.register("question", views.QuestionViewSet, basename="question")
+router.register('admin',views.AdminDashboardViewSet, basename="admin")
+router.register('users-list', views.UserViewSet,basename='users-list')
 
 question_router = routers.NestedDefaultRouter(router, "question", lookup="question")
 question_router.register(
