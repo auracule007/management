@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
 
-<body>
-    
-    <p>
-        Hi there!<br><br>
-        You've requested a password reset for your account. Click the link below to set a new password:
-        <br><br>
-        <a href="{{ reset_link }}">Reset Password</a>
-    
-</body>
-</html>
+{% load "base.html" %}
+{% load static %}
+
+{% extends "mail_templated/base.tpl" %}
+
+{% block subject %}
+    Welcome to GamApp, {{ user.first_name }} !
+{% endblock %}
+
+{% block body %}
+        
+{% endblock %}

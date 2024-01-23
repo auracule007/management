@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "djoser",
     "django_filters",
     "drf_yasg",
+    "mail_templated",
     
     "allauth",
     "allauth.account",
@@ -167,8 +168,8 @@ DJOSER = {
 }
 
 SITE_ID = 1
-# SSO authentication integration
 
+# SSO authentication integration
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -189,7 +190,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 LOGIN_REDIRECT_URL = "/"
 # SSO authentication integration done 
-
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
