@@ -36,6 +36,13 @@ admin.site.register(Enrollment)
 admin.site.register(Courses)
 admin.site.register(Category)
 admin.site.register(Profile)
+admin.site.register(QuestionBank)
+admin.site.register(Question)
+admin.site.register(Choice)
+admin.site.register(Assessment)
+admin.site.register(Submission)
+admin.site.register(Answer)
+admin.site.register(Grading)
 
 
 @admin.register(ChatMessage)
