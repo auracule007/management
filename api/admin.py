@@ -8,6 +8,7 @@ from .models import *
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     list_display = ["id", "first_name", "last_name", "username", "email"]
+    ordering = ['-id']
     add_fieldsets = (
         (
             None,
