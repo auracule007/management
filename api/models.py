@@ -282,3 +282,18 @@ class Grading(models.Model):
 
     def __str__(self):
         return f'Assessment::{self.assessment.title}::{self.student.user.username}'
+
+# EVENTS 
+class CourseEvent(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    event_text = models.CharField(max_length=250)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    calendar_event_id = models.CharField(max_length=250, blank=True, null=True)
+
+    def __str__(self):
+        return f'CourseEvent::{self.course.name}::{self.user.username}'
+    
+    class Meta:
+        ordering = ['-start_date']

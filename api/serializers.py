@@ -313,14 +313,13 @@ class QuestionBankSerializer(serializers.ModelSerializer):
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ["question_bank", "student", "text", "question_type", "created_at", "updated_at"]
+        fields = ['id',"question_bank", "student", "text", "question_type", "created_at", "updated_at"]
 
     
 class ChoicesSerializer(serializers.ModelSerializer):
-    question = QuestionSerializer(many=True, required=True)
     class Meta:
         model = Choice
-        fields = ["question", "text", "is_correct"] 
+        fields = ['id',"question", "text", "is_correct"] 
 
 class AssessmentSerialier(serializers.ModelSerializer):
     class Meta:
@@ -379,3 +378,11 @@ class AdminUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id','first_name','last_name','username','email','is_staff')
+
+
+# calendar event
+class CourseEventSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+    class Meta:
+        model = CourseEvent
+        fields = ('id','user', 'course', 'event_text', 'start_date', 'end_date', 'calendar_event_id', )

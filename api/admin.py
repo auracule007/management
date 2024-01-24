@@ -43,7 +43,7 @@ admin.site.register(Assessment)
 admin.site.register(Submission)
 admin.site.register(Answer)
 admin.site.register(Grading)
-
+admin.site.register(CourseEvent)
 
 @admin.register(ChatMessage)
 class ChatMessageAdmin(admin.ModelAdmin):

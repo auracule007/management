@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
+
+from utils.calendars import create_google_calendar_event
 from .models import *
 from .permissions import *
 from .serializers import *
@@ -234,7 +236,7 @@ class QuestionBankViewSet(ModelViewSet):
     
 class QuestionViewSet(ModelViewSet):
     serializer_class = QuestionSerializer
-    queryset = Question.objects.all().order_by("question_bank__course__id")
+    queryset = Question.objects.all().order_by("question_bank__course__id").prefetch_related('choice')
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -243,6 +245,8 @@ class ChoicesViewSet(ModelViewSet):
     queryset = Choice.objects.all().order_by("question__id")
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        return self.queryset.filter(question_id=self.kwargs.get('question_pk'))
 
 class AssessmentViewSet(ModelViewSet):
     serializer_class = AssessmentSerialier
@@ -334,4 +338,17 @@ class AdminDashboardViewSet(ModelViewSet):
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
-  
+# course event
+class CourseEventViewset(ModelViewSet):
+    http_method_names = ['get', 'post', 'put', 'delete','patch']
+    serializer_class = CourseEventSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = CourseEvent.objects.all()
+
+    def perform_create(self, serializer):
+        # Create an event in Google Calendar and update the calendar_event_id field
+        # user_id=self.request.user.id
+        course_event = serializer.save(user_id=self.request.user.id)
+        event_id = create_google_calendar_event(course_event)
+        course_event.calendar_event_id = event_id
+        course_event.save()
