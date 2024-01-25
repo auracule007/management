@@ -1,32 +1,36 @@
 from django.conf import settings
 from management.dev import *
+from django.core.mail import BadHeaderError
 from templated_mail.mail import BaseEmailMessage
 from . models import *
 
 
 
-def sendin_course_update(name, instructor_email):
-    try:
-        instructor = Instructor.objects.get(email=instructor_email)
-        student_email = Student.objects.get(user__email=instructor_email).email
-        msg = BaseEmailMessage(template_name='templates/send_email.html',
-                               context={
-                                   'instructor_email': instructor.email,
-                                   'name': name,
-                                   'email': student_email,
-                               })
-        msg.send([instructor_email, student_email])
-        print(f'Instructor: {instructor.email}')
-        print('Received')
-        print(f'Student Email: {student_email}')
-        print(f'Course: {name}')
-        print('Sent')
-    except Instructor.DoesNotExist:
-        print(f'Instructor not found for email: {instructor_email}')
-    except Student.DoesNotExist:
-        print(f'Student not found for email: {instructor_email}')
-    except Exception as e:
-        print('Failed', e)
+
+
+
+# def sendin_course_update(name, instructor_email):
+#     try:
+#         instructor = Instructor.objects.get(email=instructor_email)
+#         student_email = Student.objects.get(user__email=instructor_email).email
+#         msg = BaseEmailMessage(template_name='templates/send_email.html',
+#                                context={
+#                                    'instructor_email': instructor.email,
+#                                    'name': name,
+#                                    'email': student_email,
+#                                })
+#         msg.send([instructor_email, student_email])
+#         print(f'Instructor: {instructor.email}')
+#         print('Received')
+#         print(f'Student Email: {student_email}')
+#         print(f'Course: {name}')
+#         print('Sent')
+#     except Instructor.DoesNotExist:
+#         print(f'Instructor not found for email: {instructor_email}')
+#     except Student.DoesNotExist:
+#         print(f'Student not found for email: {instructor_email}')
+#     except Exception as e:
+#         print('Failed', e)
 
 
 
