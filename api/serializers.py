@@ -14,6 +14,7 @@ from .models import *
 # users profile
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
+        ref_name = 'User Profile'
         model = Profile
         fields = "__all__"
         ref_name = 'Profile'
@@ -318,6 +319,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
 # question bank serializer for all course module
 class QuestionBankSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(many=True)
     class Meta:
         model = QuestionBank
         fields = ["instructor", "course", "name", "description"]

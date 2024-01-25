@@ -210,7 +210,7 @@ class QuestionBank(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return f"{self.course.name}"
+        return f"{self.name}"
 
 
 class Question(models.Model):
@@ -223,7 +223,7 @@ class Question(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.question_bank.course}"
+        return f"{self.question_bank.name}"
 
 
 class Choice(models.Model):
@@ -280,3 +280,5 @@ class Grading(models.Model):
     score = models.FloatField()
     feedback = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return f'Assessment::{self.assessment.title}::{self.student.user.username}'

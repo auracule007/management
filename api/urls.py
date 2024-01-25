@@ -13,18 +13,20 @@ router.register("courses", views.CoursesViewSet, basename="courses")
 router.register("create_course", views.CreateCoursesViewSet, basename="create_course")
 router.register("enrollment", views.EnrollmentViewSet, basename="enrollment")
 router.register(
-    "content-management", views.ContentManagementViewSet, basename="content-management"
+    "content-managements", views.ContentManagementViewSet, basename="content-managements"
 )
-router.register("content-upload", views.ContentUploadViewSet, basename="content-upload")
+router.register("content-uploads", views.ContentUploadViewSet, basename="content-uploads")
 router.register("question-bank", views.QuestionBankViewSet, basename="question-bank")
 router.register("question", views.QuestionViewSet, basename="question")
 router.register('admin',views.AdminDashboardViewSet, basename="admin")
-router.register('users-list', views.UserViewSet,basename='users-list')
+router.register('user-lists', views.UserViewSet,basename='user-lists')
+router.register("forums", forum_views.ForumQuestionViewSet, basename="forum_question")
 
+# nested routes
 question_router = routers.NestedDefaultRouter(router, "question", lookup="question")
 question_router.register(
     "choices", views.ChoicesViewSet, basename="question-choices")
-router.register("forums", forum_views.ForumQuestionViewSet, basename="forum_question")
+
 
 # nested route
 courses_router = routers.NestedDefaultRouter(router, "courses", lookup="courses")
