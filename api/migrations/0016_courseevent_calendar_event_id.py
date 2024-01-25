@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0015_courseevent'),
+        ("api", "0015_courseevent"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='courseevent',
-            name='calendar_event_id',
+            model_name="courseevent",
+            name="calendar_event_id",
             field=models.CharField(blank=True, max_length=250, null=True),
         ),
     ]

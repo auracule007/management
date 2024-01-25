@@ -44,7 +44,9 @@ class ForumAnswer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     forum_question = models.ForeignKey(ForumQuestion, on_delete=models.CASCADE)
     description = models.TextField()
-    upvotes = models.ManyToManyField(User, default=None,blank=True, related_name='upvotes_answer')
+    upvotes = models.ManyToManyField(
+        User, default=None, blank=True, related_name="upvotes_answer"
+    )
     date_posted = models.DateTimeField(auto_now_add=True)
     date_changed = models.DateTimeField(auto_now=True)
 

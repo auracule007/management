@@ -10,17 +10,23 @@ class PostForumQuestionSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(read_only=True)
     course_id = serializers.IntegerField()
     upvotes = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = ForumQuestion
-        fields = ["id", "user_id", "course_id","title",
+        fields = [
+            "id",
+            "user_id",
+            "course_id",
+            "title",
             "slug",
             "short_description",
             "description",
             "upvotes",
             "number_of_upvotes",
             "date_posted",
-            "date_changed"]
-        read_only_fields = ['slug']
+            "date_changed",
+        ]
+        read_only_fields = ["slug"]
 
     def validate_course_id(self, value):
         if not Courses.objects.filter(id=value).exists():
@@ -56,7 +62,7 @@ class PostForumQuestionSerializer(serializers.ModelSerializer):
                 slug=slug,
                 course_id=course_id,
                 title=title,
-                description=description
+                description=description,
             )
             return forum_question
 
@@ -121,6 +127,7 @@ class UpvoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Upvote
         fields = ["value"]
+
 
 class UpvoteAnswerSerializer(serializers.ModelSerializer):
     class Meta:

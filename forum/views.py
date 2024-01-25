@@ -79,8 +79,8 @@ class ForumAnswerViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = BasePagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['forum_question__title','description']
-    search_fields = ['forum_question__title','description']
+    filterset_fields = ["forum_question__title", "description"]
+    search_fields = ["forum_question__title", "description"]
 
     def get_queryset(self):
         return (
@@ -101,11 +101,15 @@ class ForumAnswerViewSet(viewsets.ModelViewSet):
         if self.action == "upvote_answers":
             return UpvoteAnswerSerializer
         return ForumAnswerSerializer
-    
+
     @action(
-    methods=["post"], detail=True, permission_classes=[permissions.IsAuthenticated],url_path='upvotes', url_name='upvotes'
+        methods=["post"],
+        detail=True,
+        permission_classes=[permissions.IsAuthenticated],
+        url_path="upvotes",
+        url_name="upvotes",
     )
-    def upvote_answers(self, request, forum_question_pk=None,pk=None):
+    def upvote_answers(self, request, forum_question_pk=None, pk=None):
         try:
             if not request.user.is_authenticated:
                 return response.Response(
@@ -125,7 +129,9 @@ class ForumAnswerViewSet(viewsets.ModelViewSet):
             )
 
             if not created:
-                upvote_answer.value = "Downvote" if upvote_answer.value == "Upvote" else "Upvote"
+                upvote_answer.value = (
+                    "Downvote" if upvote_answer.value == "Upvote" else "Upvote"
+                )
 
             upvote_answer.save()
 
@@ -140,4 +146,3 @@ class ForumAnswerViewSet(viewsets.ModelViewSet):
         except Exception as e:
             print("Error in the Forum answer views: ", e)
             return response.Response({"detail": "An error occurred"}, status=500)
-

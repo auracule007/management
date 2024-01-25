@@ -15,17 +15,15 @@ from .serializers import *
 from djoser.views import UserViewSet as DjoserUserViewSet
 
 
-
-
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
-    queryset = User.objects.all().select_related('profile')
+    queryset = User.objects.all().select_related("profile")
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_fields = ("username", "first_name", "last_name", "email")
     search_fields = ("username", "first_name", "last_name", "email")
 
     def get_permission_class(self):
-        if self.request.method in ['DELETE']:
+        if self.request.method in ["DELETE"]:
             return [permissions.IsAdminUser()]
         return permissions.AllowAny()
 
@@ -43,10 +41,10 @@ class CoursesViewSet(ModelViewSet):
     search_fields = ["category__name", "name"]
 
     def get_permissions(self):
-        if self.request.method in ['POST','PATCH','PUT','DELETE']:
+        if self.request.method in ["POST", "PATCH", "PUT", "DELETE"]:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
-    
+
     def get_queryset(self):
         queryset = Courses.objects.all().order_by("name")
         course_id = self.request.query_params.get("category_id")
@@ -233,10 +231,14 @@ class QuestionBankViewSet(ModelViewSet):
         else:
             return Response(serializers.error, status=status.HTTP_400_BAD_REQUEST)
 
-    
+
 class QuestionViewSet(ModelViewSet):
     serializer_class = QuestionSerializer
-    queryset = Question.objects.all().order_by("question_bank__course__id").prefetch_related('choice')
+    queryset = (
+        Question.objects.all()
+        .order_by("question_bank__course__id")
+        .prefetch_related("choice")
+    )
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -246,81 +248,97 @@ class ChoicesViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(question_id=self.kwargs.get('question_pk'))
+        return self.queryset.filter(question_id=self.kwargs.get("question_pk"))
+
 
 class AssessmentViewSet(ModelViewSet):
     serializer_class = AssessmentSerialier
 
     def get_queryset(self):
-        return 
+        return
 
     def create(self, request):
-        serializers = AssessmentSerialier(data= request.data)
+        serializers = AssessmentSerialier(data=request.data)
         if serializers.is_valid():
             serializers.save(instructor=request.user.instructor)
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
             return Response(serializers.error, status=status.HTTP_400_BAD_REQUEST)
 
+
 class GradeSubmissionView(generics.CreateAPIView):
     serializer_class = AnswerSerializer
 
     def create(self, request, *args, **kwargs):
-        user_id = request.data.get('user_id')
-        assessment_id = request.data.get('assessment_id')
-        answers_data = request.data.get('answers', [])
+        user_id = request.data.get("user_id")
+        assessment_id = request.data.get("assessment_id")
+        answers_data = request.data.get("answers", [])
 
         try:
-            submission = Submission.objects.get(user_id=user_id, assessment_id=assessment_id)
+            submission = Submission.objects.get(
+                user_id=user_id, assessment_id=assessment_id
+            )
         except Submission.DoesNotExist:
-            return Response({"error": "Submission not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Submission not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
         answer_serializer = self.get_serializer(data=answers_data, many=True)
         answer_serializer.is_valid(raise_exception=True)
 
         answers = []
         for answer_data in answers_data:
-            question_id = answer_data['question_id']
-            selected_choice_id = answer_data['selected_choice_id']
-            text = answer_data.get('text', '')
+            question_id = answer_data["question_id"]
+            selected_choice_id = answer_data["selected_choice_id"]
+            text = answer_data.get("text", "")
             try:
                 question = Question.objects.get(pk=question_id)
                 selected_choice = Choice.objects.get(pk=selected_choice_id)
             except (Question.DoesNotExist, Choice.DoesNotExist):
-                return Response({"error": "Invalid question or choice ID"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Invalid question or choice ID"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             is_correct = selected_choice.is_correct
             # Here you can implement your logic to calculate points based on correctness
             points = 1.0 if is_correct else 0.0
 
-            answers.append({
-                'question': question,
-                'text': text,
-                'selected_choice': selected_choice,
-                'is_correct': is_correct,
-                'points': points,
-            })
+            answers.append(
+                {
+                    "question": question,
+                    "text": text,
+                    "selected_choice": selected_choice,
+                    "is_correct": is_correct,
+                    "points": points,
+                }
+            )
 
         # Save answers
         Answer.objects.filter(submission=submission).delete()  # Remove previous answers
-        Answer.objects.bulk_create([Answer(submission=submission, **answer) for answer in answers])
+        Answer.objects.bulk_create(
+            [Answer(submission=submission, **answer) for answer in answers]
+        )
 
         # Calculate total score
-        total_score = sum(answer['points'] for answer in answers)
+        total_score = sum(answer["points"] for answer in answers)
 
         # Update or create grading
         grading, created = Grading.objects.update_or_create(
             student=submission.user,
             assessment=submission.assessment,
-            defaults={'score': total_score}
+            defaults={"score": total_score},
         )
 
-        return Response({"success": "Submission graded successfully", "score": grading.score}, status=status.HTTP_201_CREATED)
-    
+        return Response(
+            {"success": "Submission graded successfully", "score": grading.score},
+            status=status.HTTP_201_CREATED,
+        )
+
 
 # Admin dashboard
 class AdminDashboardViewSet(ModelViewSet):
-    http_method_names = ['get','post','put','delete','patch']
+    http_method_names = ["get", "post", "put", "delete", "patch"]
     serializer_class = AdminUserSerializer
     permission_class = [permissions.IsAdminUser]
 
@@ -328,19 +346,26 @@ class AdminDashboardViewSet(ModelViewSet):
         return User.objects.filter(id=self.request.user.id).get(is_staff=True)
 
     def get_serializer_class(self):
-        if self.action =='user_management':
+        if self.action == "user_management":
             return UserSerializer
         return self.serializer_class
 
-    @action(detail=False, methods=['get'],permission_classes=[permissions.IsAuthenticated], url_path='user-managements', url_name='user-managements')
+    @action(
+        detail=False,
+        methods=["get"],
+        permission_classes=[permissions.IsAuthenticated],
+        url_path="user-managements",
+        url_name="user-managements",
+    )
     def user_management(self, request, *args, **kwargs):
         queryset = User.objects.all()
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
+
 # course event
 class CourseEventViewset(ModelViewSet):
-    http_method_names = ['get', 'post', 'put', 'delete','patch']
+    http_method_names = ["get", "post", "put", "delete", "patch"]
     serializer_class = CourseEventSerializer
     permission_classes = [permissions.IsAuthenticated]
     queryset = CourseEvent.objects.all()
