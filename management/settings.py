@@ -31,13 +31,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "api.apps.ApiConfig",
+    "quiz.apps.QuizConfig",
     "forum.apps.ForumConfig",
     "rest_framework",
     "djoser",
     "django_filters",
     "drf_yasg",
     "mail_templated",
-    
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -63,7 +63,7 @@ AUTH_USER_MODEL = "api.User"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [ BASE_DIR / "templates" ],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -171,25 +171,30 @@ SITE_ID = 1
 
 # SSO authentication integration
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
         ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
+        "AUTH_PARAMS": {
+            "access_type": "online",
         },
-        'OAUTH_PKCE_ENABLED': True,
+        "OAUTH_PKCE_ENABLED": True,
     }
 }
 
+<<<<<<< HEAD
 # LOGIN_REDIRECT_URL = "/"
 # SSO authentication integration done 
+=======
+LOGIN_REDIRECT_URL = "/"
+# SSO authentication integration done
+>>>>>>> b9d5c4ce4642a278fc18fef8647b80318eab5885
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -205,4 +210,3 @@ try:
     from .dev import *
 except ImportError:
     pass
-

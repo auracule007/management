@@ -32,6 +32,9 @@ urlpatterns = [
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
     path("accounts/", include("allauth.urls")),
+    path("quiz/", include("quiz.urls")),
+    path("forum/", include("quiz.urls"))
+
 ]
 
 if settings.DEBUG:

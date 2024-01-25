@@ -187,7 +187,6 @@ class ChatMessage(models.Model):
     is_read = models.BooleanField(default=False)
     date_messaged = models.DateTimeField(auto_now_add=True)
 
-
     class Meta:
         ordering = ["date_messaged"]
 
@@ -246,13 +245,12 @@ class Assessment(models.Model):
 
     def __str__(self):
         return f"{self.title}"
-    
+
 
 class Submission(models.Model):
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     submitted_at = models.DateTimeField(auto_now_add=True)
-    
 
     def __str__(self):
         return f"{self.assessment}"
@@ -269,7 +267,6 @@ class Answer(models.Model):
     is_correct = models.BooleanField(null=True, blank=True)
     points = models.FloatField(null=True, blank=True)
 
-    
     def __str__(self):
         return f"{self.student}"
 
@@ -281,4 +278,20 @@ class Grading(models.Model):
     feedback = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'Assessment::{self.assessment.title}::{self.student.user.username}'
+        return f"Assessment::{self.assessment.title}::{self.student.user.username}"
+
+
+# EVENTS
+class CourseEvent(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    event_text = models.CharField(max_length=250)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    calendar_event_id = models.CharField(max_length=250, blank=True, null=True)
+
+    def __str__(self):
+        return f"CourseEvent::{self.course.name}::{self.user.username}"
+
+    class Meta:
+        ordering = ["-start_date"]

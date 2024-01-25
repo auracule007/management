@@ -223,3 +223,19 @@ from . models import *
 #         print('Sent')
 #     except Exception as e:
 #         print('Failed' , e)
+def update_course_email(full_name, email, subject, message):
+    try:
+        message = BaseEmailMessage(
+            template_name="api/send_email.html",
+            context={
+                "full_name": full_name,
+                "email": email,
+                "subject": subject,
+                "message": message,
+            },
+        )
+        message.send([email, settings.EMAIL_HOST_USER])
+        print("Sent")
+    except Exception as e:
+        print("Failed", e)
+   

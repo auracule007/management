@@ -1,28 +1,34 @@
-from djoser.serializers import \
-    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer
-from djoser.serializers import \
-    SendEmailResetSerializer as BaseSendEmailResetSerializer
+from djoser.serializers import (
+    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer,
+)
+from djoser.serializers import SendEmailResetSerializer as BaseSendEmailResetSerializer
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
+<<<<<<< HEAD
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from  . emails import *
+=======
+from .emails import *
+>>>>>>> b9d5c4ce4642a278fc18fef8647b80318eab5885
 from .models import *
 
 
 # users profile
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        ref_name = 'User Profile'
+        ref_name = "User Profile"
         model = Profile
         fields = "__all__"
         ref_name = 'Profile'
 
-class UserSerializer(BaseUserSerializer): 
+
+class UserSerializer(BaseUserSerializer):
     profile = ProfileSerializer()
+
     class Meta(BaseUserSerializer.Meta):
-        ref_name = 'Profile User'
+        ref_name = "Profile User"
         fields = BaseUserSerializer.Meta.fields + ("profile",)
 
 
@@ -104,6 +110,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
         ]
 
     def save(self, **kwargs):
+<<<<<<< HEAD
         if 'instructor' not in self.validated_data:
             raise serializers.ValidationError("Instructor key is required.")
 
@@ -121,6 +128,17 @@ class CreateCourseSerializer(serializers.ModelSerializer):
         requirements5 = self.validated_data['requirements5']
         price = self.validated_data['price']
 
+=======
+        category = self.validated_data["category"]
+        name = self.validated_data["name"]
+        description = self.validated_data["description"]
+        requirements1 = self.validated_data["requirements1"]
+        requirements2 = self.validated_data["requirements2"]
+        requirements3 = self.validated_data["requirements3"]
+        requirements4 = self.validated_data["requirements4"]
+        requirements5 = self.validated_data["requirements5"]
+        price = self.validated_data["price"]
+>>>>>>> b9d5c4ce4642a278fc18fef8647b80318eab5885
         new_course = Courses.objects.create(
             category=category,
             name=name,
@@ -130,8 +148,12 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             requirements3=requirements3,
             requirements4=requirements4,
             requirements5=requirements5,
+<<<<<<< HEAD
             instructor=instructor,
             price=price
+=======
+            price=price,
+>>>>>>> b9d5c4ce4642a278fc18fef8647b80318eab5885
         )
 
         # Check if the user creating the course is an instructor
@@ -354,31 +376,52 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 # question bank serializer for all course module
 class QuestionBankSerializer(serializers.ModelSerializer):
     course = CourseSerializer(many=True)
+
     class Meta:
         model = QuestionBank
         fields = ["instructor", "course", "name", "description"]
 
     def validate_course__id(self, value):
         if not QuestionBank.objects.filter(course__id=value).exists():
-            return serializers.ValidationError("The course ID you are trying to get isn't available")
-        raise value 
+            return serializers.ValidationError(
+                "The course ID you are trying to get isn't available"
+            )
+        raise value
+
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ["question_bank", "student", "text", "question_type", "created_at", "updated_at"]
+        fields = [
+            "id",
+            "question_bank",
+            "student",
+            "text",
+            "question_type",
+            "created_at",
+            "updated_at",
+        ]
 
-    
+
 class ChoicesSerializer(serializers.ModelSerializer):
-    question = QuestionSerializer(many=True, required=True)
     class Meta:
         model = Choice
-        fields = ["question", "text", "is_correct"] 
+        fields = ["id", "question", "text", "is_correct"]
+
 
 class AssessmentSerialier(serializers.ModelSerializer):
     class Meta:
         model = Assessment
-        fields = ["course", "questions", "title", "descrpition", "time_limit", "created_at", "updated_at"]
+        fields = [
+            "course",
+            "questions",
+            "title",
+            "descrpition",
+            "time_limit",
+            "created_at",
+            "updated_at",
+        ]
+
 
 class SubmissionSerializer(serializers.ModelSerializer):
     assessment = AssessmentSerialier(many=True, required=True)
@@ -388,15 +431,26 @@ class SubmissionSerializer(serializers.ModelSerializer):
         model = Submission
         fields = ["assessment", "user", "submitted_at"]
 
+
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
-        fields = ["submission", "student", "question", "text", "selected_choice", "is_correct", "points"]
+        fields = [
+            "submission",
+            "student",
+            "question",
+            "text",
+            "selected_choice",
+            "is_correct",
+            "points",
+        ]
+
 
 class GradingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grading
         fields = ["assessment", "student", "score", "feedback"]
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -433,4 +487,21 @@ class ChatMessageSerializer(serializers.ModelSerializer):
 class AdminUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id','first_name','last_name','username','email','is_staff')
+        fields = ("id", "first_name", "last_name", "username", "email", "is_staff")
+
+
+# calendar event
+class CourseEventSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)
+
+    class Meta:
+        model = CourseEvent
+        fields = (
+            "id",
+            "user",
+            "course",
+            "event_text",
+            "start_date",
+            "end_date",
+            "calendar_event_id",
+        )
