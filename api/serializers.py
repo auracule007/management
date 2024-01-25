@@ -5,6 +5,8 @@ from djoser.serializers import \
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 from  . emails import *
 from .models import *
 
@@ -14,6 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = "__all__"
+        ref_name = 'Profile'
 
 class UserSerializer(BaseUserSerializer): 
     profile = ProfileSerializer()
@@ -96,30 +99,46 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             "uploaded",
             "updated",
         ]
+    
 
-    def save(self, **kwargs):
-        category = self.validated_data['category']
-        name = self.validated_data['name']
-        description = self.validated_data['description']
-        requirements1 = self.validated_data['requirements1']
-        requirements2 = self.validated_data['requirements2']
-        requirements3 = self.validated_data['requirements3']
-        requirements4 = self.validated_data['requirements4']
-        requirements5 = self.validated_data['requirements5']
-        price = self.validated_data['price']
-        new_course = Courses.objects.create(
-            category = category,
-            name = name,
-            description = description,
-            requirements1 = requirements1,
-            requirements2 = requirements2,
-            requirements3 = requirements3,
-            requirements4 = requirements4,
-            requirements5 = requirements5,
-            price = price
-        )
-        update_course_email(category, name, description, requirements1)
-        return new_course
+    def send_email_student(full_name, email, course_name):
+        try:
+            student = Student.objects.get(email=email)  
+            subject = 'Course Update Notification'
+            
+            message = render_to_string('templates/send_email.html', {
+                'full_name': full_name,
+                'course_name': course_name,
+            })
+            send_mail(subject, message, 'from_email', [email])
+            print(f'Student: {email}')
+            print('Email Sent')
+        except Exception as e:
+            print('Failed:', e)
+
+    # def save(self, **kwargs):
+    #     category = self.validated_data['category']
+    #     name = self.validated_data['name']
+    #     description = self.validated_data['description']
+    #     requirements1 = self.validated_data['requirements1']
+    #     requirements2 = self.validated_data['requirements2']
+    #     requirements3 = self.validated_data['requirements3']
+    #     requirements4 = self.validated_data['requirements4']
+    #     requirements5 = self.validated_data['requirements5']
+    #     price = self.validated_data['price']
+    #     new_course = Courses.objects.create(
+    #         category = category,
+    #         name = name,
+    #         description = description,
+    #         requirements1 = requirements1,
+    #         requirements2 = requirements2,
+    #         requirements3 = requirements3,
+    #         requirements4 = requirements4,
+    #         requirements5 = requirements5,
+    #         price = price
+    #     )
+    #     update_course_email(category, name, description, requirements1)
+    #     return new_course
 
 
 # instructor Serializer
@@ -347,11 +366,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = "__all__"
+        ref_name = 'Profile'
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
     receiver_profile = ProfileSerializer(read_only=True)
     sender_profile = ProfileSerializer(read_only=True)
+    
 
     class Meta:
         model = ChatMessage

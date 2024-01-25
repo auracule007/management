@@ -17,3 +17,20 @@ def update_course_email(full_name, email, subject, message):
     except Exception as e:
         print('Failed' , e)
     return 
+
+# def send_email_applicant(full_name, email):
+#     try:
+#         employer_email = Employee.objects.get(user__email=email)
+#         msg = BaseEmailMessage(template_name='api/employee_email.html',
+#         context = {
+#             'employer_email': employer_email.application_set.values('jobs__employer__user__email'),
+#             'full_name': full_name,
+#             'email': email,
+#         })
+#         msg.send([email, employer_email])
+#         print(f'Employer: {employer__email.email}')
+#         print('Received')
+#         print(f'Employee: {email}')
+#         print('Sent')
+#     except Exception as e:
+#         print('Failed' , e)
