@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "djoser",
     "django_filters",
     "drf_yasg",
+    
     "mail_templated",
     "allauth",
     "allauth.account",
@@ -188,13 +189,10 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-<<<<<<< HEAD
 # LOGIN_REDIRECT_URL = "/"
 # SSO authentication integration done 
-=======
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/api/courses"
 # SSO authentication integration done
->>>>>>> b9d5c4ce4642a278fc18fef8647b80318eab5885
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

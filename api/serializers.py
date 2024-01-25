@@ -138,7 +138,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
         if user.user_type == 'Instructor':
             try:
                 instemail = Instructor.objects.get(user=user).email
-                update_course_email(name, instemail)
+                sendin_course_update(name, instemail)
             except ObjectDoesNotExist:
                 print("Instructor not found for the user.")
                 
@@ -434,3 +434,8 @@ class AdminUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id','first_name','last_name','username','email','is_staff')
+
+class CourseEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseEvent
+        fields = "__all__"
