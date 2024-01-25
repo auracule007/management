@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.db.models import OuterRef, Q, Subquery
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import HttpResponse, render, get_object_or_404
 from rest_framework import generics, status, filters
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -63,7 +63,7 @@ class CreateCoursesViewSet(ModelViewSet):
 
     def create(self, request):
         serializers = CreateCourseSerializer(data=request.data)
-        if serializers.is_valid():
+        if serializers.is_valid(raise_exception=True):
             serializers.save(instructor=request.user.instructor)
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
