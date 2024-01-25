@@ -14,8 +14,8 @@ def update_course_email(full_name, email, subject, message):
                 "message": message,
             },
         )
-        message.send([email, settings.EMAIL_HOST])
+        message.send([email, settings.EMAIL_HOST_USER])
         print("Sent")
     except Exception as e:
         print("Failed", e)
-    return
+   
