@@ -59,15 +59,15 @@ class CoursesViewSet(ModelViewSet):
 class CreateCoursesViewSet(ModelViewSet):
     queryset = Courses.objects.all().order_by("name")
     serializer_class = CreateCourseSerializer
-    permission_classes = [IsStudentOrInstructor]
+    permission_classes = [IsAuthenticated]
 
-    def create(self, request):
-        serializers = CreateCourseSerializer(data=request.data)
-        if serializers.is_valid():
-            serializers.save(instructor=request.user.instructor)
-            return Response(serializers.data, status=status.HTTP_200_OK)
-        else:
-            return Response(serializers.error, status=status.HTTP_400_BAD_REQUEST)
+    # def create(self, request):
+    #     serializers = CreateCourseSerializer(data=request.data)
+    #     if serializers.is_valid():
+    #         serializers.save(instructor=request.user.instructor)
+    #         return Response(serializers.data, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response(serializers.error, status=status.HTTP_400_BAD_REQUEST)
 
 
 # enroll for a course viewset
