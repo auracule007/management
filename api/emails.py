@@ -16,7 +16,7 @@ def update_course_email(category, name, description, requirements1):
                 "requirements1": requirements1,
             },
         )
-        message.send(['f.owolabi81@gmail.com'])
+        message.send(['pogooluwa12@gmail.com'])
         print("Sent")
     except Exception as e:
         print("Failed", e)
