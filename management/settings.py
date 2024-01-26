@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "quiz.apps.QuizConfig",
     "forum.apps.ForumConfig",
+    "lesson.apps.LessonConfig",
+    "performance.apps.PerformanceConfig",
     "rest_framework",
     "djoser",
     "django_filters",
