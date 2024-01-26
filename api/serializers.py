@@ -102,7 +102,29 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             "updated",
         ]
 
-    
+    def save(self, **kwargs):
+        category = self.validated_data["category"]
+        name = self.validated_data["name"]
+        description = self.validated_data["description"]
+        requirements1 = self.validated_data["requirements1"]
+        requirements2 = self.validated_data["requirements2"]
+        requirements3 = self.validated_data["requirements3"]
+        requirements4 = self.validated_data["requirements4"]
+        requirements5 = self.validated_data["requirements5"]
+        price = self.validated_data["price"]
+        new_course = Courses.objects.create(
+            category=category,
+            name=name,
+            description=description,
+            requirements1=requirements1,
+            requirements2=requirements2,
+            requirements3=requirements3,
+            requirements4=requirements4,
+            requirements5=requirements5,
+            price=price,
+        )
+        update_course_email(category, name, description, requirements1)
+        return new_course
 
 # instructor Serializer
 class InstructorSerializer(serializers.ModelSerializer):
