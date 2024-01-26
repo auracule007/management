@@ -59,11 +59,11 @@ class CoursesViewSet(ModelViewSet):
 class CreateCoursesViewSet(ModelViewSet):
     queryset = Courses.objects.all().order_by("name")
     serializer_class = CreateCourseSerializer
-    permission_classes = [IsStudentOrInstructor]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request):
         serializers = CreateCourseSerializer(data=request.data)
-        if serializers.is_valid(raise_exception=True):
+        if serializers.is_valid():
             serializers.save(instructor=request.user.instructor)
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:

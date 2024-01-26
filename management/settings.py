@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "quiz.apps.QuizConfig",
     "forum.apps.ForumConfig",
+    "lesson.apps.LessonConfig",
+    "performance.apps.PerformanceConfig",
     "rest_framework",
     "djoser",
     "django_filters",
@@ -64,7 +66,7 @@ AUTH_USER_MODEL = "api.User"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

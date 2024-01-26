@@ -32,8 +32,10 @@ urlpatterns = [
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
     path("accounts/", include("allauth.urls")),
+    path("forum/", include("forum.urls")),
     path("quiz/", include("quiz.urls")),
-    path("forum/", include("quiz.urls"))
+    path("lesson/", include('lesson.urls')),
+    path("performance/", include('performance.urls')),
 
 ]
 

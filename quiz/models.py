@@ -1,8 +1,31 @@
 from django.db import models
 from utils.choices import *
-from api.models import Instructor, Student, Courses
+from api.models import Instructor, Student, Courses, User
+from django.core.validators import FileExtensionValidator, MinValueValidator
+from utils.validators import validate_file_size
 
 
+# Assignment
+class Assignment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    assignment_title = models.CharField(max_length=250)
+    assignment_description = models.TextField()
+    assignment_doc = models.FileField(
+        upload_to="assignment",
+        validators=[
+            validate_file_size,
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp", "pdf",'docx',"xlsx", "doc","xls"]),
+        ],
+    )
+    date_given = models.DateTimeField()
+    date_to_be_submitted = models.DateTimeField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    is_completed = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f'Assignment::{self.user.username}'
+
+# Quiz
 class QuestionCategory(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)

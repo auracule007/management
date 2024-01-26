@@ -13,3 +13,8 @@ QUESTION_CHOICE_MODE = (
     (("Multiple Choice"), ("Multiple Choice")),
     (("Essay"), ("Essay")),
 )
+
+COMPLETION_STATUS = (
+    (("Complete"), ("Complete")),
+    (("Uncomplete"), ("Uncomplete")),
+)
