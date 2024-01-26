@@ -69,7 +69,6 @@ class CreateCoursesViewSet(ModelViewSet):
         else:
             return Response(serializers.error, status=status.HTTP_400_BAD_REQUEST)
 
-
 # enroll for a course viewset
 class EnrollmentViewSet(ModelViewSet):
     serializer_class = EnrollmentSerializer

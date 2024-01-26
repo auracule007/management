@@ -91,7 +91,6 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             "id",
             "category",
             "name",
-            "instructor",
             "description",
             "requirements1",
             "requirements2",
@@ -103,78 +102,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             "updated",
         ]
 
-    def save(self, **kwargs):
-        if 'instructor' not in self.validated_data:
-            raise serializers.ValidationError("Instructor key is required.")
-
-        # Extract user from context
-        user = self.context['request'].user
-
-        category = self.validated_data['category']
-        name = self.validated_data['name']
-        instructor = self.validated_data['instructor']
-        description = self.validated_data['description']
-        requirements1 = self.validated_data['requirements1']
-        requirements2 = self.validated_data['requirements2']
-        requirements3 = self.validated_data['requirements3']
-        requirements4 = self.validated_data['requirements4']
-        requirements5 = self.validated_data['requirements5']
-        price = self.validated_data['price']
-
-        new_course = Courses.objects.create(
-            category=category,
-            name=name,
-            description=description,
-            requirements1=requirements1,
-            requirements2=requirements2,
-            requirements3=requirements3,
-            requirements4=requirements4,
-            requirements5=requirements5,
-            instructor=instructor,
-            price=price
-        )
-
-        # Check if the user creating the course is an instructor
-        if user.user_type == 'Instructor':
-            try:
-                instemail = Instructor.objects.get(user=user).email
-                sendin_course_update(name, instemail)
-            except ObjectDoesNotExist:
-                print("Instructor not found for the user.")
-                
-        return new_course
-
-
-    # def save(self, **kwargs):
-    #     if 'instructor' not in self.validated_data:
-    #         raise serializers.ValidationError("Instructor key is required.")
-    #     category = self.validated_data['category']
-    #     name = self.validated_data['name']
-    #     instructor = self.validated_data['instructor']
-    #     description = self.validated_data['description']
-    #     requirements1 = self.validated_data['requirements1']
-    #     requirements2 = self.validated_data['requirements2']
-    #     requirements3 = self.validated_data['requirements3']
-    #     requirements4 = self.validated_data['requirements4']
-    #     requirements5 = self.validated_data['requirements5']
-    #     price = self.validated_data['price']
-    #     new_course = Courses.objects.create(
-    #         category = category,
-    #         name = name,
-    #         description = description,
-    #         requirements1 = requirements1,
-    #         requirements2 = requirements2,
-    #         requirements3 = requirements3,
-    #         requirements4 = requirements4,
-    #         requirements5 = requirements5,
-    #         instructor=instructor,
-    #         price = price
-    #     )
-
-    #     if User.user_type == 'Instructor':
-    #         sendin_course_update(name, instemail)
-    #     return new_course
-
+    
 
 # instructor Serializer
 class InstructorSerializer(serializers.ModelSerializer):
