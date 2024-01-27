@@ -18,7 +18,7 @@ SECRET_KEY = "django-insecure-g^(k(ph4lghw3n@e9gw6_7vf)or=sf3h&8ix!&ln_03#7!m3t4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["3.85.82.193", "*"]
+ALLOWED_HOSTS = ["54.89.131.9", "*"]
 # ALLOWED_HOSTS = []
 
 # Application definition
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     "djoser",
     "django_filters",
     "drf_yasg",
-    
+    # pip install django djangorestframework djoser django-fliter drf_yasg django-allauth
     "mail_templated",
     "allauth",
     "allauth.account",
@@ -201,9 +201,9 @@ LOGIN_REDIRECT_URL = "/api/courses"
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '2f9852130e042b'
+EMAIL_HOST_PASSWORD = 'c6b7c90c5013d9'
 EMAIL_PORT = 2525
 EMAIL_USE_TSL = True
 
