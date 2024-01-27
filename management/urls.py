@@ -36,7 +36,6 @@ urlpatterns = [
     path("quiz/", include("quiz.urls")),
     path("lesson/", include('lesson.urls')),
     path("performance/", include('performance.urls')),
-
 ]
 
 if settings.DEBUG:

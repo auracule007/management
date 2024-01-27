@@ -1,8 +1,6 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-
-
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -13,13 +11,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = "django-insecure-g^(k(ph4lghw3n@e9gw6_7vf)or=sf3h&8ix!&ln_03#7!m3t4"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["54.161.122.170", "*"]
+# ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -34,7 +32,6 @@ INSTALLED_APPS = [
     "quiz.apps.QuizConfig",
     "forum.apps.ForumConfig",
     "lesson.apps.LessonConfig",
-    "performance.apps.PerformanceConfig",
     "rest_framework",
     "djoser",
     "django_filters",
@@ -66,7 +63,7 @@ AUTH_USER_MODEL = "api.User"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -192,15 +189,16 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # LOGIN_REDIRECT_URL = "/"
+
 # SSO authentication integration done 
 LOGIN_REDIRECT_URL = "/api/courses"
 # SSO authentication integration done
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '2f9852130e042b'
+EMAIL_HOST_PASSWORD = 'c6b7c90c5013d9'
 EMAIL_PORT = 2525
 EMAIL_USE_TSL = True
 

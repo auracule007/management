@@ -1,5 +1,5 @@
 from django.db import models
-from api.models import Courses, User,ContentUpload
+from api.models import Courses, User, ContentUpload
 
 class CourseUserProgress(models.Model):
   user = models.ForeignKey(User, on_delete=models.CASCADE)
