@@ -377,3 +377,18 @@ class CourseEventViewset(ModelViewSet):
         event_id = create_google_calendar_event(course_event)
         course_event.calendar_event_id = event_id
         course_event.save()
+
+# course rating
+class CourseRatingViewSet(ModelViewSet):
+    serializer_class = GetCourseRatingSerializer
+    queryset = CourseRating.objects.select_related('user','course')
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return self.serializer_class
+        return CourseRatingSerializer
+        

@@ -29,7 +29,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(Student)
-# admin.site.register(ContentUpload)
+admin.site.register(ContentUpload)
 admin.site.register(ContentManagement)
 admin.site.register(Enrollment)
 admin.site.register(Courses)
@@ -43,6 +43,8 @@ admin.site.register(Submission)
 admin.site.register(Answer)
 admin.site.register(Grading)
 admin.site.register(CourseEvent)
+admin.site.register(CourseRating)
+admin.site.register(CourseViewCount)
 
 @admin.register(Instructor)
 class InstructorAdmin(admin.ModelAdmin):

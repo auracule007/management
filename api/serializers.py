@@ -1,6 +1,7 @@
 from djoser.serializers import (
     PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer,
 )
+from rest_framework.validators import UniqueTogetherValidator
 from djoser.serializers import SendEmailResetSerializer as BaseSendEmailResetSerializer
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
@@ -74,6 +75,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "price",
             "uploaded",
             "updated",
+            "view_counter",
             "total_enrolled_student",
         ]
 
@@ -430,3 +432,28 @@ class CourseEventSerializer(serializers.ModelSerializer):
             "end_date",
             "calendar_event_id",
         )
+
+
+class CourseRatingSerializer(serializers.ModelSerializer):
+    course_id = serializers.IntegerField()
+
+    class Meta:
+        model = CourseRating
+        fields = ('id','course_id','value')    
+        # validators = [ UniqueTogetherValidator(
+        #     queryset=CourseRating.objects.all(),
+        #     fields=['user_id', 'course_id'])
+        # ]
+
+    def validate_course_id(self, value):
+        if not Courses.objects.filter(id=value).exists():
+            raise serializers.ValidationError('Course id does not exist')
+        return value
+
+class GetCourseRatingSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    course = serializers.StringRelatedField()
+    class Meta:
+        model = CourseRating
+        fields = '__all__'
+        

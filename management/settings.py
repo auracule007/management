@@ -35,7 +35,11 @@ INSTALLED_APPS = [
     "forum.apps.ForumConfig",
     "lesson.apps.LessonConfig",
     "performance.apps.PerformanceConfig",
+    "useractivity.apps.UseractivityConfig",
+    "analytics.apps.AnalyticsConfig",
     "rest_framework",
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt.token_blacklist",
     "djoser",
     "django_filters",
     "drf_yasg",
@@ -56,6 +60,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
+    # CUSTOM MIDDLEWARE
+    "api.middleware.CourseViewCountMiddleware"
 ]
 
 ROOT_URLCONF = "management.urls"

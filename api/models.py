@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import FileExtensionValidator, MinValueValidator
+from django.core.validators import FileExtensionValidator, MinValueValidator,MaxValueValidator
 from django.db import models
-
+from django.urls import reverse
 from utils.validators import validate_file_size
 
 
@@ -94,6 +94,34 @@ class Courses(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        try:            
+            return reverse('courses', args=[(str(self.courses_pk))])
+        except Exception as e:
+            print('ERROR WHILE GETING ABSOLUTE URL: ', e)
+
+    @property
+    def view_counter(self):
+        try:
+            view_count = self.courseviewcount_set.get(course_id=self.id)
+            if view_count.count < 1000:
+                return view_count.count
+            elif view_count.count < 1000000:
+                view_count.count = view_count.count / 1000
+                return f'{view_count.count:.1f}k'
+            else:
+                view_count.count = view_count.count / 1000000
+                return f'{view_count.count:.1f}M'
+        except CourseViewCount.DoesNotExist as e:
+            print('Error while counting views: ', e)
+            return 0
+
+class CourseViewCount(models.Model):
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f'View count for {self.course.name}'
 
 class CourseReview(models.Model):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
@@ -102,9 +130,22 @@ class CourseReview(models.Model):
     date = models.DateTimeField(auto_now=True)
 
 
+class CourseRating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    value = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+    def __str__(self):
+        return f'{self.user.username} rating for {self.course.name}'
+    
+    class Meta:
+        unique_together = ['user', 'course']
+
+
 class Enrollment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     courses = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    completion_status = models.BooleanField(default=False)
     date_enrolled = models.DateField(auto_now=True)
 
     def __str__(self):

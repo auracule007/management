@@ -23,6 +23,8 @@ router.register("question", views.QuestionViewSet, basename="question")
 router.register("admin", views.AdminDashboardViewSet, basename="admin")
 router.register("user-lists", views.UserViewSet, basename="user-lists")
 router.register("course-events", views.CourseEventViewset, basename="course-events")
+router.register("course-ratings", views.CourseRatingViewSet, basename="course-ratings")
+
 # nested routes
 question_router = routers.NestedDefaultRouter(router, "question", lookup="question")
 question_router.register("choices", views.ChoicesViewSet, basename="question-choices")
