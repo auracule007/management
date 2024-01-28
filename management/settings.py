@@ -17,8 +17,8 @@ SECRET_KEY = "django-insecure-g^(k(ph4lghw3n@e9gw6_7vf)or=sf3h&8ix!&ln_03#7!m3t4
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-PORT = int(os.environ.get("PORT", 8000))
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', "codedextersacademy.onrender.com", "*"]
+# ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0:10000 ', "codedextersacademy.onrender.com", "*"]
+ALLOWED_HOSTS = ['0.0.0.0:10000', 'localhost', "codedextersacademy.onrender.com"]
 # ALLOWED_HOSTS = []
 # codedextersacademy.onrender.com
 # Application definition
