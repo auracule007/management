@@ -9,9 +9,9 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 
 from utils.calendars import create_google_calendar_event
-from .models import *
-from .permissions import *
-from .serializers import *
+from . models import *
+from . permissions import *
+from . serializers import *
 from djoser.views import UserViewSet as DjoserUserViewSet
 
 

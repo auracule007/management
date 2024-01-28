@@ -5,9 +5,7 @@ from djoser.serializers import \
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from  . emails import *
+from  api.emails import update_course_email
 from .models import *
 
 

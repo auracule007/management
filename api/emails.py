@@ -1,5 +1,3 @@
-from django.conf import settings
-from management.dev import *
 from django.core.mail import BadHeaderError
 from templated_mail.mail import BaseEmailMessage
 from . models import *
