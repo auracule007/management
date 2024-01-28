@@ -79,6 +79,7 @@ class Question(models.Model):
         auto_now_add=True, verbose_name=("Date Created")
     )
     date_updated = models.DateTimeField(verbose_name="Last Updated", auto_now=True)
+    is_completed = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False, verbose_name=("Active Status"))
 
     class Meta:

@@ -31,11 +31,17 @@ urlpatterns = [
     path("api/", include("api.urls")),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
+    path("auth/", include("djoser.urls.authtoken")),
     path("accounts/", include("allauth.urls")),
     path("forum/", include("forum.urls")),
     path("quiz/", include("quiz.urls")),
     path("lesson/", include('lesson.urls')),
     path("performance/", include('performance.urls')),
+<<<<<<< HEAD
+=======
+    path("analytics/", include('analytics.urls')),
+
+>>>>>>> 130179f611321267ed91a71c4628faefa6bdf0cd
 ]
 
 if settings.DEBUG:

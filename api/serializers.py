@@ -1,7 +1,8 @@
-from djoser.serializers import \
-    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer
-from djoser.serializers import \
-    SendEmailResetSerializer as BaseSendEmailResetSerializer
+from djoser.serializers import (
+    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer,
+)
+from rest_framework.validators import UniqueTogetherValidator
+from djoser.serializers import SendEmailResetSerializer as BaseSendEmailResetSerializer
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
@@ -73,6 +74,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "price",
             "uploaded",
             "updated",
+            "view_counter",
             "total_enrolled_student",
         ]
 
@@ -386,4 +388,12 @@ class AdminUserSerializer(serializers.ModelSerializer):
 class CourseEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseEvent
-        fields = "__all__"
+        fields = (
+            "id",
+            "user",
+            "course",
+            "event_text",
+            "start_date",
+            "end_date",
+            "calendar_event_id",
+        )
