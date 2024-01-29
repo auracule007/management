@@ -379,7 +379,7 @@ class CourseEventViewset(ModelViewSet):
 
 # course rating
 class CourseRatingViewSet(ModelViewSet):
-    serializer_class = GetCourseRatingSerializer
+    # serializer_class = GetCourseRatingSerializer
     queryset = CourseRating.objects.select_related('user','course')
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -389,5 +389,5 @@ class CourseRatingViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return self.serializer_class
-        return CourseRatingSerializer
+        # return CourseRatingSerializer
         

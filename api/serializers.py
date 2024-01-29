@@ -6,7 +6,7 @@ from djoser.serializers import SendEmailResetSerializer as BaseSendEmailResetSer
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
-from  api.emails import update_course_email
+from  api.emails import update_course_email, send_content_upload_mail
 from .models import *
 
 
@@ -80,7 +80,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def get_total_enrolled_student(self, student: Courses):
         return student.enrollment_set.count()
-from django.core.exceptions import ObjectDoesNotExist
+
 
 
 # Course serializers
@@ -211,6 +211,25 @@ class ContentUploadSerializer(serializers.ModelSerializer):
     def validate_user_id(self, value):
         if not User.objects.filter(id=value).exists():
             raise serializers.ValidationError("User with the given ID does not exist")
+        
+    def save(self, *args, **kwargs):
+        user = self.validated_data["user"]
+        content = self.validated_data["content"]
+        content_title = self.validated_data["content_title"]
+        content_description = self.validated_data["content_description"]
+        date_uploaded = self.validated_data["date_uploaded"]
+        date_updated = self.validated_data["date_updated"]
+
+        content_uploads_mail = ContentUpload.objects.create(
+            user = user,
+            content = content,
+            content_title = content_title,
+            content_description = content_description,
+            date_uploaded = date_uploaded,
+            date_updated = date_updated,
+        )
+        send_content_upload_mail(content, content_title, content_description, date_uploaded)
+        return content_uploads_mail
 
 
 class GetContentManagementSerializer(serializers.ModelSerializer):
@@ -397,3 +416,13 @@ class CourseEventSerializer(serializers.ModelSerializer):
             "end_date",
             "calendar_event_id",
         )
+# class CourseRatingSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         models = CourseRating
+#         fields = "__all__"
+
+# class GetCourseRatingSerializer(serializers.ModelSerializer):
+#     cou
+#     class Meta:
+#         models = CourseRating
+#         fields = "__all__"

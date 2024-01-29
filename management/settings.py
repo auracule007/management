@@ -32,12 +32,9 @@ INSTALLED_APPS = [
     "quiz.apps.QuizConfig",
     "forum.apps.ForumConfig",
     "lesson.apps.LessonConfig",
-<<<<<<< HEAD
-=======
     "performance.apps.PerformanceConfig",
     "useractivity.apps.UseractivityConfig",
     "analytics.apps.AnalyticsConfig",
->>>>>>> 130179f611321267ed91a71c4628faefa6bdf0cd
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt.token_blacklist",

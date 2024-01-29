@@ -5,6 +5,7 @@ from django.core.validators import FileExtensionValidator, MinValueValidator
 from utils.validators import validate_file_size
 
 
+
 # Assignment
 class Assignment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -27,3 +27,10 @@ class AnswerViewSet(viewsets.ModelViewSet):
 
   def get_queryset(self):
     return Answer.objects.filter(question_id=self.kwargs.get('question_pk')).select_related('instructor','student','question')
+  
+class AssignmentViewSet(viewsets.ModelViewSet):
+  serializer_class = AssignmentSerializer
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+  def get_queryset(self):
+    return Assignment.objects.filter()
