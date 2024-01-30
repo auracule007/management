@@ -5,6 +5,7 @@ router = routers.DefaultRouter()
 router.register('question-categories',views.QuestionCategoryViewset, basename='question-categories')
 router.register('quiz-questions', views.QuizQuestionViewSet, basename='quiz-questions')
 router.register('questions', views.QuestionViewSet, basename='questions')
+router.register('assignment', views.AssignmentViewSet, basename='assignment')
 
 # nested routes
 answer_router = routers.NestedDefaultRouter(router,'questions', lookup='question')

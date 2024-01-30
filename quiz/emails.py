@@ -14,7 +14,7 @@ def assignment_due_date_email(user, assignment_title, date_given, date_to_be_sub
                 "date_to_be_submitted": date_to_be_submitted,
             },
         )
-        message.send(["pogooluwa12@gmail.com"])
+        message.send([user.email])
         print("Sent...")
     except Exception as e:
         return print("Failed", e)
