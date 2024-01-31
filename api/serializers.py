@@ -212,21 +212,16 @@ class ContentUploadSerializer(serializers.ModelSerializer):
         if not User.objects.filter(id=value).exists():
             raise serializers.ValidationError("User with the given ID does not exist")
         
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         user = self.validated_data["user"]
         content = self.validated_data["content"]
         content_title = self.validated_data["content_title"]
         content_description = self.validated_data["content_description"]
-        date_uploaded = self.validated_data["date_uploaded"]
-        date_updated = self.validated_data["date_updated"]
-
         content_uploads_mail = ContentUpload.objects.create(
             user = user,
             content = content,
             content_title = content_title,
-            content_description = content_description,
-            date_uploaded = date_uploaded,
-            date_updated = date_updated,
+            content_description = content_description
         )
         send_content_upload_mail(content, content_title, content_description)
         return content_uploads_mail

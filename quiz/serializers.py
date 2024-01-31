@@ -38,15 +38,15 @@ class AssignmentSerializer(serializers.ModelSerializer):
     model = Assignment
     fields = "__all__"
 
-  def save(self, *args, **kwargs):
+  def save(self, **kwargs):
     user = self.validated_data["user"]
     assignment_title = self.validated_data["assignment_title"]
     assignment_description = self.validated_data["assignment_description"]
     assignment_doc = self.validated_data["assignment_doc"]
     date_given = self.validated_data["date_given"]
     date_to_be_submitted = self.validated_data["date_to_be_submitted"]
-    # date_created = self.validated_data["date_created"]
     is_completed = self.validated_data["is_completed"]
+    # date_created = self.validated_data["date_created"]
 
     assignment = Assignment.objects.create(
       user = user,
