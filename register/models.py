@@ -33,3 +33,11 @@ class OrderCourse(models.Models):
 class OrderItem(models.Model):
     ordercourse = models.ForeignKey(OrderCourse, on_delete=models.PROTECT)
     date_created = models.DateTimeField(auto_now_add=True)
+
+class Payment(models.Model):
+    user =  models.ForeignKey(User, on_delete=models.PROTECT)
+    orderitem = models.ForeignKey(OrderItem, on_delete=models.PROTECT)
+    course = models.ForeignKey(Courses, on_delete=models.PROTECT)
+    amount = models.IntegerField()
+    date_paid = models.DateTimeField(auto_now_add=True)
+    paid = models.BooleanField(default=False)
