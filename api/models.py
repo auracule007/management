@@ -179,13 +179,15 @@ class CourseManagement(models.Model):
 
 class ContentUpload(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     content = models.FileField(
-        upload_to="content/",
+        upload_to="content/course",
         validators=[
             validate_file_size,
             FileExtensionValidator(
                 allowed_extensions=[
                     "mp4",
+                    "jpeg",
                     "mkv",
                     "webm",
                     "avi",
@@ -211,16 +213,16 @@ class ContentUpload(models.Model):
         return f"content: {self.content_title}"
 
 
-class ContentManagement(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
-    content_uploads = models.ManyToManyField(ContentUpload)
-    is_approved = models.BooleanField(default=False)
-    date_uploaded = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateField(auto_now=True)
+# class ContentManagement(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    
+#     content_uploads = models.ManyToManyField(ContentUpload)
+#     is_approved = models.BooleanField(default=False)
+#     date_uploaded = models.DateTimeField(auto_now_add=True)
+#     date_updated = models.DateField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.course.name}"
+#     def __str__(self):
+#         return f"{self.course.name}"
 
 
 # chat models

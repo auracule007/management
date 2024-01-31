@@ -230,75 +230,70 @@ class ContentUploadSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("User with the given ID does not exist")
 
 
-class GetContentManagementSerializer(serializers.ModelSerializer):
-    # course = serializers.SerializerMethodField()
-    content_uploads = serializers.SerializerMethodField()
-    user = serializers.CharField(source="user.username")
+# class GetContentManagementSerializer(serializers.ModelSerializer):
+#     # course = serializers.SerializerMethodField()
+#     content_uploads = serializers.SerializerMethodField()
+#     user = serializers.CharField(source="user.username")
 
-    class Meta:
-        model = ContentManagement
-        fields = [
-            "id",
-            "user",
-            "course_id",
-            "content_uploads",
-            "date_uploaded",
-            "date_updated",
-        ]
+#     class Meta:
+#         model = ContentManagement
+#         fields = [
+#             "id",
+#             "user",
+#             "course_id",
+#             "content_uploads",
+#             "date_uploaded",
+#             "date_updated",
+#         ]
 
-    def get_content_uploads(self, obj):
-        return obj.content_uploads.values(
-            "id",
-            "user__username",
-            "content",
-            "content_title",
-            "content_description",
-            "date_uploaded",
-            "date_updated",
-        )
+#     def get_content_uploads(self, obj):
+#         return obj.content_uploads.values(
+#             "id",
+#             "user__username",
+#             "content",
+#             "content_title",
+#             "content_description",
+#             "date_uploaded",
+#             "date_updated",
+#         )
 
-    # def get_course(self, obj):
-    #     return obj.course.name
+#     # def get_course(self, obj):
+#     #     return obj.course.name
 
 
-class ContentManagementSerializer(serializers.ModelSerializer):
-    course_id = serializers.IntegerField()
-    content_uploads = ContentUploadSerializer(many=True, required=False)
+# class ContentManagementSerializer(serializers.ModelSerializer):
+#     course_id = serializers.IntegerField()    
+#     class Meta:
+#         model = ContentManagement
+#         fields = ["id", "course_id", "date_uploaded", "date_updated"]
 
-    class Meta:
-        model = ContentManagement
-        fields = ["id", "course_id", "content_uploads", "date_uploaded", "date_updated"]
+#     def validate_course_id(self, value):
+#         if not Courses.objects.filter(id=value).exists():
+#             raise serializers.ValidationError("Course with the given ID does not exist")
+#         return value
 
-    def validate_course_id(self, value):
-        if not Courses.objects.filter(id=value).exists():
-            raise serializers.ValidationError("Course with the given ID does not exist")
-        return value
+#     def create(self, validated_data):
+#         course_id = validated_data["course_id"]
+#         content_management = ContentManagement.objects.create(
+#             course_id=course_id, **validated_data
+#         )
+       
+#         return content_management
 
-    def create(self, validated_data):
-        course_id = validated_data["course_id"]
-        content_uploads = validated_data["content_uploads"]
-        content_management = ContentManagement.objects.create(
-            course_id=course_id, **validated_data
-        )
-        for x in content_uploads:
-            content_uploads = ContentUpload.objects.filter(**x)
-            content_management.content_uploads.set(content_uploads)
-        return content_management
+#     def save(self, **kwargs):
+#         course_id = self.validated_data["course_id"]
+        
 
-    def save(self, **kwargs):
-        course_id = self.validated_data["course_id"]
-        content_uploads = self.validated_data["content_uploads"]
+#         try:
+#             content_management = ContentManagement.objects.create(course_id=course_id)
+#             for x in content_uploads:
+#                 content_uploads, _ = ContentUpload.objects.get_or_create(**x)
+#                 content_management.content_uploads.add(content_uploads)
 
-        try:
-            content_management = ContentManagement.objects.save(course_id=course_id)
-            for x in content_uploads:
-                content_uploads, _ = ContentUpload.objects.get_or_create(**x)
-                content_management.content_uploads.add(content_uploads)
-
-            content_management.save()
-            return content_management
-        except Exception as e:
-            print("Error saving content-management endpoints", e)
+#             content_management.save()
+#             return content_management
+#         except Exception as e:
+#             print("Error saving content-management endpoints", e)
 
 
 # create user

@@ -96,9 +96,7 @@ class ContentUploadViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        queryset = ContentUpload.objects.filter(
-            user_id=self.request.user
-        ).select_related("user")
+        queryset = ContentUpload.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related("user")
         return queryset
 
     def get_serializer_class(self):
@@ -126,25 +124,19 @@ class ContentUploadViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-class ContentManagementViewSet(ModelViewSet):
-    http_method_names = ["get", "post", "delete", "patch", "put"]
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        queryset = (
-            ContentManagement.objects.filter(is_approved=True)
-            .filter(user_id=self.request.user)
-            .prefetch_related("content_uploads")
-        )
-        return queryset
-
-    def get_serializer_class(self):
-        if self.request.method == "GET":
-            return GetContentManagementSerializer
-        return ContentManagementSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(user_id=self.request.user)
+# class ContentManagementViewSet(ModelViewSet):
+#     http_method_names = ["get"]
+#     permission_classes = [permissions.IsAuthenticated]
+#     serializer_class = GetContentManagementSerializer
+#     def get_queryset(self):
+#         queryset = (
+#             ContentManagement.objects.filter(is_approved=True)
+#             .filter(user_id=self.request.user)
+#             .prefetch_related("content_uploads")
+#         )
+#         return queryset
+#     def perform_create(self, serializer):
+#         serializer.save(user_id=self.request.user)
 
 
 # chat viewsets
