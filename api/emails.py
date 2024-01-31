@@ -1,6 +1,7 @@
 from django.conf import settings
-from management.dev import *
 from templated_mail.mail import BaseEmailMessage
+
+from management.dev import *
 
 
 def update_course_email(category, name, description, requirements1):
@@ -13,8 +14,7 @@ def update_course_email(category, name, description, requirements1):
                 "name": name,
             },
         )
-        message.send(['f.owolabi81@gmail.com'])
+        message.send(["f.owolabi81@gmail.com"])
         print("Sent")
     except Exception as e:
         print("Failed", e)
-   

@@ -37,7 +37,6 @@ courses_router.register(
 )
 
 
-
 urlpatterns = [
     path("", include(router.urls)),
     path("", include(courses_router.urls)),

@@ -2,7 +2,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,6 +36,7 @@ INSTALLED_APPS = [
     "performance.apps.PerformanceConfig",
     "useractivity.apps.UseractivityConfig",
     "analytics.apps.AnalyticsConfig",
+    "gamification.apps.GamificationConfig",
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_simplejwt.token_blacklist",
@@ -61,7 +61,7 @@ MIDDLEWARE = [
     # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
     # CUSTOM MIDDLEWARE
-    "api.middleware.CourseViewCountMiddleware"
+    "api.middleware.CourseViewCountMiddleware",
 ]
 
 ROOT_URLCONF = "management.urls"
@@ -170,6 +170,7 @@ DJOSER = {
     "SERIALIZERS": {
         "user_create": "api.serializers.UserCreateSerializer",
         "user": "api.serializers.UserSerializer",
+        "current_user": "api.serializers.UserSerializer",
         "password_reset": "djoser.serializers.SendEmailResetSerializer",
         "password_reset_confirm": "djoser.serializers.PasswordResetConfirmSerializer",
     },

@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import *
 
 
@@ -22,12 +23,11 @@ class QuizQuestionAdmin(admin.ModelAdmin):
 
 class AnswerInlineModel(admin.TabularInline):
     model = Answer
-    fields = ["instructor","answer_text", "is_correct"]
+    fields = ["instructor", "answer_text", "is_correct", "points"]
 
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    
     list_display = ["id", "title", "quiz", "date_updated"]
     inlines = [
         AnswerInlineModel,
@@ -44,3 +44,8 @@ class AnswerAdmin(admin.ModelAdmin):
         "is_correct",
         "question",
     ]
+
+
+admin.site.register(Assignment)
+admin.site.register(AssignmentSubmission)
+admin.site.register(QuizSubmission)

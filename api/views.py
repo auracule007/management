@@ -1,18 +1,19 @@
 from django.db import transaction
 from django.db.models import OuterRef, Q, Subquery
 from django.shortcuts import HttpResponse, render
-from rest_framework import generics, status, filters
+from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet as DjoserUserViewSet
+from rest_framework import filters, generics, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from django_filters.rest_framework import DjangoFilterBackend
 
 from utils.calendars import create_google_calendar_event
+
 from .models import *
 from .permissions import *
 from .serializers import *
-from djoser.views import UserViewSet as DjoserUserViewSet
 
 
 class UserViewSet(ModelViewSet):
@@ -378,17 +379,17 @@ class CourseEventViewset(ModelViewSet):
         course_event.calendar_event_id = event_id
         course_event.save()
 
+
 # course rating
 class CourseRatingViewSet(ModelViewSet):
     serializer_class = GetCourseRatingSerializer
-    queryset = CourseRating.objects.select_related('user','course')
+    queryset = CourseRating.objects.select_related("user", "course")
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
-        if self.request.method == 'GET':
+        if self.request.method == "GET":
             return self.serializer_class
         return CourseRatingSerializer
-        

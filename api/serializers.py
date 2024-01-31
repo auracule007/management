@@ -1,11 +1,15 @@
-from djoser.serializers import (
-    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer,
-)
-from rest_framework.validators import UniqueTogetherValidator
-from djoser.serializers import SendEmailResetSerializer as BaseSendEmailResetSerializer
+from django.db.models import Sum
+from djoser.serializers import \
+    PasswordResetConfirmSerializer as BasePasswordResetConfirmSerializer
+from djoser.serializers import \
+    SendEmailResetSerializer as BaseSendEmailResetSerializer
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
+
+from gamification.models import PointSystem, QuizSubmissionPointSystem
+
 from .emails import *
 from .models import *
 
@@ -20,10 +24,22 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(BaseUserSerializer):
     profile = ProfileSerializer()
+    total_points_earned_for_assignments = serializers.SerializerMethodField()
+    total_points_earned_for_quizzes = serializers.SerializerMethodField()
 
     class Meta(BaseUserSerializer.Meta):
         ref_name = "Profile User"
-        fields = BaseUserSerializer.Meta.fields + ("profile",)
+        fields = BaseUserSerializer.Meta.fields + ("profile", "total_points_earned_for_assignments", "total_points_earned_for_quizzes")
+
+    def get_total_points_earned_for_quizzes(self, obj):
+        total_points = QuizSubmissionPointSystem.objects.filter(user_id=obj.id).aggregate(total_points=Sum('points_earned'))['total_points']
+        return total_points or 0
+
+    def get_total_points_earned_for_assignments(self, obj):
+        total_points = PointSystem.objects.filter(user_id=obj.id).aggregate(
+            total_points=Sum("points_earned")
+        )["total_points"]
+        return total_points or 0
 
 
 class SendEmailResetSerializer(BaseSendEmailResetSerializer):
@@ -439,7 +455,7 @@ class CourseRatingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CourseRating
-        fields = ('id','course_id','value')    
+        fields = ("id", "course_id", "value")
         # validators = [ UniqueTogetherValidator(
         #     queryset=CourseRating.objects.all(),
         #     fields=['user_id', 'course_id'])
@@ -447,13 +463,14 @@ class CourseRatingSerializer(serializers.ModelSerializer):
 
     def validate_course_id(self, value):
         if not Courses.objects.filter(id=value).exists():
-            raise serializers.ValidationError('Course id does not exist')
+            raise serializers.ValidationError("Course id does not exist")
         return value
+
 
 class GetCourseRatingSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     course = serializers.StringRelatedField()
+
     class Meta:
         model = CourseRating
-        fields = '__all__'
-        
+        fields = "__all__"
