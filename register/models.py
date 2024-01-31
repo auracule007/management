@@ -26,6 +26,8 @@ class OrderCourse(models.Models):
     cartcoursesitem = models.ManyToManyField(CartCoursesItem)
     price = models.IntegerField()
     date_added = models.DateTimeField(auto_now_add=True)
+    amount = models.IntegerField()
+    paid = models.BooleanField(default=False)
 
 
 class OrderItem(models.Model):
