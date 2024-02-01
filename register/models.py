@@ -3,25 +3,24 @@ from api.models import *
 # Create your models here.
 
 class CartCourses(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL)
-    course = models.ForeignKey(Courses, on_delete=models.DO_NOTHING)
-    name = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
     day_enrolled = models.DateTimeField(auto_now_add=True)
     is_enrolled = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user.first_name} -- {self.course.name}"
+        return f"{self.user.first_name}"
     
 class CartCoursesItem(models.Model):
-    cartcourses = models.ForeignKey(CartCourses, on_delete=models.DO_NOTHING)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL)
+    cartcourses = models.ForeignKey(CartCourses, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
+    
 
     def __str__(self):
-        return self.shopcart.name
+        return self.cartcourses
     
-class OrderCourse(models.Models):
+class OrderCourse(models.Model):
     courses = models.ForeignKey(Courses, on_delete=models.CASCADE)
     cartcoursesitem = models.ManyToManyField(CartCoursesItem)
     price = models.IntegerField()
@@ -31,7 +30,7 @@ class OrderCourse(models.Models):
 
 
 class OrderItem(models.Model):
-    ordercourse = models.ForeignKey(OrderCourse, on_delete=models.PROTECT)
+    ordercourse = models.ForeignKey(OrderCourse, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
 
 class Payment(models.Model):
