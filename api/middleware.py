@@ -2,14 +2,15 @@ from django.urls import resolve
 
 from .models import CourseViewCount
 
+
 class CourseViewCountMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         view = resolve(request.path_info)
-        if view.url_name == 'courses':
-            course_id = view.kwargs.get('courses_pk')
+        if view.url_name == "courses":
+            course_id = view.kwargs.get("courses_pk")
 
             try:
                 view_count = CourseViewCount.objects.get(course_id=course_id)

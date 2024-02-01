@@ -1,7 +1,9 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import FileExtensionValidator, MinValueValidator,MaxValueValidator
+from django.core.validators import (FileExtensionValidator, MaxValueValidator,
+                                    MinValueValidator)
 from django.db import models
 from django.urls import reverse
+
 from utils.validators import validate_file_size
 
 
@@ -95,10 +97,10 @@ class Courses(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        try:            
-            return reverse('courses', args=[(str(self.courses_pk))])
+        try:
+            return reverse("courses", args=[(str(self.courses_pk))])
         except Exception as e:
-            print('ERROR WHILE GETING ABSOLUTE URL: ', e)
+            print("ERROR WHILE GETING ABSOLUTE URL: ", e)
 
     @property
     def view_counter(self):
@@ -108,20 +110,22 @@ class Courses(models.Model):
                 return view_count.count
             elif view_count.count < 1000000:
                 view_count.count = view_count.count / 1000
-                return f'{view_count.count:.1f}k'
+                return f"{view_count.count:.1f}k"
             else:
                 view_count.count = view_count.count / 1000000
-                return f'{view_count.count:.1f}M'
+                return f"{view_count.count:.1f}M"
         except CourseViewCount.DoesNotExist as e:
-            print('Error while counting views: ', e)
+            print("Error while counting views: ", e)
             return 0
+
 
 class CourseViewCount(models.Model):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f'View count for {self.course.name}'
+        return f"View count for {self.course.name}"
+
 
 class CourseReview(models.Model):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
@@ -136,10 +140,10 @@ class CourseRating(models.Model):
     value = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
 
     def __str__(self):
-        return f'{self.user.username} rating for {self.course.name}'
-    
+        return f"{self.user.username} rating for {self.course.name}"
+
     class Meta:
-        unique_together = ['user', 'course']
+        unique_together = ["user", "course"]
 
 
 class Enrollment(models.Model):
@@ -175,13 +179,15 @@ class CourseManagement(models.Model):
 
 class ContentUpload(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     content = models.FileField(
-        upload_to="content/",
+        upload_to="content/course",
         validators=[
             validate_file_size,
             FileExtensionValidator(
                 allowed_extensions=[
                     "mp4",
+                    "jpeg",
                     "mkv",
                     "webm",
                     "avi",
@@ -194,7 +200,9 @@ class ContentUpload(models.Model):
                     "doc",
                 ]
             ),
-        ], blank=True, null=True
+        ],
+        blank=True,
+        null=True,
     )
     content_title = models.CharField(max_length=250)
     content_description = models.TextField(blank=True, null=True)
@@ -205,16 +213,16 @@ class ContentUpload(models.Model):
         return f"content: {self.content_title}"
 
 
-class ContentManagement(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
-    content_uploads = models.ManyToManyField(ContentUpload)
-    is_approved = models.BooleanField(default=False)
-    date_uploaded = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateField(auto_now=True)
+# class ContentManagement(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    
+#     content_uploads = models.ManyToManyField(ContentUpload)
+#     is_approved = models.BooleanField(default=False)
+#     date_uploaded = models.DateTimeField(auto_now_add=True)
+#     date_updated = models.DateField(auto_now=True)
 
-    def __str__(self):
-        return f"{self.course.name}"
+#     def __str__(self):
+#         return f"{self.course.name}"
 
 
 # chat models

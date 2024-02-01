@@ -35,11 +35,11 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("forum/", include("forum.urls")),
     path("quiz/", include("quiz.urls")),
-    path("lesson/", include('lesson.urls')),
-    path("performance/", include('performance.urls')),
-    path("analytics/", include('analytics.urls')),
-    path("register/", include('register.urls')),
-
+    path("lesson/", include("lesson.urls")),
+    path("performance/", include("performance.urls")),
+    path("analytics/", include("analytics.urls")),
+    path("register/", include("register.urls")),
+    path("gamification/", include("gamification.urls")),
 ]
 
 if settings.DEBUG:

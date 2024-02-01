@@ -1,10 +1,11 @@
-from django.urls import path, include
-from .import views
+from django.urls import include, path
 from rest_framework_nested import routers
 
-router = routers.DefaultRouter()
-router.register('course-progresses', views.CourseUserProgressViewSet, basename='course-progresses')
+from . import views
 
-urlpatterns = [
-  path('', include(router.urls))
-]
+router = routers.DefaultRouter()
+router.register(
+    "course-progresses", views.CourseUserProgressViewSet, basename="course-progresses"
+)
+
+urlpatterns = [path("", include(router.urls))]

@@ -1,6 +1,8 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework_nested import routers
-from .import views
+
+from . import views
+
 router = routers.DefaultRouter()
 router.register("forums", views.ForumQuestionViewSet, basename="forum_question")
 
@@ -12,6 +14,6 @@ forum_router.register(
 
 
 urlpatterns = [
-  path('', include(router.urls)),
-  path("", include(forum_router.urls)),
+    path("", include(router.urls)),
+    path("", include(forum_router.urls)),
 ]

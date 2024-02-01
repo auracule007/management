@@ -30,7 +30,7 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(Student)
 admin.site.register(ContentUpload)
-admin.site.register(ContentManagement)
+# admin.site.register(ContentManagement)
 admin.site.register(Enrollment)
 admin.site.register(Courses)
 admin.site.register(Category)
@@ -46,9 +46,12 @@ admin.site.register(CourseEvent)
 admin.site.register(CourseRating)
 admin.site.register(CourseViewCount)
 
+
 @admin.register(Instructor)
 class InstructorAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user']
+    list_display = ["id", "user"]
+
+
 @admin.register(ChatMessage)
 class ChatMessageAdmin(admin.ModelAdmin):
     list_display = ["sender", "receiver", "message", "is_read"]
