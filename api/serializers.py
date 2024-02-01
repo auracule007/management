@@ -25,12 +25,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(BaseUserSerializer): 
     profile = ProfileSerializer()
-    class Meta(BaseUserSerializer.Meta):
-        ref_name = 'Profile User'
-        fields = BaseUserSerializer.Meta.fields + ("profile",)
-        total_points_earned_for_assignments = serializers.SerializerMethodField()
-        total_points_earned_for_quizzes = serializers.SerializerMethodField()
-
+    total_points_earned_for_assignments = serializers.SerializerMethodField()
+    total_points_earned_for_quizzes = serializers.SerializerMethodField()
     class Meta(BaseUserSerializer.Meta):
         ref_name = "Profile User"
         fields = BaseUserSerializer.Meta.fields + ("profile", "total_points_earned_for_assignments", "total_points_earned_for_quizzes")
