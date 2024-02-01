@@ -1,31 +1,19 @@
 from django.db import transaction
 from django.db.models import OuterRef, Q, Subquery
-<<<<<<< HEAD
-from django.shortcuts import HttpResponse, render, get_object_or_404
-from rest_framework import generics, status, filters
-=======
 from django.shortcuts import HttpResponse, render
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import filters, generics, status
->>>>>>> a138c67e4f4851c1f9b8fe4e7531bc4e7dd5743e
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from utils.calendars import create_google_calendar_event
-<<<<<<< HEAD
-from . models import *
-from . permissions import *
-from . serializers import *
-from djoser.views import UserViewSet as DjoserUserViewSet
-=======
 
 from .models import *
 from .permissions import *
 from .serializers import *
->>>>>>> a138c67e4f4851c1f9b8fe4e7531bc4e7dd5743e
 
 
 class UserViewSet(ModelViewSet):
@@ -385,13 +373,8 @@ class CourseEventViewset(ModelViewSet):
 
 # course rating
 class CourseRatingViewSet(ModelViewSet):
-<<<<<<< HEAD
-    # serializer_class = GetCourseRatingSerializer
-    queryset = CourseRating.objects.select_related('user','course')
-=======
     serializer_class = GetCourseRatingSerializer
     queryset = CourseRating.objects.select_related("user", "course")
->>>>>>> a138c67e4f4851c1f9b8fe4e7531bc4e7dd5743e
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
@@ -400,9 +383,4 @@ class CourseRatingViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return self.serializer_class
-<<<<<<< HEAD
-        # return CourseRatingSerializer
-        
-=======
         return CourseRatingSerializer
->>>>>>> a138c67e4f4851c1f9b8fe4e7531bc4e7dd5743e

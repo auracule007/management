@@ -244,7 +244,7 @@ class ContentUploadSerializer(serializers.ModelSerializer):
             content_title = content_title,
             content_description = content_description
         )
-        send_content_upload_mail(content, content_title, content_description)
+        send_content_upload_mail(content, content_title, content_description, user)
         return content_uploads_mail
 
 

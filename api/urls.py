@@ -10,11 +10,11 @@ router.register("category", views.CategoryViewSet, basename="category")
 router.register("courses", views.CoursesViewSet, basename="courses")
 router.register("create_course", views.CreateCoursesViewSet, basename="create_course")
 router.register("enrollment", views.EnrollmentViewSet, basename="enrollment")
-router.register(
-    "content-managements",
-    views.ContentManagementViewSet,
-    basename="content-managements",
-)
+# router.register(
+#     "content-managements",
+#     views.ContentManagementViewSet,
+#     basename="content-managements",
+# )
 router.register(
     "content-uploads", views.ContentUploadViewSet, basename="content-uploads"
 )
@@ -25,9 +25,9 @@ router.register(
 #     views.ContentManagementViewSet,
 #     basename="content-managements",
 # )
-# router.register(
-#     "content-uploads", views.ContentUploadViewSet, basename="content-uploads"
-# )
+router.register(
+    "content-uploads", views.ContentUploadViewSet, basename="content-uploads"
+)
 router.register("question-bank", views.QuestionBankViewSet, basename="question-bank")
 router.register("question", views.QuestionViewSet, basename="question")
 router.register("admin", views.AdminDashboardViewSet, basename="admin")
