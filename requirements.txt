@@ -13,6 +13,7 @@ defusedxml==0.8.0rc2
 Deprecated==1.2.14
 Django==4.2.9
 django-allauth==0.60.1
+django-cors-headers==4.3.1
 django-decouple==2.1
 django-filter==23.5
 django-mail-templated==2.6.5

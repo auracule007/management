@@ -16,3 +16,6 @@ class CartCoursesItemViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         return CartCoursesItem.objects.select_related("course").filter(course_id=self.kwargs["cartcourses_pk"])
+    
+# class OrderCourseViewSet(viewsets.ModelViewSet):
+    

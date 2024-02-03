@@ -15,7 +15,6 @@ class CartCoursesItem(models.Model):
     cartcourses = models.ForeignKey(CartCourses, on_delete=models.CASCADE)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
-    
 
     def __str__(self):
         return self.cartcourses

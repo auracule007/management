@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "djoser",
     "django_filters",
     "drf_yasg",
+    "corsheaders",
     # pip install django djangorestframework djoser django-fliter drf_yasg django-allauth
     "mail_templated",
     "allauth",
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     # white noise middleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -216,6 +218,12 @@ EMAIL_HOST_PASSWORD = 'c6b7c90c5013d9'
 EMAIL_PORT = 2525
 EMAIL_USE_TSL = True
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "https://dexter9ja.vercel.app/",
+    "http://localhost:3000",
+    "*"
+]
 
 # my development settings configuration
 # try:
