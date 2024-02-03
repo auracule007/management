@@ -2,7 +2,7 @@
 from templated_mail.mail import BaseEmailMessage
 from . models import *
 
-from management.dev import *
+# from management.dev import *
 
 
 def update_course_email(category, name, description, requirements1):

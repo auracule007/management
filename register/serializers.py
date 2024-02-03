@@ -10,7 +10,7 @@ class CoursesSerializer(serializers.ModelSerializer):
         fields = "__all__"
         
 class CartCoursesItemSerializers(serializers.ModelSerializer):
-    course = CoursesSerializer()
+    course = CoursesSerializer(read_only=True)
     class Meta:
         model = CartCoursesItem
         fields = ["cartcourses", "course", "date_added"]
