@@ -19,7 +19,7 @@ SECRET_KEY = "django-insecure-g^(k(ph4lghw3n@e9gw6_7vf)or=sf3h&8ix!&ln_03#7!m3t4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://codedexteracademy.onrender.com/","*"]
+ALLOWED_HOSTS = ["https://codedexteracademy.onrender.com","*"]
 # Application definition
 
 INSTALLED_APPS = [
