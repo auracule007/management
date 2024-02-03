@@ -208,6 +208,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # SSO authentication integration done 
 LOGIN_REDIRECT_URL = "/api/courses"
+SIGNUP_REDIRECT_URL = "/auth/jwt/create"
 # SSO authentication integration done
 
 # mail configuration
