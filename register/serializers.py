@@ -29,16 +29,16 @@
 #             raise serializers.ValidationError("The course you are trying to add is not available")
 #         return value
     
-# class OrderCoursesItemSerializers(serializers.ModelSerializer):
-#     class Meta:
-#         model = OrderItem
-#         fields = ["ordercourse"]
+# # class OrderCoursesItemSerializers(serializers.ModelSerializer):
+# #     class Meta:
+# #         model = OrderItem
+# #         fields = ["ordercourse"]
         
 
-# class OrderCourseSerializer(serializers.ModelSerializer):
-#     orderitems = OrderCoursesItemSerializers(read_only=True)
-#     class Meta:
-#         model = OrderCourse
-#         fields = ["orderitems"]
+# # class OrderCourseSerializer(serializers.ModelSerializer):
+# #     orderitems = OrderCoursesItemSerializers(read_only=True)
+# #     class Meta:
+# #         model = OrderCourse
+# #         fields = ["orderitems"]
 
     
