@@ -26,13 +26,13 @@ urlpatterns = [
     path(
         "swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"
     ),
-    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path("/redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
-    path("auth/", include("djoser.urls")),
-    path("auth/", include("djoser.urls.jwt")),
-    path("auth/", include("djoser.urls.authtoken")),
-    path("accounts/", include("allauth.urls")),
+    path("/auth/", include("djoser.urls")),
+    path("/auth/", include("djoser.urls.jwt")),
+    path("/auth/", include("djoser.urls.authtoken")),
+    path("/accounts/", include("allauth.urls")),
     path("forum/", include("forum.urls")),
     path("quiz/", include("quiz.urls")),
     path("lesson/", include("lesson.urls")),
