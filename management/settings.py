@@ -220,7 +220,7 @@ EMAIL_USE_TSL = True
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
-    "https://dexter9ja.vercel.app/",
+    "https://dexter9ja.vercel.app",
     "http://localhost:3000",
 ]
 
