@@ -222,7 +222,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     "https://dexter9ja.vercel.app/",
     "http://localhost:3000",
-    "*"
 ]
 
 # my development settings configuration
