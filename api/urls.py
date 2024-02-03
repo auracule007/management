@@ -58,6 +58,7 @@ urlpatterns = [
     path("my-messages/<user_id>", views.ChatMessageView.as_view()),
     path("get-messages/<sender_id>/<receiver_id>/", views.GetAllMessagesView.as_view()),
     path("send-message/", views.SendMessageView.as_view()),
+    # path('auth/users/', views.UserCreateView.as_view(), name='user-create'),
     path("search/<username>", views.SearchUserView.as_view()),
     path("grade-submission/", views.GradeSubmissionView.as_view()),
 ]
