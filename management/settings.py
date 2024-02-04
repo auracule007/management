@@ -67,7 +67,7 @@ MIDDLEWARE = [
     # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
     # CUSTOM MIDDLEWARE
-    # "api.middleware.CourseViewCountMiddleware"
+    "api.middleware.CourseViewCountMiddleware"
 ]
 
 ROOT_URLCONF = "management.urls"

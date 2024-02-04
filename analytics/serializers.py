@@ -13,7 +13,7 @@ class CourseAnalyticSerializer(serializers.ModelSerializer):
         fields = ("id", "category", "name")
 
 
-class (serializers.ModelSerializer):
+class CourseRatingSerializer(serializers.ModelSerializer):
     min_rating = serializers.IntegerField()
     max_rating = serializers.IntegerField()
     avg_rating = serializers.IntegerField()
