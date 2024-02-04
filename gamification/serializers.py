@@ -1,9 +1,6 @@
 from django.db.models import Sum
 from rest_framework import serializers
 
-from quiz.models import AssignmentSubmission
-from quiz.serializers import AssignmentSubmissionSerializer
-
 from .models import *
 
 

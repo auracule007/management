@@ -1,0 +1,13 @@
+{% block subject %}
+  New Assignment Submission by {{user.first_name}} {{user.last_name}} 
+{% endblock subject %}
+
+{% block html_body %}
+  <h1>{{title}}</h1>
+  <ul>
+    <li>
+      {{submission_context}}
+    </li>
+    <li>{{date_submitted}}</li>
+  </ul>
+{% endblock html_body %}

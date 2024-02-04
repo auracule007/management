@@ -39,7 +39,8 @@ class Assignment(models.Model):
     date_given = models.DateTimeField()
     date_to_be_submitted = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
-
+    class Meta:
+        ordering = ('date_created',)
     def __str__(self):
         return f"Assignment::{self.assignment_title}"
 
@@ -73,6 +74,8 @@ class AssignmentSubmission(models.Model):
     points = models.PositiveIntegerField(default=0)
     date_submitted = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ('date_submitted',)
     def __str__(self):
         return f"{self.assignment.assignment_title}"
 

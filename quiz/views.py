@@ -1,5 +1,5 @@
-from rest_framework import permissions, viewsets, response, status
-
+from rest_framework import permissions, viewsets, response, status, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from api.models import Instructor, Student
 from django.db import transaction
 from .models import *
@@ -91,9 +91,11 @@ class QuizSubmissionViewSet(viewsets.ModelViewSet):
 class AssignmentViewSet(viewsets.ModelViewSet):
     serializer_class = AssignmentSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ("course__name", "is_ended","date_created")
+    search_fields = ("course__name", "assignment_title", "assignment_description")
     def get_queryset(self):
-        assignment = Assignment.objects.filter(Q(instructor__user=self.request.user) | Q(course__enrollment__student__user=self.request.user)).filter(is_ended=False)
+        assignment = Assignment.objects.filter(Q(instructor__user=self.request.user) | Q(course__enrollment__student__user=self.request.user)).filter(is_ended=False).order_by('date_created')
         return assignment    
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -124,3 +126,20 @@ class AssignmentViewSet(viewsets.ModelViewSet):
         instance.save()
         serializer = AssignmentSerializer(instance)
         return response.Response(serializer.data)
+
+
+class AssignmentSubmissionViewSet(viewsets.ModelViewSet):
+    serializer_class = AssignmentSubmissionSerializer
+    queryset = AssignmentSubmission.objects.all()
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ("is_completed","date_submitted")
+    search_fields = ("submission_context", "assignment__assignment_title")
+    permission_classes = [permissions.IsAuthenticated]
+    def get_serializer_class(self):
+        if self.request.method in ['PUT','PATCH']:
+            return UpdateAssignmentSubmissionSerializer
+        return self.serializer_class
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user).select_related('assignment', 'user').order_by('date_submitted')
