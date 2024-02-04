@@ -4,7 +4,7 @@ from api.models import Instructor, Student
 from django.db import transaction
 from .models import *
 from .serializers import *
-
+from django.db.models import Q
 
 class QuestionCategoryViewset(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete", "put"]
@@ -87,3 +87,40 @@ class QuizSubmissionViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+
+class AssignmentViewSet(viewsets.ModelViewSet):
+    serializer_class = AssignmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        assignment = Assignment.objects.filter(Q(instructor__user=self.request.user) | Q(course__enrollment__student__user=self.request.user)).filter(is_ended=False)
+        return assignment    
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instructor_id = request.data.get("instructor_id", None)
+        course_id = request.data.get("course_id", None)
+        assignment_title = request.data.get("assignment_title", None)
+        assignment_description = request.data.get("assignment_description", None)
+        assignment_doc = request.data.get("assignment_doc", None)
+        date_given = request.data.get("date_given", None)
+        date_to_be_submitted = request.data.get("date_to_be_submitted", None)
+        is_ended = request.data.get("is_ended", None)
+        if assignment_description:
+            setattr(instance, "assignment_description", assignment_description)
+        if assignment_doc:
+            setattr(instance, "assignment_doc", assignment_doc)
+        if date_given:
+            setattr(instance, "date_given", date_given)
+        if date_to_be_submitted:
+            setattr(instance, "date_to_be_submitted", date_to_be_submitted)
+        if is_ended:
+            setattr(instance, "is_ended", is_ended)
+        if instructor_id:
+            setattr(instance, "instructor_id", instructor_id)
+        if course_id:
+            setattr(instance, "course_id", course_id)
+        if assignment_title:
+            setattr(instance, "assignment_title", assignment_title)
+        instance.save()
+        serializer = AssignmentSerializer(instance)
+        return response.Response(serializer.data)

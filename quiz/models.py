@@ -35,6 +35,7 @@ class Assignment(models.Model):
         blank=True,
         null=True,
     )
+    is_ended = models.BooleanField(default=False)
     date_given = models.DateTimeField()
     date_to_be_submitted = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
