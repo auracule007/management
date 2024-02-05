@@ -56,7 +56,7 @@ class PasswordResetConfirmSerializer(BasePasswordResetConfirmSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name", "description"]
+        fields = ["id", "name", "description", "category_img"]
 
 
 class InstructorSerializer(serializers.ModelSerializer):
@@ -74,6 +74,7 @@ class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     instructor = InstructorSerializer()
     total_enrolled_student = serializers.SerializerMethodField()
+    total_content = serializers.SerializerMethodField()
 
     class Meta:
         model = Courses
@@ -81,6 +82,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "id",
             "category",
             "instructor",
+            "course_img",
             "name",
             "description",
             "requirements1",
@@ -93,10 +95,14 @@ class CourseSerializer(serializers.ModelSerializer):
             "updated",
             "view_counter",
             "total_enrolled_student",
+            "total_content",
         ]
 
     def get_total_enrolled_student(self, student: Courses):
         return student.enrollment_set.count()
+    
+    def get_total_content(self, student: Courses):
+        return student.contentupload_set.count()
 
 
 

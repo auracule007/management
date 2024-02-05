@@ -38,8 +38,10 @@ class OrderCourseItemSerializer(serializers.ModelSerializer):
         model = OrderCourseItem
         fields = ["ordercourse", "course", "date_added"]
 
-
-
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ["user", "orderitem", "date_paid", "paid"]
 
 
 

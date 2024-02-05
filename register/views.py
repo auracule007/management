@@ -15,7 +15,9 @@ class OrderCourseItemViewSet(viewsets.ModelViewSet):
     serializer_class = OrderCourseItemSerializer
     
     def get_queryset(self):
-        return OrderCourseItem.objects.filter(user_id= self.user.id).all()
+        return OrderCourseItem.objects.all()
+    
+    
 
 # class CartCoursesItemViewSet(viewsets.ModelViewSet):
 #     http_method_names = ["get", "post","patch", "delete"]

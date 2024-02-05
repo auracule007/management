@@ -27,7 +27,7 @@ class Payment(models.Model):
     amount = models.IntegerField()
     date_paid = models.DateTimeField(auto_now_add=True)
     paid = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.user.username 
 

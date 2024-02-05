@@ -72,14 +72,14 @@ class Profile(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    # category_img = models.FileField(
-    #     upload_to="category",
-    #     default="category.jpg",
-    #     validators=[
-    #         validate_file_size,
-    #         FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
-    #     ], null=True, blank=True
-    # )
+    category_img = models.FileField(
+        upload_to="category",
+        default="category.jpg",
+        validators=[
+            validate_file_size,
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
+        ], null=True, blank=True
+    )
 
     def __str__(self):
         return self.name
@@ -91,14 +91,14 @@ class Courses(models.Model):
         Instructor, on_delete=models.CASCADE, null=True, blank=True
     )
     name = models.CharField(max_length=255)
-    # course_img = models.FileField(
-    #     upload_to="course",
-    #     default="course.jpg",
-    #     validators=[
-    #         validate_file_size,
-    #         FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
-    #     ], null=True, blank=True
-    # )
+    course_img = models.FileField(
+        upload_to="course",
+        default="course.jpg",
+        validators=[
+            validate_file_size,
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
+        ], null=True, blank=True
+    )
     description = models.TextField()
     requirements1 = models.CharField(max_length=255, null= True, blank=True)
     requirements2 = models.CharField(max_length=255, null= True, blank=True)
