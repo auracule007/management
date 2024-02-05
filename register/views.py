@@ -5,10 +5,17 @@ from . serializers import *
 
 # Create your views here.
 
-# class CartCoursesViewSet(viewsets.ModelViewSet):
-#     http_method_names = ["get", "post"]
-#     queryset = CartCourses.objects.all().prefetch_related("cartcoursesitem_set__course")
-#     serializer_class = CartCoursesSerializer
+class OrderCourseViewSet(viewsets.ModelViewSet):
+    http_method_names = ["get", "post"]
+    queryset = OrderCourse.objects.all().prefetch_related("ordercourseitem_set__course")
+    serializer_class = OrderCourseSerializer
+
+class OrderCourseItemViewSet(viewsets.ModelViewSet):
+    http_method_names = ["get"]
+    serializer_class = OrderCourseItemSerializer
+    
+    def get_queryset(self):
+        return OrderCourseItem.objects.filter(user_id= self.user.id).all()
 
 # class CartCoursesItemViewSet(viewsets.ModelViewSet):
 #     http_method_names = ["get", "post","patch", "delete"]
@@ -19,3 +26,4 @@ from . serializers import *
     
 # class OrderCourseViewSet(viewsets.ModelViewSet):
     
+    # queryset = OrderCourse.objects.all().prefetch_related("ordercoursesitem_set__course")

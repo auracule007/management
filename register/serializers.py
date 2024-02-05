@@ -1,44 +1,46 @@
-# from rest_framework import serializers
-# from . models import *
-# from api.models import Courses
-# from rest_framework.validators import ValidationError
-
+from rest_framework import serializers
+from . models import *
+from api.models import Courses
+from rest_framework.validators import ValidationError
+from decimal import Decimal
     
-# class CoursesSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Courses
-#         fields = "__all__"
+class CoursesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Courses
+        fields = "__all__"
         
-# class CartCoursesItemSerializers(serializers.ModelSerializer):
-#     course = CoursesSerializer(read_only=True)
-#     class Meta:
-#         model = CartCoursesItem
-#         fields = ["cartcourses", "course", "date_added"]
+class OrderCourseSerializer(serializers.ModelSerializer):
+    course = CoursesSerializer(read_only=True)
+    subtotal = serializers.SerializerMethodField()
+    vat = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
 
-# class CartCoursesSerializer(serializers.ModelSerializer):
-#     cartcourses = serializers.SerializerMethodField()
-#     class Meta:
-#         model = CartCourses
-#         fields = ["user", "cartcourses"]    
-
-#     def get_cartcourses(self, obj: CartCoursesItem):
-#         return obj.cartcoursesitem_set.values("course", "date_added")
-
-#     def validate_course_id(self, value):
-#         if not Courses.objects.filter(course_id=value).exists():
-#             raise serializers.ValidationError("The course you are trying to add is not available")
-#         return value
+    class Meta:
+        model= OrderCourse
+        fields= [ "id","user" ,"course", "paid", "subtotal", "vat", "total"]
     
-# # class OrderCoursesItemSerializers(serializers.ModelSerializer):
-# #     class Meta:
-# #         model = OrderItem
-# #         fields = ["ordercourse"]
-        
+    def get_subtotal(self, course: OrderCourse):
+        return sum([course.course.price])
+    
+    def get_vat(self, vat: OrderCourse):
+        return vat.course.price * Decimal(0.07)
+    
+    def get_total(self, order_course: OrderCourse):
+        subtotal = sum([order_course.course.price])
+        vat = order_course.course.price * Decimal(0.07)
+        total = subtotal + vat
+        return total
+    
 
-# # class OrderCourseSerializer(serializers.ModelSerializer):
-# #     orderitems = OrderCoursesItemSerializers(read_only=True)
-# #     class Meta:
-# #         model = OrderCourse
-# #         fields = ["orderitems"]
+class OrderCourseItemSerializer(serializers.ModelSerializer):
+    ordercourse = OrderCourseSerializer(read_only=True)
+    class Meta:
+        model = OrderCourseItem
+        fields = ["ordercourse", "course", "date_added"]
+
+
+
+
+
 
     

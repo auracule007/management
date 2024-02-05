@@ -72,6 +72,14 @@ class Profile(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+    # category_img = models.FileField(
+    #     upload_to="category",
+    #     default="category.jpg",
+    #     validators=[
+    #         validate_file_size,
+    #         FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
+    #     ], null=True, blank=True
+    # )
 
     def __str__(self):
         return self.name
@@ -83,12 +91,20 @@ class Courses(models.Model):
         Instructor, on_delete=models.CASCADE, null=True, blank=True
     )
     name = models.CharField(max_length=255)
+    # course_img = models.FileField(
+    #     upload_to="course",
+    #     default="course.jpg",
+    #     validators=[
+    #         validate_file_size,
+    #         FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
+    #     ], null=True, blank=True
+    # )
     description = models.TextField()
-    requirements1 = models.CharField(max_length=255)
-    requirements2 = models.CharField(max_length=255)
-    requirements3 = models.CharField(max_length=255)
-    requirements4 = models.CharField(max_length=255)
-    requirements5 = models.CharField(max_length=255)
+    requirements1 = models.CharField(max_length=255, null= True, blank=True)
+    requirements2 = models.CharField(max_length=255, null= True, blank=True)
+    requirements3 = models.CharField(max_length=255, null= True, blank=True)
+    requirements4 = models.CharField(max_length=255, null= True, blank=True)
+    requirements5 = models.CharField(max_length=255, null= True, blank=True)
     price = models.IntegerField()
     uploaded = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
