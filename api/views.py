@@ -34,12 +34,15 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all().order_by("name")
     serializer_class = CategorySerializer
 
+class ContactViewSet(ModelViewSet):
+    queryset = Contact.objects.all().order_by("name")
+    serializer_class = ContactSerializer
 
 # Courses viewset
 class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ["category__name", "name"]
+    search_fields = ["category__name", "name", "instructor", "price"]
 
     def get_permissions(self):
         if self.request.method in ["POST", "PATCH", "PUT", "DELETE"]:

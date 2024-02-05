@@ -104,6 +104,10 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_total_content(self, student: Courses):
         return student.contentupload_set.count()
 
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact 
+        fields = ["name", "email", "subject", "message", "date_added"]
 
 
 # Course serializers
