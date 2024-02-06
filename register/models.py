@@ -23,7 +23,7 @@ class OrderCourseItem(models.Model):
     
 class Payment(models.Model):
     user =  models.ForeignKey(User, on_delete=models.PROTECT)
-    orderitem = models.ForeignKey(OrderCourseItem, on_delete=models.PROTECT)
+    ordercourse = models.ForeignKey(OrderCourse, on_delete=models.PROTECT, null=True, blank=True)
     amount = models.IntegerField()
     date_paid = models.DateTimeField(auto_now_add=True)
     paid = models.BooleanField(default=False)

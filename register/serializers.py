@@ -46,17 +46,18 @@ class OrderCourseSerializer(serializers.ModelSerializer):
         return total
     
 
+
+class PaymentSerializer(serializers.ModelSerializer):
+    total = serializers.SerializerMethodField(source="ordercourse_set__total")
+    class Meta:
+        model = Payment
+        fields = ["user", "ordercourse", "date_paid", "paid", "total"]
+
+
+
+    
 # class OrderCourseItemSerializer(serializers.ModelSerializer):
 #     ordercourse = OrderCourseSerializer(read_only=True)
 #     class Meta:
 #         model = OrderCourseItem
 #         fields = ["ordercourse", "course", "date_added"]
-
-class PaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payment
-        fields = ["user", "orderitem", "date_paid", "paid"]
-
-
-
-    

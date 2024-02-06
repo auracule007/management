@@ -94,9 +94,11 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_fields = ("course__name", "is_ended","date_created")
     search_fields = ("course__name", "assignment_title", "assignment_description")
+
     def get_queryset(self):
         assignment = Assignment.objects.filter(Q(instructor__user=self.request.user) | Q(course__enrollment__student__user=self.request.user)).filter(is_ended=False).order_by('date_created')
         return assignment    
+    
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         instructor_id = request.data.get("instructor_id", None)
@@ -107,6 +109,7 @@ class AssignmentViewSet(viewsets.ModelViewSet):
         date_given = request.data.get("date_given", None)
         date_to_be_submitted = request.data.get("date_to_be_submitted", None)
         is_ended = request.data.get("is_ended", None)
+        
         if assignment_description:
             setattr(instance, "assignment_description", assignment_description)
         if assignment_doc:

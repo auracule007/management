@@ -38,6 +38,7 @@ class ContactViewSet(ModelViewSet):
     http_method_names = ["get", "post"]
     queryset = Contact.objects.all().order_by("name")
     serializer_class = ContactSerializer
+    permission_classes = [permissions.AllowAny()]
 
 # Courses viewset
 class CoursesViewSet(ModelViewSet):
