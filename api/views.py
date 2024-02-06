@@ -42,7 +42,7 @@ class ContactViewSet(ModelViewSet):
 class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ["category__name", "name", "instructor", "price"]
+    search_fields = ["name", "instructor", "price"]
 
     def get_permissions(self):
         if self.request.method in ["POST", "PATCH", "PUT", "DELETE"]:

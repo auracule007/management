@@ -114,7 +114,7 @@ class Courses(models.Model):
 
     def get_absolute_url(self):
         try:
-            return reverse("courses", args=[(str(self.courses_pk))])
+            return reverse("courses-detail", args=[self.pk])
         except Exception as e:
             print("ERROR WHILE GETING ABSOLUTE URL: ", e)
 
@@ -130,7 +130,7 @@ class Courses(models.Model):
             else:
                 view_count.count = view_count.count / 1000000
                 return f"{view_count.count:.1f}M"
-        except CourseViewCount.DoesNotExist as e:
+        except Exception as e:
             print("Error while counting views: ", e)
             return 0
 
