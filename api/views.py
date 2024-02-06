@@ -15,6 +15,7 @@ from . permissions import *
 from . serializers import *
 from djoser.views import UserViewSet as DjoserUserViewSet
 from analytics.serializers import CourseRatingSerializer
+from . pagination import *
 
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
@@ -45,6 +46,7 @@ class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name", "instructor", "price"]
+    pagination_class = PageNumberPagination
 
     def get_permissions(self):
         if self.request.method in ["POST", "PATCH", "PUT", "DELETE"]:
