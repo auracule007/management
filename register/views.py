@@ -9,13 +9,20 @@ class OrderCourseViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post"]
     queryset = OrderCourse.objects.all().prefetch_related("ordercourseitem_set__course")
     serializer_class = OrderCourseSerializer
+    permission_classes =[permissions.IsAuthenticatedOrReadOnly]
+    def get_serializer_class(self):
+        if self.request.method =='GET':
+            return self.serializer_class
+        return CreateOrderCourseSerializer
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-class OrderCourseItemViewSet(viewsets.ModelViewSet):
-    http_method_names = ["get"]
-    serializer_class = OrderCourseItemSerializer
+# class OrderCourseItemViewSet(viewsets.ModelViewSet):
+#     http_method_names = ["get"]
+#     serializer_class = OrderCourseItemSerializer
     
-    def get_queryset(self):
-        return OrderCourseItem.objects.all()
+#     def get_queryset(self):
+#         return OrderCourseItem.objects.all()
     
 # from utils.paypal import make_paypal_payment, verify_paypal_payment
 

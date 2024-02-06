@@ -10,11 +10,11 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from utils.calendars import create_google_calendar_event
-
-from .models import *
-from .permissions import *
-from .serializers import *
-
+from . models import *
+from . permissions import *
+from . serializers import *
+from djoser.views import UserViewSet as DjoserUserViewSet
+from analytics.serializers import CourseRatingSerializer
 
 class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
@@ -43,7 +43,7 @@ class ContactViewSet(ModelViewSet):
 class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ["category__name", "name", "instructor", "price"]
+    search_fields = ["name", "instructor", "price"]
 
     def get_permissions(self):
         if self.request.method in ["POST", "PATCH", "PUT", "DELETE"]:
@@ -378,7 +378,7 @@ class CourseEventViewset(ModelViewSet):
 # course rating
 class CourseRatingViewSet(ModelViewSet):
     serializer_class = GetCourseRatingSerializer
-    queryset = CourseRating.objects.select_related("user", "course")
+    queryset = CourseRating.objects.select_related('user','course')
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):

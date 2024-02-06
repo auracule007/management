@@ -9,8 +9,8 @@ class CourseViewCountMiddleware:
 
     def __call__(self, request):
         view = resolve(request.path_info)
-        if view.url_name == "courses":
-            course_id = view.kwargs.get("courses_pk")
+        if view.url_name == "courses-detail":
+            course_id = view.kwargs.get("pk")
 
             try:
                 view_count = CourseViewCount.objects.get(course_id=course_id)

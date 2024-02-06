@@ -6,7 +6,7 @@ from rest_framework_nested import routers
 from . import views
 
 router = routers.DefaultRouter()
-router.register("category", views.CategoryViewSet, basename="category")
+router.register("categories", views.CategoryViewSet, basename="categories")
 router.register("courses", views.CoursesViewSet, basename="courses")
 router.register("contact", views.ContactViewSet, basename="contact")
 router.register("create_course", views.CreateCoursesViewSet, basename="create_course")
@@ -16,9 +16,7 @@ router.register("enrollment", views.EnrollmentViewSet, basename="enrollment")
 #     views.ContentManagementViewSet,
 #     basename="content-managements",
 # )
-router.register(
-    "content-uploads", views.ContentUploadViewSet, basename="content-uploads"
-)
+
 # router.register("question-bank", views.QuestionBankViewSet, basename="question-bank")
 # router.register("question", views.QuestionViewSet, basename="question")
 # router.register(

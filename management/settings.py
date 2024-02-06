@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
+    "django.middleware.security.SecurityMiddleware",    
     # white noise middleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -63,11 +63,10 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # Add the account middleware:
-    "allauth.account.middleware.AccountMiddleware",
-    # CUSTOM MIDDLEWARE
-    "api.middleware.CourseViewCountMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware", 
+    "allauth.account.middleware.AccountMiddleware",# account 
+    "api.middleware.CourseViewCountMiddleware" # CUSTOM MIDDLEWARE
+    
 ]
 
 ROOT_URLCONF = "management.urls"

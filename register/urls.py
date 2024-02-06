@@ -7,11 +7,11 @@ from . import views
 router = routers.DefaultRouter()
 
 router.register("ordercourse", views.OrderCourseViewSet, basename="ordercourse")
-order_router = routers.NestedDefaultRouter(router,"ordercourse", lookup="ordercourse")
-order_router.register("ordercourseitem", views.OrderCourseItemViewSet, basename="ordercourse-ordercourseitem")
+# order_router = routers.NestedDefaultRouter(router,"ordercourse", lookup="ordercourse")
+# order_router.register("ordercourseitem", views.OrderCourseItemViewSet, basename="ordercourse-ordercourseitem")
 
 
 urlpatterns = [
     path("",include(router.urls)),
-    path("", include(order_router.urls))  
+    # path("", include(order_router.urls))  
 ]

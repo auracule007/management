@@ -244,6 +244,7 @@ class ContentUploadSerializer(serializers.ModelSerializer):
         content = self.validated_data["content"]
         content_title = self.validated_data["content_title"]
         content_description = self.validated_data["content_description"]
+        date_uploaded= self.validated_data["date_uploaded"]
         content_uploads_mail = ContentUpload.objects.create(
             user = user,
             content = content,
