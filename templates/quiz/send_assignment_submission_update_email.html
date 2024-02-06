@@ -1,0 +1,14 @@
+{% block subject %}
+  New Assignment Submission Updates
+{% endblock subject %}
+
+{% block html_body %}
+  <h1>{{title}}</h1>
+  <ul>
+    <li>
+      Hello {{user.first_name}} {{user.last_name}},
+    </li>
+    <li>We have update your assignment submission to this status: {{is_completed}}</li>
+    <li> Here is your points for the assignments: {{points}} </li>
+  </ul>
+{% endblock html_body %}

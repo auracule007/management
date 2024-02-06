@@ -3,6 +3,7 @@ from django.core.validators import (FileExtensionValidator, MaxValueValidator,
                                     MinValueValidator)
 from django.db import models
 from django.urls import reverse
+from utils.choices import SCALE
 
 from utils.validators import validate_file_size
 
@@ -105,6 +106,12 @@ class Courses(models.Model):
     requirements3 = models.CharField(max_length=255, null= True, blank=True)
     requirements4 = models.CharField(max_length=255, null= True, blank=True)
     requirements5 = models.CharField(max_length=255, null= True, blank=True)
+    difficulty = models.CharField(
+        choices=SCALE,
+        default="Fundamental",
+        verbose_name=("Difficulty"),
+        max_length=100,
+    )
     price = models.IntegerField()
     uploaded = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
