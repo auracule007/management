@@ -28,3 +28,18 @@ class QuizSubmissionPointSystem(models.Model):
 
     def __str__(self):
         return f"QuizPoints - {self.points_earned} for {self.user.username}"
+
+
+class Badge(models.Model):
+    name = models.CharField(max_length=100)    
+    def __str__(self):
+        return self.name    
+    
+class BadgeAward(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    badge = models.ForeignKey(Badge, on_delete=models.CASCADE)
+    date_awarded = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.first_name}::{self.badge.name}'
+    
