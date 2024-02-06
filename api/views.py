@@ -35,6 +35,7 @@ class CategoryViewSet(ModelViewSet):
     serializer_class = CategorySerializer
 
 class ContactViewSet(ModelViewSet):
+    http_method_names = ["get", "post"]
     queryset = Contact.objects.all().order_by("name")
     serializer_class = ContactSerializer
 
