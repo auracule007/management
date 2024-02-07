@@ -29,7 +29,8 @@ class UserSerializer(BaseUserSerializer):
     total_points_earned_for_quizzes = serializers.SerializerMethodField()
     class Meta(BaseUserSerializer.Meta):
         ref_name = "Profile User"
-        fields = BaseUserSerializer.Meta.fields + ("profile", "total_points_earned_for_assignments", "total_points_earned_for_quizzes")
+        fields = ("id", "user_type", "first_name", "last_name", "email" ,"profile_img", "phone") + ("profile", "total_points_earned_for_assignments", "total_points_earned_for_quizzes")
+        # fields = BaseUserSerializer.Meta.fields + ("profile", "total_points_earned_for_assignments", "total_points_earned_for_quizzes")
 
     def get_total_points_earned_for_quizzes(self, obj):
         total_points = QuizSubmissionPointSystem.objects.filter(user_id=obj.id).aggregate(total_points=Sum('points_earned'))['total_points']
