@@ -42,11 +42,9 @@ class UserSerializer(BaseUserSerializer):
         )["total_points"]
         return total_points or 0
 
-
 class SendEmailResetSerializer(BaseSendEmailResetSerializer):
     class Meta(BaseSendEmailResetSerializer):
         fields = ("email",)
-
 
 class PasswordResetConfirmSerializer(BasePasswordResetConfirmSerializer):
     class Meta(BasePasswordResetConfirmSerializer):
