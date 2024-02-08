@@ -8,11 +8,44 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 from  api.emails import update_course_email, send_content_upload_mail
 from rest_framework.validators import UniqueTogetherValidator
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from gamification.models import PointSystem, QuizSubmissionPointSystem
 
 from .emails import *
 from .models import *
+
+
+class BaseTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        return token
+
+class UserTokenObtainPairSerializer(BaseTokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        data["id"] = self.user.id
+        data["username"] = self.user.username
+        data["first_name"] = self.user.first_name
+        data["last_name"] = self.user.last_name
+        data["email"] = self.user.email
+        data['user_type'] = self.user.user_type
+        data["is_active"] = self.user.is_active
+        data["is_superuser"] = self.user.is_superuser
+        data["is_staff"] = self.user.is_staff
+        try:
+            if self.user.user_type =='Student':
+                data['student_id'] = self.user.student.id
+            elif self.user.user_type == 'Instructor':
+                data['instructor_id'] = self.user.instructor.id
+            else:
+                data['type'] = 'No user type'
+
+        except Exception as err:
+            raise serializers.ValidationError(err)
+        return data
 
 
 # users profile
