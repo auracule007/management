@@ -112,7 +112,8 @@ class Courses(models.Model):
         verbose_name=("Difficulty"),
         max_length=100,
     )
-    price = models.IntegerField()
+    # price = models.IntegerField()
+    price = models.FloatField(default=100.00)
     uploaded = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 

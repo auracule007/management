@@ -19,7 +19,7 @@ SECRET_KEY = "django-insecure-g^(k(ph4lghw3n@e9gw6_7vf)or=sf3h&8ix!&ln_03#7!m3t4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://codedexteracademy.onrender.com","*"]
+ALLOWED_HOSTS = ["https://codedexteracademy.onrender.com", "*"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",    
+    "django.middleware.security.SecurityMiddleware",
     # white noise middleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -63,10 +63,9 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware", 
-    "allauth.account.middleware.AccountMiddleware",# account 
-    "api.middleware.CourseViewCountMiddleware" # CUSTOM MIDDLEWARE
-    
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",  # account
+    "api.middleware.CourseViewCountMiddleware",  # CUSTOM MIDDLEWARE
 ]
 
 ROOT_URLCONF = "management.urls"
@@ -205,20 +204,20 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # LOGIN_REDIRECT_URL = "/"
 
-# SSO authentication integration done 
+# SSO authentication integration done
 LOGIN_REDIRECT_URL = "/api/courses"
 SIGNUP_REDIRECT_URL = "/auth/jwt/create"
 # SSO authentication integration done
 
 # mail configuration
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '2f9852130e042b'
-EMAIL_HOST_PASSWORD = 'c6b7c90c5013d9'
+EMAIL_HOST = "sandbox.smtp.mailtrap.io"
+EMAIL_HOST_USER = "2f9852130e042b"
+EMAIL_HOST_PASSWORD = "c6b7c90c5013d9"
 EMAIL_PORT = 2525
 EMAIL_USE_TSL = True
 
-APPEND_SLASH=False 
+APPEND_SLASH = False
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     "https://dexter9ja.vercel.app",
@@ -256,3 +255,13 @@ LOGGING = {
         }
     },
 }
+
+
+FLUTTER_SECRET_KEY = "FLWSECK_TEST-4da185ba68c5d7c18a077c8947a0337f-X"
+PAYPAL_CLIENT_ID = (
+    "AVK36Ec0lK_7ZGorHP2CIwxaXEKXb33-ZM4K1GCISucsQG6W1RBTCVMSLh9Tzy9nlVNd2V9KXj9evIr1"
+)
+PAYPAL_SECRET = (
+    "AVK36Ec0lK_7ZGorHP2CIwxaXEKXb33-ZM4K1GCISucsQG6W1RBTCVMSLh9Tzy9nlVNd2V9KXj9evIr1"
+)
+PAYPAL_BASE_URL = "https://sandbox.paypal.com"

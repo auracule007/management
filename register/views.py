@@ -1,20 +1,24 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 from . models import *
 from . serializers import *
-from utils.paypal import make_paypal_payment, verify_paypal_payment
-# Create your views here.
+from utils.paypal import make_paypal_payment, verify_paypal_payment,initate_pay
+from utils.flutter import initiate_payment
+
 
 class OrderCourseViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post"]
     serializer_class = OrderCourseSerializer
-    permission_classes =[permissions.IsAuthenticatedOrReadOnly]
-
+    def get_permissions(self):
+        if self.request.method in ['PATCH','DELETE']:
+            return [permissions.IsAdminUser()]
+        return [permissions.IsAuthenticatedOrReadOnly()]
     def get_queryset(self):
-        user_id = self.request.user.id  # Assuming you want to filter by the current user
+        user_id = self.request.user.id 
         return OrderCourse.objects.filter(user_id=user_id).prefetch_related("course")
 
     def get_serializer_class(self):
@@ -24,7 +28,32 @@ class OrderCourseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-
+    @action(detail=True, methods=['POST'])
+    def payment(self, request, pk):
+        order = self.get_object()
+        amount = order.course.price
+        # email = request.user.email
+        # user_id = request.user.id
+        # first_name = request.user.first_name
+        # last_name = request.user.last_name
+        # phone = request.user.phone
+        order_id = str(order.pk)
+        return initate_pay(amount, order_id)
+    
+    @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
+    def confirm_payment(self, request):
+        order_id = request.GET.get("order_id")
+        order =get_object_or_404(OrderCourse, id=order_id) 
+        order.pending_status = "C"
+        order.save()
+        serializer = CreateOrderCourseSerializer(order)
+        
+        data = {
+            "message": "payment was successful",
+            "data": serializer.data
+        }
+        return Response(data)
+    
 class PaymentCreateView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
 

@@ -32,7 +32,7 @@ admin.site.register(Student)
 admin.site.register(ContentUpload)
 # admin.site.register(ContentManagement)
 admin.site.register(Enrollment)
-admin.site.register(Courses)
+# admin.site.register(Courses)
 admin.site.register(Category)
 admin.site.register(Profile)
 admin.site.register(QuestionBank)
@@ -46,6 +46,9 @@ admin.site.register(CourseEvent)
 admin.site.register(CourseRating)
 admin.site.register(CourseViewCount)
 
+@admin.register(Courses)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
 
 @admin.register(Instructor)
 class InstructorAdmin(admin.ModelAdmin):

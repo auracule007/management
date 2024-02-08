@@ -4,9 +4,20 @@ from api.models import *
 
 
 class OrderCourse(models.Model):
+    PAYMENT_STATUS_PENDING = 'P'
+    PAYMENT_STATUS_COMPLETE = 'C'
+    PAYMENT_STATUS_FAILED = 'F'
+    
+    PAYMENT_STATUS_CHOICES = [
+        (PAYMENT_STATUS_PENDING, 'Pending'),
+        (PAYMENT_STATUS_COMPLETE, 'Complete'),
+        (PAYMENT_STATUS_FAILED, 'Failed'),
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
-    paid = models.BooleanField(default=False)
+    # paid = models.BooleanField(default=False)
+    pending_status = models.CharField(
+        max_length=50, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
     day_enrolled = models.DateTimeField(auto_now_add=True)
     is_enrolled = models.BooleanField(default=False)
 
