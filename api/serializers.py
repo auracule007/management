@@ -174,6 +174,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         category = self.validated_data["category"]
         name = self.validated_data["name"]
+        course_img = self.validated_data["course_img"]
         description = self.validated_data["description"]
         requirements1 = self.validated_data["requirements1"]
         requirements2 = self.validated_data["requirements2"]
@@ -185,6 +186,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             category=category,
             name=name,
             description=description,
+            course_img=course_img,
             requirements1=requirements1,
             requirements2=requirements2,
             requirements3=requirements3,
