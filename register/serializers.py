@@ -4,6 +4,7 @@ from api.models import Courses, User
 from rest_framework.validators import ValidationError
 from decimal import Decimal
 from utils.validators import validate_id
+
 class CoursesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
@@ -16,6 +17,7 @@ class CreateOrderCourseSerializer(serializers.ModelSerializer):
         ref_name ='CREATE_ORDER'
         model = OrderCourse
         fields = ['id','course_id','pending_status']
+
     def validate_course_id(self, value):
         return validate_id( Courses, value)
     
@@ -30,6 +32,7 @@ class OrderCourseSerializer(serializers.ModelSerializer):
         model= OrderCourse
         fields= [ "id","user" ,"course", "pending_status"]
         read_only_fields = ['user']
+        
     # def validate_user_id(self, value):
     #     return validate_id( User, value)
     
@@ -45,7 +48,6 @@ class OrderCourseSerializer(serializers.ModelSerializer):
     #     total = subtotal + vat
     #     return total
     
-
 
 class PaymentSerializer(serializers.ModelSerializer):
     total = serializers.SerializerMethodField(source="ordercourse_set__total")

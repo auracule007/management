@@ -31,7 +31,7 @@ def initate_pay(amount, order_id):
     }
 
     try:
-        response = requests.post(url,headers=headers,        json=order_data)
+        response = requests.post(url,headers=headers, json=order_data)
         response_data = response.json()
         return Response(response_data)
 

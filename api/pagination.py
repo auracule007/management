@@ -6,3 +6,6 @@ class DefaultPagination(PageNumberPagination):
 
 class CoursesPagination(PageNumberPagination):
     page_size = 5
+
+class CategoryPagination(PageNumberPagination):
+    page_size = 5

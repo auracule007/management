@@ -34,6 +34,7 @@ class UserViewSet(ModelViewSet):
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all().order_by("name")
     serializer_class = CategorySerializer
+    pagination_class = CategoryPagination
 
 class ContactViewSet(ModelViewSet):
     http_method_names = ["get", "post"]
@@ -46,7 +47,7 @@ class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = ["name", "instructor", "price"]
-    pagination_class = PageNumberPagination
+    pagination_class = CoursesPagination
 
     def get_permissions(self):
         if self.request.method in ["POST", "PATCH", "PUT", "DELETE"]:
