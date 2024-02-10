@@ -40,6 +40,7 @@ urlpatterns = [
     path("analytics/", include("analytics.urls")),
     path("gamification/", include("gamification.urls")),
     path("register/", include("register.urls")),
+    path("subscriptions/", include("subscriptions.urls")),
 ]
 
 if settings.DEBUG:

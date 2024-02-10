@@ -18,3 +18,15 @@ COMPLETION_STATUS = (
     (("Complete"), ("Complete")),
     (("Uncomplete"), ("Uncomplete")),
 )
+
+PLAN_CHIOCES = (
+  (('Free'), ("Free")),
+   (('Weekly'), ("Weekly")),
+   (('Monthly'), ("Monthly")),
+   (('Yearly'), ("Yearly")),
+)
+
+PLAN_NAME = (
+  ('Gold', 'Gold'),
+  ('Silver', 'Silver'),
+)

@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from utils.calendars import create_google_calendar_event
+from utils.permissions import SubscriptionPermission
 from . models import *
 from . permissions import *
 from . serializers import *
@@ -100,10 +101,10 @@ class EnrollmentViewSet(ModelViewSet):
 class ContentUploadViewSet(ModelViewSet):
     http_method_names = ["get", "post", "delete", "patch", "put"]
 
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,SubscriptionPermission]
 
     def get_queryset(self):
-        queryset = ContentUpload.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related("user")
+        queryset = ContentUpload.objects.filter(course_id=self.kwargs.get('courses_pk')).filter(course__is_started=True).select_related("user")
         return queryset
 
     def get_serializer_class(self):

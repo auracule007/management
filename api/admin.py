@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
+from api.tasks import check_course_start_date
+
 from .models import *
 
 
@@ -48,7 +50,11 @@ admin.site.register(CourseViewCount)
 
 @admin.register(Courses)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
+    list_display = ['id', 'name','is_started']
+
+    def save_model(self, request,obj, form,change):
+        super().save_model(request,obj,form,change)
+        check_course_start_date.delay()
 
 @admin.register(Instructor)
 class InstructorAdmin(admin.ModelAdmin):
