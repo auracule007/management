@@ -6,11 +6,18 @@ from rest_framework_nested import routers
 from . import views
 
 router = routers.DefaultRouter()
-router.register("categories", views.CategoryViewSet, basename="categories")
-router.register("courses", views.CoursesViewSet, basename="courses")
+router.register("category", views.CategoryViewSet, basename="category")
+# router.register("courses", views.CoursesViewSet, basename="courses")
 router.register("contact", views.ContactViewSet, basename="contact")
 router.register("create_course", views.CreateCoursesViewSet, basename="create_course")
 router.register("enrollment", views.EnrollmentViewSet, basename="enrollment")
+
+cat_router = routers.NestedDefaultRouter(router, "category", lookup="category_id")
+cat_router.register("courses", views.CoursesViewSet, basename="category_id-courses")
+content_router = routers.NestedDefaultRouter(cat_router,"courses", lookup="courses")
+content_router.register('content-uploads', views.ContentUploadViewSet, basename="courses-uploads")
+
+
 # router.register(
 #     "content-managements",
 #     views.ContentManagementViewSet,
@@ -41,18 +48,17 @@ router.register("course-ratings", views.CourseRatingViewSet, basename="course-ra
 
 
 # nested route
-courses_router = routers.NestedDefaultRouter(router, "courses", lookup="courses")
-courses_router.register(
-    "enrollment", views.EnrollmentViewSet, basename="courses-enrollment"
-)
-content_router = routers.NestedDefaultRouter(router,"courses", lookup="courses")
-content_router.register('content-uploads', views.ContentUploadViewSet, basename="courses-content-uploads")
+# courses_router = routers.NestedDefaultRouter(router, "courses", lookup="courses")
+# courses_router.register(
+#     "enrollment", views.EnrollmentViewSet, basename="courses-enrollment"
+# )
+# content_router = routers.NestedDefaultRouter(router,"courses", lookup="courses")
+# content_router.register('content-uploads', views.ContentUploadViewSet, basename="courses-content-uploads")
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("", include(courses_router.urls)),
-    # path("", include(question_router.urls)),
-    # path("", include(question_router.urls)),
+    path("", include(cat_router.urls)),
+    # path("", include(courses_router.urls)),
     path('', include(content_router.urls)),
     path("my-messages/<user_id>", views.ChatMessageView.as_view()),
     path("get-messages/<sender_id>/<receiver_id>/", views.GetAllMessagesView.as_view()),

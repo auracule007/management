@@ -7,10 +7,8 @@
 *.pyc
 __pycache__/
 local_settings.py
+mainroot.log
 
-
-
-mainroot.log 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
 # <django-project-name>/staticfiles/
@@ -264,12 +262,10 @@ poetry.toml
 pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django
-.venv
+venv
 archive
 dev
 dev.py
 client_secret_1003524504215-1hfq4qk0ljcng12vstc838ig0d3l9md4.apps.googleusercontent.com.json
-db.sqlite3
+
 note.html 
-media
-/db.sqlite3
