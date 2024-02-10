@@ -78,7 +78,7 @@ class Category(models.Model):
         default="category.jpg",
         validators=[
             validate_file_size,
-            FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp", "jpeg"]),
         ], null=True, blank=True
     )
 
@@ -97,7 +97,7 @@ class Courses(models.Model):
         default="course.jpg",
         validators=[
             validate_file_size,
-            FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp"]),
+            FileExtensionValidator(allowed_extensions=["png", "jpg", "svg", "webp", "jpeg"]),
         ], null=True, blank=True
     )
     description = models.TextField()
@@ -112,8 +112,9 @@ class Courses(models.Model):
         verbose_name=("Difficulty"),
         max_length=100,
     )
-    # price = models.IntegerField()
-    price = models.FloatField(default=100.00)
+    set_start_date = models.DateField(blank=True,null=True)
+    is_started = models.BooleanField(default=False)
+    price = models.IntegerField(default=100.00)
     uploaded = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 

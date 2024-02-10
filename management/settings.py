@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-
+from celery.schedules import crontab
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "api.apps.ApiConfig",
+    "subscriptions",
     "quiz.apps.QuizConfig",
     "forum.apps.ForumConfig",
     "lesson.apps.LessonConfig",
@@ -266,3 +267,20 @@ PAYPAL_SECRET = (
     "AVK36Ec0lK_7ZGorHP2CIwxaXEKXb33-ZM4K1GCISucsQG6W1RBTCVMSLh9Tzy9nlVNd2V9KXj9evIr1"
 )
 PAYPAL_BASE_URL = "https://sandbox.paypal.com"
+
+STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+STRIPE_BASE_URL = "https://api.stripe.com"
+
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BROKER_URL = "redis://localhost:6379/1"
+CELERY_BEAT_SCHEDULE = {
+  "check-sub-expiration-every-minute": {
+    "task": "subscriptions.tasks.check_sub_expiration",
+    "schedule": crontab(minute="*")
+  },
+  "check-course-start-date-every-minute": {
+    "task": "api.tasks.check_course_start_date",
+    "schedule": crontab(minute="*")
+  },
+}

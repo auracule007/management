@@ -122,6 +122,8 @@ class CourseSerializer(serializers.ModelSerializer):
             "requirements3",
             "requirements4",
             "requirements5",
+            "set_start_date",
+            "is_started",
             "price",
             "uploaded",
             "updated",
