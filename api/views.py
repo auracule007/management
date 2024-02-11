@@ -33,7 +33,7 @@ class UserViewSet(ModelViewSet):
 
 # Category viewset
 class CategoryViewSet(ModelViewSet):
-    queryset = Category.objects.all().order_by("name")
+    queryset = Category.objects.order_by("name").prefetch_related('courses_set').all()
     serializer_class = CategorySerializer
     pagination_class = CategoryPagination
 
