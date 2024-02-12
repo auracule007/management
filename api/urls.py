@@ -12,8 +12,8 @@ router.register("contact", views.ContactViewSet, basename="contact")
 router.register("create_course", views.CreateCoursesViewSet, basename="create_course")
 router.register("enrollment", views.EnrollmentViewSet, basename="enrollment")
 
-cat_router = routers.NestedDefaultRouter(router, "category", lookup="category_id")
-cat_router.register("courses", views.CoursesViewSet, basename="category_id-courses")
+cat_router = routers.NestedDefaultRouter(router, "category", lookup="category")
+cat_router.register("courses", views.CoursesViewSet, basename="category-courses")
 content_router = routers.NestedDefaultRouter(cat_router,"courses", lookup="courses")
 content_router.register('content-uploads', views.ContentUploadViewSet, basename="courses-uploads")
 
