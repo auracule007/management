@@ -263,11 +263,12 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,django
 venv
+.env 
 archive
 dev
 dev.py
 client_secret_1003524504215-1hfq4qk0ljcng12vstc838ig0d3l9md4.apps.googleusercontent.com.json
 note.html 
-db.sqlite3
-media
-/db.sqlite3
+celerybeat-schedule.bak 
+celerybeat-schedule.dat 
+celerybeat-schedule.dir 
