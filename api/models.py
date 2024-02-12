@@ -101,6 +101,7 @@ class Courses(models.Model):
         ], null=True, blank=True
     )
     description = models.TextField()
+    duration = models.CharField(max_length=255, null= True, blank=True)
     requirements1 = models.CharField(max_length=255, null= True, blank=True)
     requirements2 = models.CharField(max_length=255, null= True, blank=True)
     requirements3 = models.CharField(max_length=255, null= True, blank=True)

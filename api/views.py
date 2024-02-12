@@ -56,13 +56,9 @@ class CoursesViewSet(ModelViewSet):
         return [permissions.AllowAny()]
 
     def get_queryset(self):
-        queryset = Courses.objects.all().order_by("name")
-        course_id = self.request.query_params.get("category_id")
-        if course_id:
-            queryset = Courses.objects.filter(
-                category_id=self.request.query_params.get("category_id")
-            )
-        return queryset
+        return Courses.objects.filter(category_id=self.kwargs.get('category_pk')).order_by("name")
+        
+       
 
 
 # create course viewset

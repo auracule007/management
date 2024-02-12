@@ -269,6 +269,5 @@ dev
 dev.py
 client_secret_1003524504215-1hfq4qk0ljcng12vstc838ig0d3l9md4.apps.googleusercontent.com.json
 note.html 
-celerybeat-schedule.bak 
-celerybeat-schedule.dat 
-celerybeat-schedule.dir 
+db.sqlite3
+/db.sqlite3

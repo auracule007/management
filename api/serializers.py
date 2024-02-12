@@ -120,6 +120,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "course_img",
             "name",
             "description",
+            "duration",
             "requirements1",
             "requirements2",
             "requirements3",
