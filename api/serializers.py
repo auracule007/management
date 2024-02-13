@@ -143,7 +143,7 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_total_content(self, student: Courses):
         return student.contentupload_set.count()
     
-    def get_lessons(slef, lessons: Courses):
+    def get_lessons(self, lessons: Courses):
         return lessons.contentupload_set.values()
 
 class ContactSerializer(serializers.ModelSerializer):

@@ -96,8 +96,7 @@ class EnrollmentViewSet(ModelViewSet):
 
 class ContentUploadViewSet(ModelViewSet):
     http_method_names = ["get", "post", "delete", "patch", "put"]
-
-    permission_classes = [permissions.IsAuthenticated,SubscriptionPermission]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly,SubscriptionPermission]
 
     def get_queryset(self):
         queryset = ContentUpload.objects.filter(course_id=self.kwargs.get('courses_pk')).filter(course__is_started=True).select_related("user")
@@ -106,7 +105,6 @@ class ContentUploadViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == "GET":
             return GetContentUploadSerializer
-
         return ContentUploadSerializer
 
     def perform_create(self, serializer):

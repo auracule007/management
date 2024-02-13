@@ -31,9 +31,9 @@ content_router.register('content-uploads', views.ContentUploadViewSet, basename=
 #     views.ContentManagementViewSet,
 #     basename="content-managements",
 # )
-router.register(
-    "content-uploads", views.ContentUploadViewSet, basename="content-uploads"
-)
+# router.register(
+#     "content-uploads", views.ContentUploadViewSet, basename="content-uploads"
+# )
 # router.register("question-bank", views.QuestionBankViewSet, basename="question-bank")
 # router.register("question", views.QuestionViewSet, basename="question")
 router.register("admin", views.AdminDashboardViewSet, basename="admin")
