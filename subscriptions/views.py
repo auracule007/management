@@ -52,7 +52,8 @@ class PlanViewSet(viewsets.ModelViewSet):
         plan = self.get_object()
         user = request.user.username
         price = plan.price
-        # return initate_sub(price,user)
+        return Response({'price': price, 'user': user})
+
     
     # @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
     # def confirm_payment(self, request):
