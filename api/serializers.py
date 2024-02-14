@@ -98,9 +98,19 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ["id", "name", "description", "category_img", "courses"]
+        # fields = ["id", "name", "description", "category_img", "courses", "total_content"]
+        # fields = ["id", "name", "description", "category_img", "courses", "total_content", "lessons"]
     
     def get_courses(self, cat:Category):
-        return cat.courses_set.values("name","description", "instructor").all()
+        return cat.courses_set.values().all()
+    
+    # def get_total_content(self, student:Category):
+    #     return student.courses_set.values("contentupload").count()
+    
+    # def get_lessons(self, lessons: Courses):
+    #     return lessons.contentupload_set.values()
+    # def get_courses(self, cat:Category):
+    #     return cat.courses_set.values("name","description", "course_img").all()
 
 
 # Course serializers
