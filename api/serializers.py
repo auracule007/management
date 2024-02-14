@@ -95,23 +95,16 @@ class InstructorSerializer(serializers.ModelSerializer):
 # course category serializer
 class CategorySerializer(serializers.ModelSerializer):
     courses = serializers.SerializerMethodField()
+    total_course = serializers.SerializerMethodField()
     class Meta:
         model = Category
-        fields = ["id", "name", "description", "category_img", "courses"]
-        # fields = ["id", "name", "description", "category_img", "courses", "total_content"]
-        # fields = ["id", "name", "description", "category_img", "courses", "total_content", "lessons"]
+        fields = ["id", "name", "description", "category_img", "courses", "total_course "]
     
     def get_courses(self, cat:Category):
-        return cat.courses_set.values().all()
-    
-    # def get_total_content(self, student:Category):
-    #     return student.courses_set.values("contentupload").count()
-    
-    # def get_lessons(self, lessons: Courses):
-    #     return lessons.contentupload_set.values()
-    # def get_courses(self, cat:Category):
-    #     return cat.courses_set.values("name","description", "course_img").all()
+        return cat.courses_set.values( "id","name", "description", "duration", "course_img").all()
 
+    def get_total_course(self, total: Category):
+        return total.courses_set.count()
 
 # Course serializers
 class CourseRequirementSerializer(serializers.ModelSerializer):
@@ -121,7 +114,7 @@ class CourseRequirementSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    instructor = InstructorSerializer()
+    # instructor = InstructorSerializer()
     total_enrolled_student = serializers.SerializerMethodField()
     total_content = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
@@ -130,7 +123,7 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "category",
-            "instructor",
+            # "instructor",
             "course_img",
             "name",
             "description",
@@ -176,6 +169,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             "category",
             "name",
             "course_img",
+            "duration",
             "description",
             "requirements1",
             "requirements2",
@@ -191,6 +185,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
         category = self.validated_data["category"]
         name = self.validated_data["name"]
         course_img = self.validated_data["course_img"]
+        duration = self.validated_data["duration"]
         description = self.validated_data["description"]
         requirements1 = self.validated_data["requirements1"]
         requirements2 = self.validated_data["requirements2"]
@@ -202,6 +197,7 @@ class CreateCourseSerializer(serializers.ModelSerializer):
             category=category,
             name=name,
             description=description,
+            duration=duration,
             course_img=course_img,
             requirements1=requirements1,
             requirements2=requirements2,
