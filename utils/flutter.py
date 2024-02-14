@@ -3,7 +3,7 @@ from django.conf import settings
 from rest_framework.response import Response
 import uuid
 
-def initiate_payment(amount, email, order_id,user_id, first_name, last_name, phone):
+def initiate_payment(amount, email, plan_id,user_id, first_name, last_name, phone):
     url = "https://api.flutterwave.com/v3/payments"
     headers = {
         "Authorization": f"Bearer {settings.FLUTTER_SECRET_KEY}"
@@ -14,7 +14,7 @@ def initiate_payment(amount, email, order_id,user_id, first_name, last_name, pho
         "tx_ref": str(uuid.uuid4()),
         "amount": str(amount), 
         "currency": "USD",
-        "redirect_url": "http:/127.0.0.1:8000/register/ordercourse/confirm-payment/?order_id=" + order_id,
+        "redirect_url": "http:/127.0.0.1:8000/subscriptions/plans/confirm-payment/?plan_id=" + str(plan_id),
         "meta": {
             "consumer_id": user_id,
             "consumer_mac": str(uuid.uuid4()) #generate 

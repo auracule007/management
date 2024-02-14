@@ -213,7 +213,7 @@ SIGNUP_REDIRECT_URL = "/auth/jwt/create"
 # SSO authentication integration done
 
 # mail configuration
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST = "sandbox.smtp.mailtrap.io"
 EMAIL_HOST_USER = "2f9852130e042b"
 EMAIL_HOST_PASSWORD = "c6b7c90c5013d9"
@@ -260,14 +260,10 @@ LOGGING = {
 }
 
 
-FLUTTER_SECRET_KEY = "FLWSECK_TEST-4da185ba68c5d7c18a077c8947a0337f-X"
-PAYPAL_CLIENT_ID = (
-    "AVK36Ec0lK_7ZGorHP2CIwxaXEKXb33-ZM4K1GCISucsQG6W1RBTCVMSLh9Tzy9nlVNd2V9KXj9evIr1"
-)
-PAYPAL_SECRET = (
-    "AVK36Ec0lK_7ZGorHP2CIwxaXEKXb33-ZM4K1GCISucsQG6W1RBTCVMSLh9Tzy9nlVNd2V9KXj9evIr1"
-)
-PAYPAL_BASE_URL = "https://sandbox.paypal.com"
+FLUTTER_SECRET_KEY = config("FLUTTER_SECRET_KEY")
+PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID")
+PAYPAL_SECRET = config("PAYPAL_SECRET")
+PAYPAL_BASE_URL = config("PAYPAL_BASE_URL")
 
 # STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY")
 # STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
@@ -282,6 +278,10 @@ CELERY_BEAT_SCHEDULE = {
   },
   "check-course-start-date-every-minute": {
     "task": "api.tasks.check_course_start_date",
+    "schedule": crontab(minute="*")
+  },
+  "check-expiration-notification-every-minute": {
+    "task": "subscriptions.tasks.check_expiration_notification",
     "schedule": crontab(minute="*")
   },
 }
