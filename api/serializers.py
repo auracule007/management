@@ -114,13 +114,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 # Course serializers
+class CourseRequirementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseRequirement
+        fields = "__all__"
+
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     instructor = InstructorSerializer()
     total_enrolled_student = serializers.SerializerMethodField()
     total_content = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
-
     class Meta:
         model = Courses
         fields = [
@@ -154,7 +158,7 @@ class CourseSerializer(serializers.ModelSerializer):
         return student.contentupload_set.count()
     
     def get_lessons(self, lessons: Courses):
-        return lessons.contentupload_set.values()
+        return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
 
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:

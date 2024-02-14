@@ -34,13 +34,13 @@ class OrderCourseViewSet(viewsets.ModelViewSet):
     def payment(self, request, pk):
         order = self.get_object()
         amount = order.course.price
-        # email = request.user.email
-        # user_id = request.user.id
-        # first_name = request.user.first_name
-        # last_name = request.user.last_name
-        # phone = request.user.phone
+        email = request.user.email
+        user_id = request.user.id
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        phone = request.user.phone
         order_id = str(order.pk)
-        return initate_pay(amount, order_id)
+        return initiate_payment(amount, email, order_id,user_id, first_name, last_name, phone)
     
     @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
     def confirm_payment(self, request):

@@ -1,0 +1,29 @@
+{% block subject %}
+    Subscription Email Notification
+{% endblock subject %}
+
+{% block html_body %}
+        <ul>
+          <li>
+            {{plan_name}}
+          </li>
+          <li>
+            {{plan_price}}
+          </li>
+          <li>
+            {{plan_interval}}
+          </li>
+          <li>
+            {{pending_status}}
+          </li>
+          <li>
+            {{start_date}}
+          </li>
+          <li>
+            {{expiration_date}}
+          </li>
+          <li>
+            {{transaction_id}}
+          </li>
+        </ul> 
+{% endblock html_body %}

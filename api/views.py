@@ -1,11 +1,10 @@
-from django.db import transaction
+
 from django.db.models import OuterRef, Q, Subquery
-from django.shortcuts import HttpResponse, render
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import filters, generics, status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
@@ -74,6 +73,14 @@ class CreateCoursesViewSet(ModelViewSet):
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
             return Response(serializers.error, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CourseRequirementViewSet(ModelViewSet):
+    serializer_class = CourseRequirementSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    def get_queryset(self):
+        return CourseRequirement.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related('course')
+    
 
 # enroll for a course viewset
 class EnrollmentViewSet(ModelViewSet):
