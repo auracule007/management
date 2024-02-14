@@ -145,6 +145,16 @@ class Courses(models.Model):
             return 0
 
 
+class CourseRequirement(models.Model):
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    requirement_content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.course.name
+    
+
 class CourseViewCount(models.Model):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
     count = models.PositiveIntegerField(default=0)

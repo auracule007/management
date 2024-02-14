@@ -104,13 +104,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 # Course serializers
+class CourseRequirementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseRequirement
+        fields = "__all__"
+
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     instructor = InstructorSerializer()
     total_enrolled_student = serializers.SerializerMethodField()
     total_content = serializers.SerializerMethodField()
     lessons = serializers.SerializerMethodField()
-
     class Meta:
         model = Courses
         fields = [

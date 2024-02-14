@@ -16,7 +16,8 @@ cat_router = routers.NestedDefaultRouter(router, "category", lookup="category")
 cat_router.register("courses", views.CoursesViewSet, basename="category-courses")
 content_router = routers.NestedDefaultRouter(cat_router,"courses", lookup="courses")
 content_router.register('content-uploads', views.ContentUploadViewSet, basename="courses-uploads")
-
+course_requirement = routers.NestedDefaultRouter(cat_router, "courses",lookup="courses")
+course_requirement.register('requirements',views.CourseRequirementViewSet, basename="courses-requirements")
 
 # router.register(
 #     "content-managements",
@@ -58,7 +59,7 @@ router.register("course-ratings", views.CourseRatingViewSet, basename="course-ra
 urlpatterns = [
     path("", include(router.urls)),
     path("", include(cat_router.urls)),
-    # path("", include(courses_router.urls)),
+    path("", include(course_requirement.urls)),
     path('', include(content_router.urls)),
     path("my-messages/<user_id>", views.ChatMessageView.as_view()),
     path("get-messages/<sender_id>/<receiver_id>/", views.GetAllMessagesView.as_view()),
