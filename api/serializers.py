@@ -98,7 +98,7 @@ class CategorySerializer(serializers.ModelSerializer):
     total_course = serializers.SerializerMethodField()
     class Meta:
         model = Category
-        fields = ["id", "name", "description", "category_img", "courses", "total_course "]
+        fields = ["id", "name", "description", "category_img", "courses", "total_course"]
     
     def get_courses(self, cat:Category):
         return cat.courses_set.values( "id","name", "description", "duration", "course_img").all()

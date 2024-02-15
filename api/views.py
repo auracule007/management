@@ -35,6 +35,8 @@ class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.order_by("name").prefetch_related('courses_set').all()
     serializer_class = CategorySerializer
     pagination_class = CategoryPagination
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = ["name"]
 
 class ContactViewSet(ModelViewSet):
     http_method_names = ["get", "post"]
@@ -46,7 +48,7 @@ class ContactViewSet(ModelViewSet):
 class CoursesViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    search_fields = ["name", "instructor", "price"]
+    search_fields = ["category__name", "name", "instructor", "price"]
     pagination_class = CoursesPagination
 
     def get_permissions(self):
