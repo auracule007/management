@@ -270,3 +270,7 @@ dev.py
 client_secret_1003524504215-1hfq4qk0ljcng12vstc838ig0d3l9md4.apps.googleusercontent.com.json
 media
 db.sqlite3
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir 
+dump.rdb 
