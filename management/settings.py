@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "api.apps.ApiConfig",
     "subscriptions",
+    "promotion",
     "quiz.apps.QuizConfig",
     "forum.apps.ForumConfig",
     "lesson.apps.LessonConfig",
