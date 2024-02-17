@@ -273,7 +273,7 @@ celerybeat-schedule.dat
 celerybeat-schedule.dir 
 celerybeat-schedule
 dump.rdb 
-
+db.sqlite3
 
 
 

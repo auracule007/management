@@ -213,9 +213,14 @@ class CourseManagement(models.Model):
         ],
     )
 class Module(models.Model):
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
+    is_starting_at = models.DateTimeField(blank=True, null=True)
+    is_ending_at = models.DateTimeField(blank=True, null=True)
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
+    date_updated = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -259,8 +264,6 @@ class ContentUpload(models.Model):
     def __str__(self):
         return f"content: {self.content_title}"
 
-    class Meta:
-        unique_together = (('section','course'))
 
 class Contact(models.Model):
     name = models.CharField(max_length=100)
