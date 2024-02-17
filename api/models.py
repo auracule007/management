@@ -213,13 +213,21 @@ class CourseManagement(models.Model):
         ],
     )
 class Module(models.Model):
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
+    is_starting_at = models.DateTimeField(blank=True, null=True)
+    is_ending_at = models.DateTimeField(blank=True, null=True)
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
+    date_updated = models.DateField(auto_now=True)
 
     def __str__(self):
         return self.name
 
+#     class Meta:
+#         ordering = ('date_created',)
+    
 class ContentUpload(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     module = models.ForeignKey(Module, on_delete=models.CASCADE, blank=True, null=True)
@@ -256,6 +264,7 @@ class ContentUpload(models.Model):
     def __str__(self):
         return f"content: {self.content_title}"
 
+
 class Contact(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -267,9 +276,12 @@ class Contact(models.Model):
         return self.name
 
 # class ContentManagement(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)    
 #     content_uploads = models.ManyToManyField(ContentUpload)
+#     section_name = models.CharField(max_length=255)
+#     is_starting_at = models.DateTimeField(blank=True, null=True)
+#     is_ending_at = models.DateTimeField(blank=True,null=True)
+#     is_active = models.BooleanField(default=False)
 #     is_approved = models.BooleanField(default=False)
 #     date_uploaded = models.DateTimeField(auto_now_add=True)
 #     date_updated = models.DateField(auto_now=True)
