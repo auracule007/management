@@ -113,12 +113,23 @@ class CourseRequirementSerializer(serializers.ModelSerializer):
         model = CourseRequirement
         fields = "__all__"
 
+class ModuleSerializer(serializers.ModelSerializer):
+    lessons = serializers.SerializerMethodField()
+    class Meta:
+        model = Module
+        fields = ["id", "name", "description", "lessons"]
+
+    def get_lessons(self, lessons: Module):
+        return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
+
+
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     # instructor = InstructorSerializer()
     total_enrolled_student = serializers.SerializerMethodField()
     total_content = serializers.SerializerMethodField()
     module = serializers.SerializerMethodField()
+    # lessons = serializers.SerializerMethodField()
     class Meta:
         model = Courses
         fields = [
@@ -153,19 +164,19 @@ class CourseSerializer(serializers.ModelSerializer):
         return student.contentupload_set.count()
     
     def get_module(self, module: Courses):
-        return module.module_set.values("name")
+        return module.module_set.values()
     
     # def get_lessons(self, lessons: Courses):
-    #     return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
+    #     return lessons.contentupload_set.values('id','content', "module",'content_title','content_description','date_uploaded','date_updated')
     
-class ModuleSerializer(serializers.ModelSerializer):
-    lessons = serializers.SerializerMethodField()
-    class Meta:
-        model = Module
-        fields = ["id", "name", "description", "lessons"]
+# class ModuleSerializer(serializers.ModelSerializer):
+#     lessons = serializers.SerializerMethodField()
+#     class Meta:
+#         model = Module
+#         fields = ["id", "name", "description", "lessons"]
 
-    def get_lessons(self, lessons: Module):
-        return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
+#     def get_lessons(self, lessons: Module):
+#         return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
 
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
@@ -251,7 +262,6 @@ class EnrollmentSerializer(serializers.ModelSerializer):
 # content upload management
 class GetContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
-
     class Meta:
         model = ContentUpload
         fields = [
@@ -289,12 +299,13 @@ class GetContentUploadSerializer(serializers.ModelSerializer):
 
 class ContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source="user.username", read_only=True)
-
+    # module = ModuleSerializer()
     class Meta:
         model = ContentUpload
         fields = [
             "id",
             "user",
+            "module",
             "content",
             "content_title",
             "content_description",
