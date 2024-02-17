@@ -10,6 +10,7 @@ from  api.emails import update_course_email, send_content_upload_mail
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from gamification.models import PointSystem, QuizSubmissionPointSystem
+from utils.validators import validate_id
 
 from .emails import *
 from .models import *
@@ -117,7 +118,7 @@ class CourseSerializer(serializers.ModelSerializer):
     # instructor = InstructorSerializer()
     total_enrolled_student = serializers.SerializerMethodField()
     total_content = serializers.SerializerMethodField()
-    lessons = serializers.SerializerMethodField()
+    module = serializers.SerializerMethodField()
     class Meta:
         model = Courses
         fields = [
@@ -141,7 +142,8 @@ class CourseSerializer(serializers.ModelSerializer):
             "view_counter",
             "total_enrolled_student",
             "total_content",
-            "lessons",
+            "module",
+            # "lessons",
         ]
 
     def get_total_enrolled_student(self, student: Courses):
@@ -150,7 +152,19 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_total_content(self, student: Courses):
         return student.contentupload_set.count()
     
-    def get_lessons(self, lessons: Courses):
+    def get_module(self, module: Courses):
+        return module.module_set.values("name")
+    
+    # def get_lessons(self, lessons: Courses):
+    #     return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
+    
+class ModuleSerializer(serializers.ModelSerializer):
+    lessons = serializers.SerializerMethodField()
+    class Meta:
+        model = Module
+        fields = ["id", "name", "description", "lessons"]
+
+    def get_lessons(self, lessons: Module):
         return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -225,16 +239,13 @@ class StudentSerializer(serializers.ModelSerializer):
 
 # Enrollment Serializer
 class EnrollmentSerializer(serializers.ModelSerializer):
+    courses_id = serializers.IntegerField()
     class Meta:
         model = Enrollment
-        fields = ["courses", "date_enrolled"]
+        fields = ["id","courses_id", "interval","date_enrolled"]
 
-    def validate_courses(self, value):
-        if not Enrollment.objects.filter(courses=value).exists():
-            return serializers.ValidationError(
-                "The Course you are trying to register for is not available"
-            )
-        return value
+    def validate_courses_id(self, value):
+        return validate_id(Courses, value)
 
 
 # content upload management

@@ -12,11 +12,11 @@ def get_days_in_month(month, year):
     else:
         return 31
 
-def calculate_expiration_date(start_date, plan_interval):
+def calculate_expiration_date(start_date, interval):
   
-    if plan_interval == 'Weekly':
+    if interval == 'Weekly':
         return start_date + datetime.timedelta(days=7)
-    elif plan_interval == 'Monthly':
+    elif interval == 'Monthly':
         year = start_date.year
         month = start_date.month
         days_in_month = get_days_in_month(month, year)
@@ -27,9 +27,9 @@ def calculate_expiration_date(start_date, plan_interval):
             return start_date + datetime.timedelta(days=max(days_in_month - start_date.day, 0) + next_month_days)
         else:
             return start_date.replace(day=min(days_in_month, next_month_days)) + datetime.timedelta(days=max(days_in_month - start_date.day, 0))
-    elif plan_interval == 'Yearly':
+    elif interval == 'Yearly':
         return start_date + datetime.timedelta(days=365)
     else:
-        raise ValueError("Invalid plan interval:", plan_interval)
+        raise ValueError("Invalid  interval:", interval)
     
     
