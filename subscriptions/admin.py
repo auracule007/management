@@ -5,7 +5,7 @@ from .tasks import check_expiration_notification, check_sub_expiration
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-  list_display = ('id','user','plan','start_date','expiration_date','is_active')
+  list_display = ('id','user','enrollment','start_date','expiration_date','is_active')
 
   def save_model(self, request,obj, form,change):
     super().save_model(request,obj,form,change)

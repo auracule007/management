@@ -20,7 +20,7 @@ COMPLETION_STATUS = (
 )
 
 PLAN_CHIOCES = (
-  (('Free'), ("Free")),
+  
    (('Weekly'), ("Weekly")),
    (('Monthly'), ("Monthly")),
    (('Yearly'), ("Yearly")),

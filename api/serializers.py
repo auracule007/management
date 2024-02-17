@@ -10,6 +10,7 @@ from  api.emails import update_course_email, send_content_upload_mail
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from gamification.models import PointSystem, QuizSubmissionPointSystem
+from utils.validators import validate_id
 
 from .emails import *
 from .models import *
@@ -225,16 +226,13 @@ class StudentSerializer(serializers.ModelSerializer):
 
 # Enrollment Serializer
 class EnrollmentSerializer(serializers.ModelSerializer):
+    courses_id = serializers.IntegerField()
     class Meta:
         model = Enrollment
-        fields = ["courses", "date_enrolled"]
+        fields = ["id","courses_id", "interval","date_enrolled"]
 
-    def validate_courses(self, value):
-        if not Enrollment.objects.filter(courses=value).exists():
-            return serializers.ValidationError(
-                "The Course you are trying to register for is not available"
-            )
-        return value
+    def validate_courses_id(self, value):
+        return validate_id(Courses, value)
 
 
 # content upload management

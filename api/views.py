@@ -1,5 +1,6 @@
 
 from django.db.models import OuterRef, Q, Subquery
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import filters, generics, status
@@ -7,8 +8,12 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from subscriptions.emails import send_subscription_confirmation
+from subscriptions.models import Subscription
+from subscriptions.serializers import SubscriptionSerializer
 
 from utils.calendars import create_google_calendar_event
+from utils.flutter import initiate_payment
 from utils.permissions import SubscriptionPermission
 from . models import *
 from . permissions import *
@@ -91,8 +96,8 @@ class EnrollmentViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Enrollment.objects.filter(
-            courses_id=self.kwargs.get("courses_pk")
-        ).select_related("courses")
+            student_id = self.request.user.student.id
+        ).select_related("courses", "student")
 
     def create(self, request):
         serializers = EnrollmentSerializer(data=request.data)
@@ -101,6 +106,51 @@ class EnrollmentViewSet(ModelViewSet):
             return Response(serializers.data, status=status.HTTP_200_OK)
         else:
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['POST'])
+    def payment(self, request, pk):
+        enrollment = self.get_object()
+        amount = enrollment.courses.price
+        email = request.user.email
+        user_id = request.user.id
+        first_name = request.user.first_name
+        last_name = request.user.last_name
+        phone = request.user.phone
+        enrollment_id = enrollment.pk
+        return initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone)
+    
+       
+    @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
+    def confirm_payment(self, request):
+        enrollment_id = request.GET.get("enrollment_id")
+        if not enrollment_id:
+            return Response({"error": "Missing enrollment_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+        except Enrollment.DoesNotExist:
+            return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
+        subscribed = Subscription.objects.create(enrollment_id=enrollment.id,user_id=self.request.user.id)
+        status = request.GET.get("status")
+        transaction_id = request.GET.get("transaction_id")
+        try:
+            if status == 'successful':
+                subscribed.pending_status = 'C'
+            else: 
+                subscribed.pending_status = 'F'
+        except Exception as err:
+            return Response({'error': err })
+        subscribed.transaction_id=transaction_id
+        subscribed.save()
+        # email notification
+        send_subscription_confirmation(enrollment_id)
+        serializer = SubscriptionSerializer(subscribed)
+        
+        data = {
+            "message": "payment was successful",
+            "data": serializer.data
+        }
+        return Response(data)
+    
 
 
 class ContentUploadViewSet(ModelViewSet):

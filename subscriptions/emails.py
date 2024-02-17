@@ -1,15 +1,15 @@
 from templated_mail.mail import BaseEmailMessage
 from .models import *
 
-def send_subscription_confirmation(plan_id):
+def send_subscription_confirmation(enrollment_id):
     try:
-        subscribed = Subscription.objects.only('id').filter(plan_id=plan_id).first()
+        subscribed = Subscription.objects.only('id').filter(enrollment_id=enrollment_id).first()
         message = BaseEmailMessage(
             template_name="subscriptions/send_subscription_confirmation.html",
             context={
-                "plan_name": subscribed.plan.name,
-                "plan_price": subscribed.plan.price,
-                "plan_interval": subscribed.plan.interval,
+                "plan_name": subscribed.enrollment.courses.name,
+                "plan_price": subscribed.enrollment.courses.price,
+                "plan_interval": subscribed.enrollment.interval,
                 "pending_status": subscribed.pending_status,
                 "start_date": subscribed.start_date,
                 "expiration_date":subscribed.expiration_date,

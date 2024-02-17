@@ -9,18 +9,18 @@ class PlanSerializer(serializers.ModelSerializer):
     fields = "__all__"
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-  plan_id = serializers.IntegerField()
+  enrollment_id = serializers.IntegerField()
   user_id = serializers.IntegerField()
   class Meta:
     model = Subscription
-    fields = ('id','user_id', 'plan_id' )
+    fields = ('id','user_id', 'enrollment_id' )
   def validate_user_id(self, value):
     return (User, value)
-  def validate_plan_id(self, value):
-    return validate_id(Plan, value)
+  def validate_enrollment_id(self, value):
+    return validate_id(Enrollment, value)
   
   def create(self, validated_data):
     user_id = self.context.get('user_id')
-    plan_id = validated_data['plan_id']
-    return Subscription.objects.create(user_id=user_id, plan_id=plan_id, **validated_data)
+    enrollment_id = validated_data['enrollment_id']
+    return Subscription.objects.create(user_id=user_id, enrollment_id=enrollment_id, **validated_data)
   
