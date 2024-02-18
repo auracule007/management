@@ -32,10 +32,10 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(Student)
 admin.site.register(ContentUpload)
-admin.site.register(Module)
+admin.site.register(Modules)
 # admin.site.register(ContentManagement)
 admin.site.register(Enrollment)
-# admin.site.register(Courses)
+# admin.site.register(Module)
 admin.site.register(Category)
 admin.site.register(Profile)
 admin.site.register(QuestionBank)

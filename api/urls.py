@@ -11,6 +11,7 @@ router.register("category", views.CategoryViewSet, basename="category")
 router.register("contact", views.ContactViewSet, basename="contact")
 router.register("create_course", views.CreateCoursesViewSet, basename="create_course")
 router.register("enrollment", views.EnrollmentViewSet, basename="enrollment")
+router.register('modules', views.ModuleViewSet, basename="modules")
 
 cat_router = routers.NestedDefaultRouter(router, "category", lookup="category")
 cat_router.register("courses", views.CoursesViewSet, basename="category-courses")

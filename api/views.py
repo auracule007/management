@@ -88,11 +88,11 @@ class CourseRequirementViewSet(ModelViewSet):
     def get_queryset(self):
         return CourseRequirement.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related('course')
 
-class ModuleViewSet(ModelViewSet):
-    serializer_class = ModuleSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    def get_queryset(self):
-        return Module.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related('course')
+# class ModuleViewSet(ModelViewSet):
+#     serializer_class = ModuleSerializer
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+#     def get_queryset(self):
+#         return Module.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related('course')
     
 
 # enroll for a course viewset
@@ -190,6 +190,12 @@ class ContentUploadViewSet(ModelViewSet):
         serializer = ContentUploadSerializer(instance)
         return Response(serializer.data)
 
+
+class ModuleViewSet(ModelViewSet):
+    http_method_names = ['get']
+    serializer_class = ModuleSerializer
+    queryset = Modules.objects.select_related('user','course').prefetch_related('lessons')
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 # class ContentManagementViewSet(ModelViewSet):
 #     http_method_names = ["get"]

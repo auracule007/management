@@ -113,23 +113,19 @@ class CourseRequirementSerializer(serializers.ModelSerializer):
         model = CourseRequirement
         fields = "__all__"
 
-class ModuleSerializer(serializers.ModelSerializer):
-    lessons = serializers.SerializerMethodField()
-    class Meta:
-        model = Module
-        fields = ["id", "name", "description", "lessons"]
 
-    def get_lessons(self, lessons: Module):
-        return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
+    # def get_lessons(self, lessons: Module):
+    #     return lessons.contentupload_set.values('id','content','content_title','content_description','date_uploaded','date_updated')
 
 
+    # instructor = InstructorSerializer()
+    # total_content = serializers.SerializerMethodField()
+    # lessons = GetContentUploadSerializer()
+    # lessons = serializers.SerializerMethodField()
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
-    # instructor = InstructorSerializer()
     total_enrolled_student = serializers.SerializerMethodField()
-    total_content = serializers.SerializerMethodField()
     module = serializers.SerializerMethodField()
-    # lessons = serializers.SerializerMethodField()
     class Meta:
         model = Courses
         fields = [
@@ -152,7 +148,7 @@ class CourseSerializer(serializers.ModelSerializer):
             "updated",
             "view_counter",
             "total_enrolled_student",
-            "total_content",
+            # "total_content",
             "module",
             # "lessons",
         ]
@@ -160,12 +156,15 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_total_enrolled_student(self, student: Courses):
         return student.enrollment_set.count()
     
-    def get_total_content(self, student: Courses):
-        return student.contentupload_set.count()
+    def get_module(self, course: Courses):
+        modules = course.modules_set.all()
+        serialized_modules = ModuleSerializer(modules, many=True).data
+        return serialized_modules
+    # def get_module(self, module: Courses):
+    #     return module.modules_set.values('id','module_name','lessons')
     
-    def get_module(self, modules: Courses):
-        return modules.module_set.values()
-    
+    # def get_total_content(self, student: Courses):
+    #     return student.contentupload_set.count()
     # def get_lessons(self, lessons: Courses):
     #     return lessons.contentupload_set.values('id','content', "module",'content_title','content_description','date_uploaded','date_updated')
     
@@ -305,7 +304,7 @@ class ContentUploadSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user",
-            "module",
+            # "modules",
             "content",
             "content_title",
             "content_description",
@@ -331,6 +330,13 @@ class ContentUploadSerializer(serializers.ModelSerializer):
         )
         send_content_upload_mail(content, content_title, content_description, user)
         return content_uploads_mail
+
+
+class ModuleSerializer(serializers.ModelSerializer):
+    lessons = GetContentUploadSerializer(many=True)
+    class Meta:
+        model = Modules
+        fields = ["id", "module_name","is_starting_at","is_ending_at","is_active","is_approved","lessons","date_uploaded","date_updated"]
 
 
 # class GetContentManagementSerializer(serializers.ModelSerializer):
