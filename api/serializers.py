@@ -119,9 +119,9 @@ class CourseRequirementSerializer(serializers.ModelSerializer):
 
 
     # instructor = InstructorSerializer()
-    # total_content = serializers.SerializerMethodField()
     # lessons = GetContentUploadSerializer()
     # lessons = serializers.SerializerMethodField()
+    # total_content = serializers.SerializerMethodField()
 class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     total_enrolled_student = serializers.SerializerMethodField()
@@ -148,8 +148,8 @@ class CourseSerializer(serializers.ModelSerializer):
             "updated",
             "view_counter",
             "total_enrolled_student",
-            # "total_content",
             "module",
+            # "total_content",
             # "lessons",
         ]
 
@@ -160,11 +160,13 @@ class CourseSerializer(serializers.ModelSerializer):
         modules = course.modules_set.all()
         serialized_modules = ModuleSerializer(modules, many=True).data
         return serialized_modules
-    # def get_module(self, module: Courses):
-    #     return module.modules_set.values('id','module_name','lessons')
     
     # def get_total_content(self, student: Courses):
     #     return student.contentupload_set.count()
+    
+    # def get_module(self, module: Courses):
+    #     return module.modules_set.values('id','module_name','lessons')
+    
     # def get_lessons(self, lessons: Courses):
     #     return lessons.contentupload_set.values('id','content', "module",'content_title','content_description','date_uploaded','date_updated')
     
