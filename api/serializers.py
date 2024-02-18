@@ -163,8 +163,8 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_total_content(self, student: Courses):
         return student.contentupload_set.count()
     
-    def get_module(self, module: Courses):
-        return module.module_set.values()
+    def get_module(self, modules: Courses):
+        return modules.module_set.values()
     
     # def get_lessons(self, lessons: Courses):
     #     return lessons.contentupload_set.values('id','content', "module",'content_title','content_description','date_uploaded','date_updated')

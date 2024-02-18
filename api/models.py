@@ -214,6 +214,7 @@ class CourseManagement(models.Model):
     )
 class Module(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     is_starting_at = models.DateTimeField(blank=True, null=True)
