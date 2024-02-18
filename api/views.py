@@ -191,6 +191,12 @@ class ContentUploadViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
+class ModuleViewSet(ModelViewSet):
+    http_method_names = ['get']
+    serializer_class = ModuleSerializer
+    queryset = Module.objects.select_related('user','course').prefetch_related('lessons')
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 # class ContentManagementViewSet(ModelViewSet):
 #     http_method_names = ["get"]
 #     permission_classes = [permissions.IsAuthenticated]

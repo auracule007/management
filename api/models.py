@@ -212,26 +212,26 @@ class CourseManagement(models.Model):
             FileExtensionValidator(allowed_extensions=["mp4", "mkv", "webm", "avi"]),
         ],
     )
-class Module(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-    is_starting_at = models.DateTimeField(blank=True, null=True)
-    is_ending_at = models.DateTimeField(blank=True, null=True)
-    is_active = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
-    date_updated = models.DateField(auto_now=True)
+# class Module(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+#     name = models.CharField(max_length=255)
+#     description = models.TextField(blank=True, null=True)
+#     is_starting_at = models.DateTimeField(blank=True, null=True)
+#     is_ending_at = models.DateTimeField(blank=True, null=True)
+#     is_active = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True,blank=True, null=True)
+#     date_updated = models.DateField(auto_now=True)
 
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 #     class Meta:
 #         ordering = ('date_created',)
     
 class ContentUpload(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    module = models.ForeignKey(Module, on_delete=models.CASCADE, blank=True, null=True)
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
+    # module = models.ForeignKey(Module, on_delete=models.CASCADE, blank=True, null=True)
+    # course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     content = models.FileField(
         upload_to="content/course",
         validators=[
@@ -275,19 +275,20 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
 
-# class ContentManagement(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)    
-#     content_uploads = models.ManyToManyField(ContentUpload)
-#     section_name = models.CharField(max_length=255)
-#     is_starting_at = models.DateTimeField(blank=True, null=True)
-#     is_ending_at = models.DateTimeField(blank=True,null=True)
-#     is_active = models.BooleanField(default=False)
-#     is_approved = models.BooleanField(default=False)
-#     date_uploaded = models.DateTimeField(auto_now_add=True)
-#     date_updated = models.DateField(auto_now=True)
+class Module(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,blank=True, null=True)
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
+    module_name = models.CharField(max_length=255)
+    lessons = models.ManyToManyField(ContentUpload)
+    is_starting_at = models.DateTimeField(blank=True, null=True)
+    is_ending_at = models.DateTimeField(blank=True,null=True)
+    is_active = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=False)
+    date_uploaded = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    date_updated = models.DateField(auto_now=True)
 
-#     def __str__(self):
-#         return f"{self.course.name}"
+    def __str__(self):
+        return f"{self.module_name}"
 
 
 # chat models
