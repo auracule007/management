@@ -195,7 +195,7 @@ class ModuleViewSet(ModelViewSet):
     http_method_names = ['get']
     serializer_class = ModuleSerializer
     queryset = Modules.objects.select_related('user','course').prefetch_related('lessons')
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, SubscriptionPermission]
 
 # class ContentManagementViewSet(ModelViewSet):
 #     http_method_names = ["get"]
