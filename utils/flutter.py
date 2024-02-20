@@ -14,7 +14,8 @@ def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name
         "tx_ref": str(uuid.uuid4()),
         "amount": str(amount), 
         "currency": "USD",
-        "redirect_url": "http:/127.0.0.1:8000/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
+        "redirect_url": "https://codedexteracademy.onrender.com/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
+        # "redirect_url": "http:/127.0.0.1:8000/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
         "meta": {
             "consumer_id": user_id,
             "consumer_mac": str(uuid.uuid4()) #generate 
