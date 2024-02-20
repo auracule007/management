@@ -63,7 +63,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("", include(cat_router.urls)),
     path("", include(course_requirement.urls)),
-    path('', include(content_router.urls)),
+    # path('', include(content_router.urls)),
     path('', include(course_module.urls)),
     path("my-messages/<user_id>", views.ChatMessageView.as_view()),
     path("get-messages/<sender_id>/<receiver_id>/", views.GetAllMessagesView.as_view()),
