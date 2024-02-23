@@ -14,8 +14,9 @@ def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name
         "tx_ref": str(uuid.uuid4()),
         "amount": str(amount), 
         "currency": "USD",
-        "redirect_url": "https://codedexteracademy.onrender.com/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
+        "redirect_url": "http://localhost:3000/verify?enrollment_id=" + str(enrollment_id),
         # "redirect_url": "http:/127.0.0.1:8000/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
+        # "redirect_url": "https://codedexteracademy.onrender.com/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
         "meta": {
             "consumer_id": user_id,
             "consumer_mac": str(uuid.uuid4()) #generate 
@@ -35,6 +36,7 @@ def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name
     try:
         response = requests.post(url, headers=headers, json=data)
         response_data = response.json()
+        # response_data['confirm_payment_endpoint'] = f"https://codedexteracademy.onrender.com/api/enrollment/confirm-payment/?enrollment_id={enrollment_id}"
         return Response(response_data)
     
     except requests.exceptions.RequestException as err:
