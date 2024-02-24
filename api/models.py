@@ -276,7 +276,7 @@ class Contact(models.Model):
         return self.name
 
 class Modules(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,blank=True, null=True)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE,blank=True, null=True)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     module_name = models.CharField(max_length=255)
     lessons = models.ManyToManyField(ContentUpload)
