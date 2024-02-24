@@ -273,6 +273,7 @@ FLUTTER_SECRET_KEY = "FLWSECK_TEST-f2ba505a6d90061af98b8cb4281e01c3-X"
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = "redis://localhost:6379/1"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
 CELERY_BEAT_SCHEDULE = {
   "check-sub-expiration-every-minute": {
     "task": "subscriptions.tasks.check_sub_expiration",
@@ -284,6 +285,10 @@ CELERY_BEAT_SCHEDULE = {
   },
   "check-expiration-notification-every-minute": {
     "task": "subscriptions.tasks.check_expiration_notification",
+    "schedule": crontab(minute="*")
+  },
+  "check-promotion-is-schedule-every-minute": {
+    "task": "promotion.tasks.promotion_management",
     "schedule": crontab(minute="*")
   },
 }

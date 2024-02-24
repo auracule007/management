@@ -2,14 +2,13 @@ from decimal import Decimal
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from subscriptions.models import Plan
+from api.models import Courses
 
 class PromoType(models.Model):
   name = models.CharField(max_length=255)
 
   def __str__(self):
     return self.name
-  
 
 class Coupon(models.Model):
   name = models.CharField(max_length=255)
@@ -25,7 +24,7 @@ class Promotion(models.Model):
   is_schedule = models.BooleanField(default=False)
   promo_start = models.DateField()
   promo_end = models.DateField()
-  plans_on_promotion = models.ManyToManyField(Plan, through="PlanOnPromotion")
+  courses_on_promotion = models.ManyToManyField(Courses, through="CourseOnPromotion")
   promo_type = models.ForeignKey(PromoType, on_delete=models.CASCADE)
   coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE, blank=True, null=True)
   def __str__(self):
@@ -35,13 +34,13 @@ class Promotion(models.Model):
       raise ValidationError('Promo start date must not be greater than promo end date')
 
 
-class PlanOnPromotion(models.Model):
-  plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+class CourseOnPromotion(models.Model):
+  course = models.ForeignKey(Courses, on_delete=models.CASCADE)
   promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE)
   promo_price = models.DecimalField(max_digits=10, decimal_places=2,default=Decimal("0.00"), validators=[MinValueValidator(Decimal("0.00"))])
   price_override = models.BooleanField(default=False)
 
   class Meta:
-    unique_together = (('plan', 'promotion'))
+    unique_together = (('course', 'promotion'))
 
 
