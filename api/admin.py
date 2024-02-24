@@ -53,7 +53,7 @@ admin.site.register(CourseRequirement)
 @admin.register(Courses)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['id', 'name','is_started']
-
+    search_fields = ('name',)
     def save_model(self, request,obj, form,change):
         super().save_model(request,obj,form,change)
         check_course_start_date.delay()

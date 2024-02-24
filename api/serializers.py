@@ -11,7 +11,8 @@ from rest_framework.validators import UniqueTogetherValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from gamification.models import PointSystem, QuizSubmissionPointSystem
 from utils.validators import validate_id
-
+from django.db.models import Q
+from promotion.models import Promotion
 from .emails import *
 from .models import *
 
@@ -126,6 +127,12 @@ class CourseSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     total_enrolled_student = serializers.SerializerMethodField()
     module = serializers.SerializerMethodField()
+    # total_content = serializers.SerializerMethodField()
+    # module = serializers.SerializerMethodField()
+    # lessons = serializers.SerializerMethodField()
+    promotion_price = serializers.SerializerMethodField()
+    discounts = serializers.SerializerMethodField()
+    price_override = serializers.SerializerMethodField()
     class Meta:
         model = Courses
         fields = [
@@ -144,6 +151,9 @@ class CourseSerializer(serializers.ModelSerializer):
             "set_start_date",
             "is_started",
             "price",
+            "promotion_price",
+            "discounts",
+            "price_override",
             "uploaded",
             "updated",
             "view_counter",
@@ -152,7 +162,34 @@ class CourseSerializer(serializers.ModelSerializer):
             # "total_content",
             # "lessons",
         ]
-
+    
+    def get_price_override(self, obj):
+        try:
+            promo = Promotion.courses_on_promotion.through.objects.filter(Q(promotion_id__is_active=True) & Q(course_id=obj.id)).select_related('promotion','course')
+            for x in promo:
+                return x.price_override
+        except Exception as err:
+            # print('Failed: ', err)
+            return False
+        
+    def get_discounts(self, obj):
+        try:
+            promo = Promotion.courses_on_promotion.through.objects.filter(Q(promotion_id__is_active=True) & Q(course_id=obj.id)).select_related('promotion','course')
+            for x in promo:
+                return f'{x.promotion.promo_reduction}%'
+        except Exception as err:
+            # print('Failed: ', err)
+            return None
+        
+    def get_promotion_price(self, obj):
+        try:
+            promo = Promotion.courses_on_promotion.through.objects.filter(Q(promotion_id__is_active=True) & Q(course_id=obj.id)).select_related('promotion','course')
+            for x in promo:
+                return x.promo_price
+        except Exception as err:
+            # print('Failed: ', err)
+            return None
+        
     def get_total_enrolled_student(self, student: Courses):
         return student.enrollment_set.count()
     
