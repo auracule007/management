@@ -287,7 +287,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     courses_id = serializers.IntegerField()
     class Meta:
         model = Enrollment
-        fields = ["id","courses_id", "interval","date_enrolled"]
+        fields = ["id","courses_id", "interval","date_enrolled", "completion_status"]
 
     def validate_courses_id(self, value):
         return validate_id(Courses, value)
