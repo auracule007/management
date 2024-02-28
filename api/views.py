@@ -198,9 +198,13 @@ class ContentUploadViewSet(ModelViewSet):
 class ModuleViewSet(ModelViewSet):
     http_method_names = ['get']
     serializer_class = ModuleSerializer
-    queryset = Modules.objects.select_related('course').prefetch_related('lessons')
-    # permission_classes = [permissions.AllowAny, SubscriptionPermission]
 
+    def get_queryset(self):
+        queryset = Modules.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related('course').prefetch_related('lessons')
+        return queryset
+    
+
+    
 # class ContentManagementViewSet(ModelViewSet):
 #     http_method_names = ["get"]
 #     permission_classes = [permissions.IsAuthenticated]
