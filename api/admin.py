@@ -49,6 +49,8 @@ admin.site.register(CourseEvent)
 admin.site.register(CourseRating)
 admin.site.register(CourseViewCount)
 admin.site.register(CourseRequirement)
+admin.site.register(Certificate)
+
 
 @admin.register(Courses)
 class CourseAdmin(admin.ModelAdmin):

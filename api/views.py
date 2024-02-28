@@ -210,6 +210,7 @@ class EnrollmentViewSet(ModelViewSet):
         }
         return Response(data)
 
+  
     # @action(detail=True, methods=['POST'])
     # def payment(self, request, pk):
     #     enrollment = self.get_object()
@@ -345,6 +346,13 @@ class EnrollmentViewSet(ModelViewSet):
     #     return Response(data)
     
 
+class CertificateViewSet(ModelViewSet):
+    http_method_names = ['get']
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CertificateSerializer
+    def get_queryset(self):
+        return Certificate.objects.filter(enrollment_id=self.kwargs.get('enrollment_pk'))
+    
 
 class ContentUploadViewSet(ModelViewSet):
     http_method_names = ["get", "post", "delete", "patch", "put"]
