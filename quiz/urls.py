@@ -8,7 +8,7 @@ router.register(
     "question-categories", views.QuestionCategoryViewset, basename="question-categories"
 )
 question_router = routers.NestedDefaultRouter(router, "question-categories", lookup="question_categories")
-question_router.register("questions", views.QuizQuestionViewSet, basename="question_categories-questions")
+question_router.register("questions", views.QuestionViewSet, basename="question_categories-questions")
 answer_router = routers.NestedDefaultRouter(question_router, "questions", lookup="questions")
 answer_router.register("answers", views.AnswerViewSet, basename="questions-answers")
 

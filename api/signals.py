@@ -22,3 +22,8 @@ def create_user_choice(sender, created, instance, *args, **kwargs):
             )
             instance.is_staff = True
             instance.save()
+
+
+# @receiver(post_save, sender=Enrollment)
+# def create_user_choice(sender, created, instance, *args, **kwargs):
+#     pass

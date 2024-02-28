@@ -47,7 +47,7 @@ class Student(models.Model):
     phone = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user}::{self.first_name} {self.last_name}"
 
 
 class Instructor(models.Model):
@@ -225,7 +225,22 @@ class Enrollment(models.Model):
 
     def __str__(self):
         return f"{self.courses.name} - {self.student.first_name}"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.completion_status and not hasattr(self, 'certificate'):
+            certificate_number = f"{self.courses.name[:3].upper()}-{self.student.id}-{self.id}"
+            Certificate.objects.create(enrollment=self, certificate_number=certificate_number)
 
+
+class Certificate(models.Model):
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    certificate_number = models.CharField(max_length=100, unique=True)
+    issue_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.enrollment.student.user.first_name} - {self.enrollment.student.user.last_name}'
+    
 
 class CourseManagement(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)

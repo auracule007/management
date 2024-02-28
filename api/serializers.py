@@ -293,6 +293,19 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         return validate_id(Courses, value)
 
 
+class UpdateEnrollmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        ref_name = 'update_enrollment_serializer'
+        model = Enrollment
+        fields = ['id','completion_status']
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certificate
+        fields = "__all__"
+
+
 # content upload management
 class GetContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()

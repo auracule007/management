@@ -129,7 +129,7 @@ class QuizQuestion(models.Model):
         ordering = ["-id"]
 
     def __str__(self):
-        return f"{self.instructor}::{self.title}"
+        return f"{self.title}"
 
 
 class Question(models.Model):
