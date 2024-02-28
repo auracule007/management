@@ -274,8 +274,11 @@ celerybeat-schedule.dir
 celerybeat-schedule
 dump.rdb 
 # db.sqlite3
-0039_remove_contentupload_course_module_course
 git restore --staged --worktree db.sqlite3
+db.sqlite3
+media/
+/media
+media
 
 
 

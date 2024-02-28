@@ -11,6 +11,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from subscriptions.emails import send_subscription_confirmation
 from subscriptions.models import Subscription
 from subscriptions.serializers import SubscriptionSerializer
+from utils import create_calendar
 
 from utils.calendars import create_google_calendar_event
 from utils.flutter import initiate_payment
@@ -117,6 +118,9 @@ class EnrollmentViewSet(ModelViewSet):
     def payment(self, request, pk):
         enrollment = self.get_object()
         amount = enrollment.courses.price
+        promotion_price = enrollment.courses.promotion_price
+        if promotion_price is not None:
+            amount = promotion_price
         email = request.user.email
         user_id = request.user.id
         first_name = request.user.first_name
@@ -436,13 +440,46 @@ class CourseEventViewset(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = CourseEvent.objects.all()
 
-    def perform_create(self, serializer):
-        # Create an event in Google Calendar and update the calendar_event_id field
-        # user_id=self.request.user.id
-        course_event = serializer.save(user_id=self.request.user.id)
-        event_id = create_google_calendar_event(course_event)
-        course_event.calendar_event_id = event_id
-        course_event.save()
+    # def create(self, request, *args, **kwargs):         
+        
+    #     user = request.user
+    #     data = request.data.copy()
+    #     data["user"] = user.id
+    #     try:
+    #         is_existing = self.queryset.get(user=user)
+    #         serializer = self.get_serializer(is_existing, data=data)
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     except CourseEvent.DoesNotExist:
+    #         serializer = self.get_serializer(data=data)
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save(user=user)
+    #         create_calendar(serializer.data['event_text'])
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     except Exception as e:
+    #         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    # def update(self, request, *args, **kwargs):
+    #     user = request.user
+    #     data = request.data.copy()
+    #     data["user"] = user.id
+    #     try:
+    #         instance = self.queryset.get(user=user)
+    #         serializer = self.get_serializer(instance, data=data)
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     except Exception as e:
+    #         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+       
+    #     # Create an event in Google Calendar and update the calendar_event_id field
+    #     # user_id=self.request.user.id
+    #     # course_event = serializer.save(user_id=self.request.user.id)
+    #     # event_id = create_google_calendar_event(course_event)
+    #     # course_event.calendar_event_id = event_id
+    #     # course_event.save()
 
 
 # course rating

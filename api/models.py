@@ -3,8 +3,9 @@ from django.core.validators import (FileExtensionValidator, MaxValueValidator,
                                     MinValueValidator)
 from django.db import models
 from django.urls import reverse
-from utils.choices import PLAN_CHIOCES, SCALE
 
+from utils.choices import PLAN_CHIOCES, SCALE
+from django.db.models import Q
 from utils.validators import validate_file_size
 
 
@@ -128,6 +129,39 @@ class Courses(models.Model):
         except Exception as e:
             print("ERROR WHILE GETING ABSOLUTE URL: ", e)
 
+    @property
+    def price_override(self):
+        try:
+            from promotion.models import Promotion
+            promo = Promotion.courses_on_promotion.through.objects.filter(Q(promotion_id__is_active=True) & Q(course_id=self.id)).select_related('promotion','course')
+            for x in promo:
+                return x.price_override
+        except Exception as err:
+            # print('Failed: ', err)
+            return False
+    
+    @property
+    def discounts(self):
+        try:
+            from promotion.models import Promotion
+            promo = Promotion.courses_on_promotion.through.objects.filter(Q(promotion_id__is_active=True) & Q(course_id=self.id)).select_related('promotion','course')
+            for x in promo:
+                return f'{x.promotion.promo_reduction}%'
+        except Exception as err:
+            # print('Failed: ', err)
+            return None
+
+    @property  
+    def promotion_price(self):
+        try:
+            from promotion.models import Promotion
+            promo = Promotion.courses_on_promotion.through.objects.filter(Q(promotion_id__is_active=True) & Q(course_id=self.id)).select_related('promotion','course')
+            for x in promo:
+                return x.promo_price
+        except Exception as err:
+            # print('Failed: ', err)
+            return None
+        
     @property
     def view_counter(self):
         try:
@@ -402,7 +436,7 @@ class CourseEvent(models.Model):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
     event_text = models.CharField(max_length=250)
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    end_date = models.DateTimeField(blank=True, null=True)
     calendar_event_id = models.CharField(max_length=250, blank=True, null=True)
 
     def __str__(self):
