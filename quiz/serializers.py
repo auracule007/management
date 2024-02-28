@@ -25,6 +25,9 @@ class QuizQuestionSerializer(serializers.ModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    instructor = serializers.StringRelatedField()
+    course = serializers.StringRelatedField()
+    quiz = serializers.StringRelatedField()
     class Meta:
         ref_name = "Question quiz"
         model = Question
@@ -33,6 +36,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             "instructor",
             "course",
             "quiz",
+            "title",
             "technique",
             "difficulty",
             "date_created",

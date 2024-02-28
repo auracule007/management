@@ -5,6 +5,8 @@ from django.db import transaction
 from .models import *
 from .serializers import *
 from django.db.models import Q
+from datetime import datetime, timedelta 
+
 
 class QuestionCategoryViewset(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete", "put"]
@@ -26,10 +28,19 @@ class QuestionViewSet(viewsets.ModelViewSet):
     queryset = (
         Question.objects.select_related("course", "quiz", "instructor")
         .prefetch_related("answer_question")
-        .filter(is_active=True)
     )
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        today = datetime.now().date()
+        start_of_week = today - timedelta(days=today.weekday())
+        end_of_week = start_of_week + timedelta(days=7)
+        return self.queryset.filter(
+                date_created__date__gte=start_of_week,
+                date_created__date__lte=end_of_week,
+                is_active=True
+            )
+    
 
 class AnswerViewSet(viewsets.ModelViewSet):
     serializer_class = AnswerSerializer
@@ -37,7 +48,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Answer.objects.filter(
-            question_id=self.kwargs.get("question_pk")
+            question_id=self.kwargs.get("questions_pk")
         ).select_related("instructor", "student", "question")
 
 
