@@ -5,6 +5,7 @@ from .models import *
 from utils.validators import validate_id
 from .emails import *
 from rest_framework.validators import UniqueTogetherValidator
+
 class QuestionCategorySerializer(serializers.ModelSerializer):
     instructor_id = serializers.IntegerField()
 
@@ -74,8 +75,10 @@ class AssignmentSubmissionSerializer(serializers.ModelSerializer):
 
     def validate_assignment_id(self, value):
         return validate_id(Assignment, value )
+    
     def validate_user_id(self, value):
         return validate_id( User, value)
+    
     def save(self, **kwargs):
         user_id = self.validated_data['user_id']
         assignment_id = self.validated_data['assignment_id']
@@ -115,6 +118,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
         return validate_id(
             Instructor, value
         )
+    
     def validate_course_id(self, value):
         return validate_id(
             Courses, value
@@ -152,10 +156,12 @@ class AnswerTheQuestionSerializer(serializers.ModelSerializer):
         return validate_id(
             Question, value
         )
+    
     def validate_student_id(self, value):
         return validate_id(
             Student, value
         )
+    
     def validate_instructor_id(self, value):
         return validate_id(
             Instructor, value
@@ -166,6 +172,7 @@ class QuizSubmissionSerializer(serializers.ModelSerializer):
     instructor_id = serializers.IntegerField()
     student_id = serializers.IntegerField()
     question_id = serializers.IntegerField()
+
     class Meta:
         model = QuizSubmission
         fields = (
@@ -183,10 +190,12 @@ class QuizSubmissionSerializer(serializers.ModelSerializer):
         return validate_id(
             Question, value
         )
+    
     def validate_student_id(self, value):
         return validate_id(
             Student, value
         )
+    
     def validate_instructor_id(self, value):
         return validate_id(
             Instructor, value
