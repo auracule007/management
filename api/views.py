@@ -65,8 +65,6 @@ class CoursesViewSet(ModelViewSet):
     def get_queryset(self):
         return Courses.objects.filter(category_id=self.kwargs.get('category_pk')).order_by("name")
         
-       
-
 
 # create course viewset
 class CreateCoursesViewSet(ModelViewSet):
@@ -95,7 +93,7 @@ class CourseRequirementViewSet(ModelViewSet):
 #     def get_queryset(self):
 #         return Module.objects.filter(course_id=self.kwargs.get('courses_pk')).select_related('course')
     
-
+from decimal import Decimal
 # enroll for a course viewset
 class EnrollmentViewSet(ModelViewSet):
     serializer_class = EnrollmentSerializer
@@ -107,29 +105,64 @@ class EnrollmentViewSet(ModelViewSet):
         ).select_related("courses", "student")
 
     def create(self, request):
-        serializers = EnrollmentSerializer(data=request.data)
-        if serializers.is_valid():
-            serializers.save(student=request.user.student)
-            return Response(serializers.data, status=status.HTTP_200_OK)
+        serializer = EnrollmentSerializer(data=request.data)
+        if serializer.is_valid():
+            # Get the course and its price
+            course_id = serializer.validated_data['courses_id']
+            course = Courses.objects.get(id=course_id)
+            course_price = course.price
+
+            # Calculate the new price based on the interval
+            interval = serializer.validated_data['interval']
+            if interval == 'Monthly':
+                new_price = course_price * Decimal('4')  # 4 weeks in a month
+            elif interval == 'Yearly':
+                new_price = course_price * Decimal('52')  # 52 weeks in a year
+            elif interval == 'Weekly':
+                new_price = course_price * Decimal('1')  # Price per week
+            else:
+                new_price = course_price
+            serializer.validated_data['price'] = new_price
+            enrollment = Enrollment.objects.create(
+                student=request.user.student,
+                courses_id=course_id,
+                interval=interval,
+                # date_enrolled=serializer.validated_data['date_enrolled']
+            )
+            return Response(EnrollmentSerializer(enrollment).data, status=status.HTTP_200_OK)
         else:
-            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['POST'])
     def payment(self, request, pk):
         enrollment = self.get_object()
-        amount = enrollment.courses.price
-        promotion_price = enrollment.courses.promotion_price
+        course = enrollment.courses
+        course_price = course.price
+
+        # Calculate the new price based on the interval
+        interval = enrollment.interval
+        if interval == 'Monthly':
+            new_price = course_price * Decimal('4')  # 4 weeks in a month
+        elif interval == 'Yearly':
+            new_price = course_price * Decimal('52')  # 52 weeks in a year
+        elif interval == 'Weekly':
+            new_price = course_price * Decimal('1')  # Price per week
+        else:
+            new_price = course_price
+
+        amount = new_price
+        promotion_price = course.promotion_price
         if promotion_price is not None:
             amount = promotion_price
+
         email = request.user.email
         user_id = request.user.id
         first_name = request.user.first_name
         last_name = request.user.last_name
         phone = request.user.phone
         enrollment_id = enrollment.pk
-        return initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone)
-    
-       
+        return initiate_payment(amount, email, enrollment_id, user_id, first_name, last_name, phone)
+
     @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
     def confirm_payment(self, request):
         enrollment_id = request.GET.get("enrollment_id")
@@ -139,27 +172,177 @@ class EnrollmentViewSet(ModelViewSet):
             enrollment = get_object_or_404(Enrollment, id=enrollment_id)
         except Enrollment.DoesNotExist:
             return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
-        subscribed = Subscription.objects.create(enrollment_id=enrollment.id,user_id=self.request.user.id)
+
+        # Get the course and its price
+        course = enrollment.courses
+        course_price = course.price
+
+        # Calculate the new price based on the interval
+        interval = enrollment.interval
+        if interval == 'Monthly':
+            new_price = course_price * Decimal('4')  # 4 weeks in a month
+        elif interval == 'Yearly':
+            new_price = course_price * Decimal('52')  # 52 weeks in a year
+        elif interval == 'Weekly':
+            new_price = course_price * Decimal('1')  # Price per week
+        else:
+            new_price = course_price
+
+        subscribed = Subscription.objects.create(enrollment_id=enrollment.id, user_id=self.request.user.id, price=new_price)
         status = request.GET.get("status")
         transaction_id = request.GET.get("transaction_id")
         try:
             if status == 'successful':
                 subscribed.pending_status = 'C'
-            else: 
+            else:
                 subscribed.pending_status = 'F'
         except Exception as err:
-            return Response({'error': err })
-        subscribed.transaction_id=transaction_id
+            return Response({'error': err})
+        subscribed.transaction_id = transaction_id
         subscribed.save()
         # email notification
         send_subscription_confirmation(enrollment_id)
         serializer = SubscriptionSerializer(subscribed)
-        
+
         data = {
             "message": "payment was successful",
             "data": serializer.data
         }
         return Response(data)
+
+    # @action(detail=True, methods=['POST'])
+    # def payment(self, request, pk):
+    #     enrollment = self.get_object()
+    #     course = enrollment.courses
+    #     course_price = course.price
+
+    #     # Calculate the new price based on the interval
+    #     interval = enrollment.interval
+    #     if interval == 'Monthly':
+    #         new_price = course_price * Decimal('4')  # 4 weeks in a month
+    #     elif interval == 'Yearly':
+    #         new_price = course_price * Decimal('52')  # 52 weeks in a year
+    #     elif interval == 'Weekly':
+    #         new_price = course_price * Decimal('1')  # Price per week
+    #     else:
+    #         new_price = course_price
+
+    #     # Update the course price in the database
+    #     course.price = new_price
+    #     course.save()
+
+    #     amount = new_price
+    #     promotion_price = course.promotion_price
+    #     if promotion_price is not None:
+    #         amount = promotion_price
+    #     email = request.user.email
+    #     user_id = request.user.id
+    #     first_name = request.user.first_name
+    #     last_name = request.user.last_name
+    #     phone = request.user.phone
+    #     enrollment_id = enrollment.pk
+    #     return initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone)    
+    
+    # @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
+    # def confirm_payment(self, request):
+    #     enrollment_id = request.GET.get("enrollment_id")
+    #     if not enrollment_id:
+    #         return Response({"error": "Missing enrollment_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+    #     try:
+    #         enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+    #     except Enrollment.DoesNotExist:
+    #         return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     # Get the course and its price
+    #     course = enrollment.courses
+    #     course_price = course.price
+
+    #     # Calculate the new price based on the interval
+    #     interval = enrollment.interval
+    #     if interval == 'Monthly':
+    #         new_price = course_price * Decimal('4')  # 4 weeks in a month
+    #     elif interval == 'Yearly':
+    #         new_price = course_price * Decimal('52')  # 52 weeks in a year
+    #     elif interval == 'Weekly':
+    #         new_price = course_price * Decimal('1')  # Price per week
+    #     else:
+    #         new_price = course_price
+
+    #     subscribed = Subscription.objects.create(enrollment_id=enrollment.id, user_id=self.request.user.id, price=new_price)
+    #     status = request.GET.get("status")
+    #     transaction_id = request.GET.get("transaction_id")
+    #     try:
+    #         if status == 'successful':
+    #             subscribed.pending_status = 'C'
+    #         else: 
+    #             subscribed.pending_status = 'F'
+    #     except Exception as err:
+    #         return Response({'error': err })
+    #     subscribed.transaction_id = transaction_id
+    #     subscribed.save()
+    #     # email notification
+    #     send_subscription_confirmation(enrollment_id)
+    #     serializer = SubscriptionSerializer(subscribed)
+        
+    #     data = {
+    #         "message": "payment was successful",
+    #         "data": serializer.data
+    #     }
+    #     return Response(data)
+    
+    # def create(self, request):
+    #     serializers = EnrollmentSerializer(data=request.data)
+    #     if serializers.is_valid():
+    #         serializers.save(student=request.user.student)
+    #         return Response(serializers.data, status=status.HTTP_200_OK)
+    #     else:
+    #         return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # @action(detail=True, methods=['POST'])
+    # def payment(self, request, pk):
+    #     enrollment = self.get_object()
+    #     amount = enrollment.courses.price
+    #     promotion_price = enrollment.courses.promotion_price
+    #     if promotion_price is not None:
+    #         amount = promotion_price
+    #     email = request.user.email
+    #     user_id = request.user.id
+    #     first_name = request.user.first_name
+    #     last_name = request.user.last_name
+    #     phone = request.user.phone
+    #     enrollment_id = enrollment.pk
+    #     return initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone)
+    
+    # @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
+    # def confirm_payment(self, request):
+    #     enrollment_id = request.GET.get("enrollment_id")
+    #     if not enrollment_id:
+    #         return Response({"error": "Missing enrollment_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+    #     try:
+    #         enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+    #     except Enrollment.DoesNotExist:
+    #         return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
+    #     subscribed = Subscription.objects.create(enrollment_id=enrollment.id,user_id=self.request.user.id)
+    #     status = request.GET.get("status")
+    #     transaction_id = request.GET.get("transaction_id")
+    #     try:
+    #         if status == 'successful':
+    #             subscribed.pending_status = 'C'
+    #         else: 
+    #             subscribed.pending_status = 'F'
+    #     except Exception as err:
+    #         return Response({'error': err })
+    #     subscribed.transaction_id=transaction_id
+    #     subscribed.save()
+    #     # email notification
+    #     send_subscription_confirmation(enrollment_id)
+    #     serializer = SubscriptionSerializer(subscribed)
+        
+    #     data = {
+    #         "message": "payment was successful",
+    #         "data": serializer.data
+    #     }
+    #     return Response(data)
     
 
 
