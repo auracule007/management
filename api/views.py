@@ -168,16 +168,16 @@ class EnrollmentViewSet(ModelViewSet):
     def confirm_payment(self, request):
         enrollment_id = request.GET.get("enrollment_id")
         if not enrollment_id:
-            return Response({"error": "Missing enrollment_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Missing enrollment_id parameter"},  status=status.HTTP_400_BAD_REQUEST)
         try:
             enrollment = get_object_or_404(Enrollment, id=enrollment_id)
         except Enrollment.DoesNotExist:
-            return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Invalid enrollment_id"}, status_code=status.HTTP_400_BAD_REQUEST)
         subscribed = Subscription.objects.create(enrollment_id=enrollment.id,user_id=self.request.user.id)
-        status = request.GET.get("status")
+        status_code = request.GET.get("status")
         transaction_id = request.GET.get("transaction_id")
         try:
-            if status == 'successful':
+            if status_code == 'successful':
                 subscribed.pending_status = 'C'
             else: 
                 subscribed.pending_status = 'F'
