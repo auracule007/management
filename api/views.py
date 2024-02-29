@@ -163,6 +163,7 @@ class EnrollmentViewSet(ModelViewSet):
         enrollment_id = enrollment.pk
         return initiate_payment(amount, email, enrollment_id, user_id, first_name, last_name, phone)
 
+
     @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
     def confirm_payment(self, request):
         enrollment_id = request.GET.get("enrollment_id")
@@ -172,43 +173,74 @@ class EnrollmentViewSet(ModelViewSet):
             enrollment = get_object_or_404(Enrollment, id=enrollment_id)
         except Enrollment.DoesNotExist:
             return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Get the course and its price
-        course = enrollment.courses
-        course_price = course.price
-
-        # Calculate the new price based on the interval
-        interval = enrollment.interval
-        if interval == 'Monthly':
-            new_price = course_price * Decimal('4')  # 4 weeks in a month
-        elif interval == 'Yearly':
-            new_price = course_price * Decimal('52')  # 52 weeks in a year
-        elif interval == 'Weekly':
-            new_price = course_price * Decimal('1')  # Price per week
-        else:
-            new_price = course_price
-
-        subscribed = Subscription.objects.create(enrollment_id=enrollment.id, user_id=self.request.user.id, price=new_price)
+        subscribed = Subscription.objects.create(enrollment_id=enrollment.id,user_id=self.request.user.id)
         status = request.GET.get("status")
         transaction_id = request.GET.get("transaction_id")
         try:
             if status == 'successful':
                 subscribed.pending_status = 'C'
-            else:
+            else: 
                 subscribed.pending_status = 'F'
         except Exception as err:
-            return Response({'error': err})
-        subscribed.transaction_id = transaction_id
+            return Response({'error': err })
+        subscribed.transaction_id=transaction_id
         subscribed.save()
         # email notification
         send_subscription_confirmation(enrollment_id)
         serializer = SubscriptionSerializer(subscribed)
-
+        
         data = {
             "message": "payment was successful",
             "data": serializer.data
         }
         return Response(data)
+
+    # @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
+    # def confirm_payment(self, request):
+    #     enrollment_id = request.GET.get("enrollment_id")
+    #     if not enrollment_id:
+    #         return Response({"error": "Missing enrollment_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+    #     try:
+    #         enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+    #     except Enrollment.DoesNotExist:
+    #         return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+    #     # Get the course and its price
+    #     course = enrollment.courses
+    #     course_price = course.price
+
+    #     # Calculate the new price based on the interval
+    #     interval = enrollment.interval
+    #     if interval == 'Monthly':
+    #         new_price = course_price * Decimal('4')  # 4 weeks in a month
+    #     elif interval == 'Yearly':
+    #         new_price = course_price * Decimal('52')  # 52 weeks in a year
+    #     elif interval == 'Weekly':
+    #         new_price = course_price * Decimal('1')  # Price per week
+    #     else:
+    #         new_price = course_price
+
+    #     subscribed = Subscription.objects.create(enrollment_id=enrollment.id, user_id=self.request.user.id, price=new_price)
+    #     status = request.GET.get("status")
+    #     transaction_id = request.GET.get("transaction_id")
+    #     try:
+    #         if status == 'successful':
+    #             subscribed.pending_status = 'C'
+    #         else:
+    #             subscribed.pending_status = 'F'
+    #     except Exception as err:
+    #         return Response({'error': err})
+    #     subscribed.transaction_id = transaction_id
+    #     subscribed.save()
+    #     # email notification
+    #     send_subscription_confirmation(enrollment_id)
+    #     serializer = SubscriptionSerializer(subscribed)
+
+    #     data = {
+    #         "message": "payment was successful",
+    #         "data": serializer.data
+    #     }
+    #     return Response(data)
 
   
     # @action(detail=True, methods=['POST'])
@@ -314,6 +346,38 @@ class EnrollmentViewSet(ModelViewSet):
     #     enrollment_id = enrollment.pk
     #     return initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone)
     
+    # @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
+    # def confirm_payment(self, request):
+    #     enrollment_id = request.GET.get("enrollment_id")
+    #     if not enrollment_id:
+    #         return Response({"error": "Missing enrollment_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+    #     try:
+    #         enrollment = get_object_or_404(Enrollment, id=enrollment_id)
+    #     except Enrollment.DoesNotExist:
+    #         return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
+    #     subscribed = Subscription.objects.create(enrollment_id=enrollment.id,user_id=self.request.user.id)
+    #     status = request.GET.get("status")
+    #     transaction_id = request.GET.get("transaction_id")
+    #     try:
+    #         if status == 'successful':
+    #             subscribed.pending_status = 'C'
+    #         else: 
+    #             subscribed.pending_status = 'F'
+    #     except Exception as err:
+    #         return Response({'error': err })
+    #     subscribed.transaction_id=transaction_id
+    #     subscribed.save()
+    #     # email notification
+    #     send_subscription_confirmation(enrollment_id)
+    #     serializer = SubscriptionSerializer(subscribed)
+        
+    #     data = {
+    #         "message": "payment was successful",
+    #         "data": serializer.data
+    #     }
+    #     return Response(data)
+
+
     # @action(detail=False, methods=["POST"], url_name='confirm-payment', url_path='confirm-payment')
     # def confirm_payment(self, request):
     #     enrollment_id = request.GET.get("enrollment_id")
