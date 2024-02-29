@@ -172,7 +172,7 @@ class EnrollmentViewSet(ModelViewSet):
         try:
             enrollment = get_object_or_404(Enrollment, id=enrollment_id)
         except Enrollment.DoesNotExist:
-            return Response({"error": "Invalid enrollment_id"}, status_code=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Invalid enrollment_id"}, status=status.HTTP_400_BAD_REQUEST)
         subscribed = Subscription.objects.create(enrollment_id=enrollment.id,user_id=self.request.user.id)
         status_code = request.GET.get("status")
         transaction_id = request.GET.get("transaction_id")
