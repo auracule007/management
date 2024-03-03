@@ -76,26 +76,66 @@ class UserDashboard(viewsets.ModelViewSet):
     serializer_class = CountDetailSerializer
     queryset = Enrollment.objects.select_related("student", "courses")
 
-    @action(detail=False, methods=["get"], url_name='completed-courses', url_path='completed-courses')
-    def completed_courses(self, request, *args, **kwargs):
-        enrolled_courses = (
-            self.queryset.filter(student__user=self.request.user).filter(completion_status=True).aggregate(total_number=Count("id"))
-            )
-        serializer = CountDetailSerializer(enrolled_courses)
-        return response.Response(serializer.data)
+    @action(detail=False, methods=["get"], url_name='dashboard-data', url_path='dashboard-data')
+    def dashboard_data(self, request, *args, **kwargs):
+        completed_courses = (
+            self.queryset.filter(student__user=self.request.user)
+            .filter(completion_status=True)
+            .aggregate(total_completed=Count("id"))
+        )
 
-    @action(detail=False, methods=["get"], url_name='to-do-courses', url_path='to-do-courses')
-    def to_do_courses(self, request, *args, **kwargs):
-        enrolled_courses = (
-            self.queryset.filter(student__user=self.request.user).filter(completion_status=False).aggregate(total_number=Count("id"))
-            )
-        serializer = CountDetailSerializer(enrolled_courses)
-        return response.Response(serializer.data)
+        to_do_courses = (
+            self.queryset.filter(student__user=self.request.user)
+            .filter(completion_status=False)
+            .aggregate(total_to_do=Count("id"))
+        )
 
-    @action(detail=False, methods=["get"], url_name='task-completed', url_path='task-completed')
-    def task_completed(self, request, *args, **kwargs):
-        questions = Question.objects.filter(course__enrollment__student__user=self.request.user).filter(is_completed=True, is_active=True).aggregate(total_number=Count("id"))
-        serializer = CountDetailSerializer(questions)
-        return response.Response(serializer.data)
+        task_completed = (
+            Question.objects.filter(course__enrollment__student__user=self.request.user)
+            .filter(is_completed=True, is_active=True)
+            .aggregate(total_tasks_completed=Count("id"))
+        )
+
+        certificate_count = Certificate.get_certificate_count(self.request.user)
+        all_certificates = Certificate.objects.filter(enrollment__student__user=self.request.user).values().all()
+
+        data = {
+            "completed_courses": completed_courses["total_completed"],
+            "to_do_courses": to_do_courses["total_to_do"],
+            "tasks_completed": task_completed["total_tasks_completed"],
+            "certificate_count": certificate_count,
+            "all_certificates": all_certificates,
+        }
+
+        return response.Response(data)
+
+
+# class UserDashboard(viewsets.ModelViewSet):
+#     http_method_names = ["get"]
+#     permission_classes = [permissions.IsAuthenticated]
+#     serializer_class = CountDetailSerializer
+#     queryset = Enrollment.objects.select_related("student", "courses")
+
+#     @action(detail=False, methods=["get"], url_name='completed-courses', url_path='completed-courses')
+#     def completed_courses(self, request, *args, **kwargs):
+#         enrolled_courses = (
+#             self.queryset.filter(student__user=self.request.user).filter(completion_status=True).aggregate(total_number=Count("id"))
+#             )
+#         serializer = CountDetailSerializer(enrolled_courses)
+#         return response.Response(serializer.data)
+
+#     @action(detail=False, methods=["get"], url_name='to-do-courses', url_path='to-do-courses')
+#     def to_do_courses(self, request, *args, **kwargs):
+#         enrolled_courses = (
+#             self.queryset.filter(student__user=self.request.user).filter(completion_status=False).aggregate(total_number=Count("id"))
+#             )
+#         serializer = CountDetailSerializer(enrolled_courses)
+#         return response.Response(serializer.data)
+
+#     @action(detail=False, methods=["get"], url_name='task-completed', url_path='task-completed')
+#     def task_completed(self, request, *args, **kwargs):
+#         questions = Question.objects.filter(course__enrollment__student__user=self.request.user).filter(is_completed=True, is_active=True).aggregate(total_number=Count("id"))
+#         serializer = CountDetailSerializer(questions)
+#         return response.Response(serializer.data)
     
     

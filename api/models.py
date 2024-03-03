@@ -232,6 +232,7 @@ class Enrollment(models.Model):
             certificate_number = f"{self.courses.name[:3].upper()}-{self.student.id}-{self.id}"
             Certificate.objects.create(enrollment=self, certificate_number=certificate_number)
 
+from django.db.models import Count
 
 class Certificate(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
@@ -241,6 +242,9 @@ class Certificate(models.Model):
     def __str__(self):
         return f'{self.enrollment.student.user.first_name} - {self.enrollment.student.user.last_name}'
     
+    @classmethod
+    def get_certificate_count(cls, user):
+        return cls.objects.filter(enrollment__student__user=user).count()
 
 class CourseManagement(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
@@ -324,11 +328,13 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
 
+from quiz.models import *
 class Modules(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE,blank=True, null=True)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     module_name = models.CharField(max_length=255)
     lessons = models.ManyToManyField(ContentUpload)
+    quiz = models.ManyToManyField(Question)
     is_starting_at = models.DateTimeField(blank=True, null=True)
     is_ending_at = models.DateTimeField(blank=True,null=True)
     is_active = models.BooleanField(default=False)

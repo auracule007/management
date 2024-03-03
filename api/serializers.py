@@ -380,12 +380,13 @@ class ContentUploadSerializer(serializers.ModelSerializer):
         return content_uploads_mail
 
 
+from quiz.serializers import QuestionSerializer
 class ModuleSerializer(serializers.ModelSerializer):
     lessons = GetContentUploadSerializer(many=True)
+    quiz= QuestionSerializer(many=True)
     class Meta:
         model = Modules
-        fields = ["id", "module_name","is_starting_at","is_ending_at","is_active","is_approved","lessons","date_uploaded","date_updated"]
-
+        fields = ["id", "module_name","is_starting_at","is_ending_at","is_active","is_approved","lessons", "quiz","date_uploaded","date_updated"]
 
 # class GetContentManagementSerializer(serializers.ModelSerializer):
 #     # course = serializers.SerializerMethodField()
