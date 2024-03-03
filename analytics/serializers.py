@@ -4,6 +4,12 @@ from rest_framework import serializers
 from api.models import *
 
 
+class CountDetailSerializer(serializers.Serializer):
+    # courses= serializers.CharField(max_length=255)
+    # total_number = serializers.IntegerField()
+    total_number = serializers.IntegerField()
+
+
 class CourseAnalyticSerializer(serializers.ModelSerializer):
     category = serializers.StringRelatedField()
 

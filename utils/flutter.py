@@ -4,7 +4,7 @@ from rest_framework.response import Response
 import uuid
 
 
-def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone):
+def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone,status,transaction_id,tx_ref):
     url = "https://api.flutterwave.com/v3/payments"
     headers = {
         "Authorization": f"Bearer {settings.FLUTTER_SECRET_KEY}"
@@ -16,7 +16,7 @@ def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name
         "amount": str(amount), 
         "currency": "NGN",
         "redirect_url": "http://localhost:3000/verify-payment?enrollment_id=" + str(enrollment_id),
-        # "redirect_url": "http:/127.0.0.1:8000/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
+        # "redirect_url": f"http:/127.0.0.1:8000/api/enrollment/confirm-payment/?enrollment_id={str(enrollment_id)}&status={status}&transaction_id={transaction_id}&tx_ref={tx_ref}",
         # "redirect_url": "https://codedexteracademy.onrender.com/api/enrollment/confirm-payment/?enrollment_id=" + str(enrollment_id),
         "meta": {
             "consumer_id": user_id,

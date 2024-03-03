@@ -160,7 +160,7 @@ class EnrollmentViewSet(ModelViewSet):
         first_name = request.user.first_name
         last_name = request.user.last_name
         phone = request.user.phone
-        enrollment_id = enrollment.pk
+        enrollment_id = enrollment.pk        
         return initiate_payment(amount, email, enrollment_id, user_id, first_name, last_name, phone)
 
 

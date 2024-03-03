@@ -1,17 +1,17 @@
 from django.db import models
-from api.models import ContentUpload, Courses, User
+from api.models import Modules, Courses, User
 
 
 class CourseUserProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Courses, on_delete=models.CASCADE)
-    completed_content_upload_lessons = models.ManyToManyField(ContentUpload, blank=True)
+    completed_content_upload_lessons = models.ManyToManyField(Modules, blank=True)
 
     def __str__(self):
         return f"{self.course.name}"
 
     def course_progress_percentage(self):
-        total_lessons = self.course.contentmanagement_set.count()
+        total_lessons = self.course.modules_set.count()
         completed_content_count = self.completed_content_upload_lessons.count()
         try:
             if total_lessons == 0:

@@ -5,6 +5,7 @@ from .serializers import *
 
 
 class CourseUserProgressViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
     serializer_class = CourseUserProgressSerializer
     queryset = CourseUserProgress.objects.all()
     permission_classes = [permissions.IsAuthenticated]
