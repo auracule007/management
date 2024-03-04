@@ -49,3 +49,5 @@ class AnswerAdmin(admin.ModelAdmin):
 admin.site.register(Assignment)
 admin.site.register(AssignmentSubmission)
 admin.site.register(QuizSubmission)
+admin.site.register(AwardForAssignmentSubmission)
+admin.site.register(AwardForQuizSubmission)

@@ -205,4 +205,14 @@ class QuizSubmissionSerializer(serializers.ModelSerializer):
             Instructor, value
         )
 
- 
+
+class AwardForAssignmentSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AwardForAssignmentSubmission
+        fields = "__all__"
+
+
+class AwardForQuizSubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AwardForQuizSubmission
+        fields = "__all__"

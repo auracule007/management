@@ -20,6 +20,7 @@ router.register(
 )
 router.register('assignments', views.AssignmentViewSet, basename='assignments')
 router.register('assignment-submissions', views.AssignmentSubmissionViewSet, basename='assignment-submissions')
+router.register('assignment-awards', views.AwardForAssignmentSubmissionViewSet, basename='assignment-awards')
 
 # nested routes
 # answer_router = routers.NestedDefaultRouter(router, "questions", lookup="question")
