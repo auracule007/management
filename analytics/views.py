@@ -76,7 +76,7 @@ class UserDashboard(viewsets.ModelViewSet):
     serializer_class = CountDetailSerializer
     queryset = Enrollment.objects.select_related("student", "courses")
 
-    @action(detail=False, methods=["get"], url_name='dashboard-data', url_path='dashboard-data')
+    @action(detail=False, methods=["get"], url_name='data', url_path='data')
     def dashboard_data(self, request, *args, **kwargs):
         completed_courses = (
             self.queryset.filter(student__user=self.request.user)

@@ -157,3 +157,23 @@ class AssignmentSubmissionViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user).select_related('assignment', 'user').order_by('date_submitted')
+
+
+class AwardForAssignmentSubmissionViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
+    serializer_class = AwardForAssignmentSubmissionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = AwardForAssignmentSubmission.objects.select_related('assignment_submission')
+
+    def get_queryset(self):
+        return self.queryset.filter(assignment_submission__user=self.request.user)
+
+
+class AwardForQuizSubmissionViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get']
+    serializer_class = AwardForQuizSubmissionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = AwardForQuizSubmission.objects.select_related('quiz_submission')
+
+    def get_queryset(self):
+        return self.queryset.filter(quiz_submission__user=self.request.user)

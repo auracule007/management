@@ -157,7 +157,6 @@ class Question(models.Model):
         auto_now_add=True, verbose_name=("Date Created")
     )
     date_updated = models.DateTimeField(verbose_name="Last Updated", auto_now=True)
-    is_completed = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False, verbose_name=("Active Status"))
 
     class Meta:
@@ -209,8 +208,28 @@ class QuizSubmission(models.Model):
     )
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     are_answers = models.ManyToManyField(Answer)
+    is_completed = models.BooleanField(default=False)
     points_earned = models.PositiveIntegerField(default=0)
     submitted_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.student.user.username}::{self.question.title}"
+
+
+class AwardForAssignmentSubmission(models.Model):
+    assignment_submission = models.ForeignKey(AssignmentSubmission, on_delete=models.CASCADE)
+    award_name = models.CharField(max_length=255)
+    issue_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.assignment_submission}'
+    
+
+class AwardForQuizSubmission(models.Model):
+    quiz_submission = models.ForeignKey(QuizSubmission, on_delete=models.CASCADE)
+    award_name = models.CharField(max_length=255)
+    issue_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.quiz_submission}'
+    
