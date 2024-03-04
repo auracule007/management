@@ -307,32 +307,13 @@ class CertificateSerializer(serializers.ModelSerializer):
 
 
 # content upload management
-# class GetContentUploadSerializer(serializers.ModelSerializer):
-#     user = serializers.SerializerMethodField()
-#     class Meta:
-#         model = ContentUpload
-#         fields = [
-#             "id",
-#             "user",
-#             "content",
-#             "content_title",
-#             "content_description",
-#             "date_uploaded",
-#             "date_updated",
-#         ]
-
-#     def get_user(self, obj):
-#         return obj.user.username
-
-
 class GetContentUploadSerializer(serializers.ModelSerializer):
-    # user = serializers.SerializerMethodField()
-
+    user = serializers.SerializerMethodField()
     class Meta:
         model = ContentUpload
         fields = [
             "id",
-            # "user",
+            "user",
             "content",
             "content_title",
             "content_description",
@@ -340,8 +321,27 @@ class GetContentUploadSerializer(serializers.ModelSerializer):
             "date_updated",
         ]
 
-    # def get_user(self, obj):
-    #     return obj.user.username
+    def get_user(self, obj):
+        return obj.user.username
+
+
+class GetContentUploadSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ContentUpload
+        fields = [
+            "id",
+            "user",
+            "content",
+            "content_title",
+            "content_description",
+            "date_uploaded",
+            "date_updated",
+        ]
+
+    def get_user(self, obj):
+        return obj.user.username
 
 
 class ContentUploadSerializer(serializers.ModelSerializer):
