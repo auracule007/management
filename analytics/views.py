@@ -1,6 +1,7 @@
 from django.db.models import Avg, Count, Max, Min, Sum
 from rest_framework import permissions, response, viewsets
 from rest_framework.decorators import action
+from quiz.serializers import AwardForAssignmentSubmissionSerializer
 
 from api.models import *
 from api.serializers import CourseSerializer
@@ -76,7 +77,7 @@ class UserDashboard(viewsets.ModelViewSet):
     serializer_class = CountDetailSerializer
     queryset = Enrollment.objects.select_related("student", "courses")
 
-    @action(detail=False, methods=["get"], url_name='dashboard-data', url_path='dashboard-data')
+    @action(detail=False, methods=["get"], url_name='data', url_path='data')
     def dashboard_data(self, request, *args, **kwargs):
         completed_courses = (
             self.queryset.filter(student__user=self.request.user)
@@ -92,12 +93,21 @@ class UserDashboard(viewsets.ModelViewSet):
 
         task_completed = (
             Question.objects.filter(course__enrollment__student__user=self.request.user)
-            .filter(is_completed=True, is_active=True)
+            # .filter(is_completed=True, is_active=True)
             .aggregate(total_tasks_completed=Count("id"))
         )
 
         certificate_count = Certificate.get_certificate_count(self.request.user)
         all_certificates = Certificate.objects.filter(enrollment__student__user=self.request.user).values().all()
+
+        # Get awards for assignments
+        awards_for_assignment = AwardForAssignmentSubmission.objects.filter(assignment_submission__user=self.request.user)
+        awards_for_assignment_count = awards_for_assignment.count()
+        awards_for_assignment_list = AwardForAssignmentSubmissionSerializer(awards_for_assignment, many=True).data
+
+        # Get awards for quizzes
+        awards_for_quiz_count = AwardForQuizSubmission.objects.filter(quiz_submission__student__user=self.request.user).count()
+        awards_for_quiz_list = AwardForQuizSubmission.objects.filter(quiz_submission__student__user=self.request.user).values().all()
 
         data = {
             "completed_courses": completed_courses["total_completed"],
@@ -105,9 +115,96 @@ class UserDashboard(viewsets.ModelViewSet):
             "tasks_completed": task_completed["total_tasks_completed"],
             "certificate_count": certificate_count,
             "all_certificates": all_certificates,
+            "awards_for_assignment_count": awards_for_assignment_count,
+            "awards_for_assignment_list": awards_for_assignment_list,
+            "awards_for_quiz_count": awards_for_quiz_count,
+            "awards_for_quiz_list": awards_for_quiz_list,
         }
 
         return response.Response(data)
+
+
+
+
+
+
+
+
+
+
+
+
+    # @action(detail=False, methods=["get"], url_name='data', url_path='data')
+    # def dashboard_data(self, request, *args, **kwargs):
+    #     completed_courses = (
+    #         self.queryset.filter(student__user=self.request.user)
+    #         .filter(completion_status=True)
+    #         .aggregate(total_completed=Count("id"))
+    #     )
+
+    #     to_do_courses = (
+    #         self.queryset.filter(student__user=self.request.user)
+    #         .filter(completion_status=False)
+    #         .aggregate(total_to_do=Count("id"))
+    #     )
+
+    #     task_completed = (
+    #         Question.objects.filter(course__enrollment__student__user=self.request.user)
+    #         # .filter(is_completed=True, is_active=True)
+    #         .aggregate(total_tasks_completed=Count("id"))
+    #     )
+
+    #     certificate_count = Certificate.get_certificate_count(self.request.user)
+    #     all_certificates = Certificate.objects.filter(enrollment__student__user=self.request.user).values().all()
+
+    #     data = {
+    #         "completed_courses": completed_courses["total_completed"],
+    #         "to_do_courses": to_do_courses["total_to_do"],
+    #         "tasks_completed": task_completed["total_tasks_completed"],
+    #         "certificate_count": certificate_count,
+    #         "all_certificates": all_certificates,
+    #     }
+
+    #     return response.Response(data)
+
+# class UserDashboard(viewsets.ModelViewSet):
+#     http_method_names = ["get"]
+#     permission_classes = [permissions.IsAuthenticated]
+#     serializer_class = CountDetailSerializer
+#     queryset = Enrollment.objects.select_related("student", "courses")
+
+#     @action(detail=False, methods=["get"], url_name='dashboard-data', url_path='dashboard-data')
+#     def dashboard_data(self, request, *args, **kwargs):
+#         completed_courses = (
+#             self.queryset.filter(student__user=self.request.user)
+#             .filter(completion_status=True)
+#             .aggregate(total_completed=Count("id"))
+#         )
+
+#         to_do_courses = (
+#             self.queryset.filter(student__user=self.request.user)
+#             .filter(completion_status=False)
+#             .aggregate(total_to_do=Count("id"))
+#         )
+
+#         task_completed = (
+#             Question.objects.filter(course__enrollment__student__user=self.request.user)
+#             .filter(is_completed=True, is_active=True)
+#             .aggregate(total_tasks_completed=Count("id"))
+#         )
+
+#         certificate_count = Certificate.get_certificate_count(self.request.user)
+#         all_certificates = Certificate.objects.filter(enrollment__student__user=self.request.user).values().all()
+
+#         data = {
+#             "completed_courses": completed_courses["total_completed"],
+#             "to_do_courses": to_do_courses["total_to_do"],
+#             "tasks_completed": task_completed["total_tasks_completed"],
+#             "certificate_count": certificate_count,
+#             "all_certificates": all_certificates,
+#         }
+
+#         return response.Response(data)
 
 
 

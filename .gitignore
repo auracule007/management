@@ -278,6 +278,6 @@ git restore --staged --worktree db.sqlite3
 # media/
 # /media
 # media
-
+note.txt 
 
 
