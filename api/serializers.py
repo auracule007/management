@@ -13,6 +13,7 @@ from gamification.models import PointSystem, QuizSubmissionPointSystem
 from utils.validators import validate_id
 from .emails import *
 from .models import *
+from quiz.serializers import QuestionSerializer
 
 
 class BaseTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -305,7 +306,7 @@ class CertificateSerializer(serializers.ModelSerializer):
         model = Certificate
         fields = "__all__"
 
-from quiz.serializers import QuestionSerializer
+
 # content upload management
 class GetContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
@@ -346,7 +347,7 @@ class GetContentUploadSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return obj.user.username
 
-from quiz.serializers import QuestionSerializer
+
 class ContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source="user.username", read_only=True)
     # module = ModuleSerializer()
@@ -384,10 +385,8 @@ class ContentUploadSerializer(serializers.ModelSerializer):
         return content_uploads_mail
 
 
-from quiz.serializers import QuestionSerializer
 class ModuleSerializer(serializers.ModelSerializer):
     lessons = GetContentUploadSerializer(many=True)
-    # quiz= QuestionSerializer(many=True)
     class Meta:
         model = Modules
         fields = ["id", "module_name","is_starting_at","is_ending_at","is_active","is_approved","lessons","date_uploaded","date_updated"]
