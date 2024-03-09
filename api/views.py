@@ -423,7 +423,7 @@ class ContentUploadViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,SubscriptionPermission]
 
     def get_queryset(self):
-        queryset = ContentUpload.objects.filter(course_id=self.kwargs.get('courses_pk')).filter(course__is_started=True).select_related("user")
+        queryset = ContentUpload.objects.filter(course_id=self.kwargs.get('courses_pk')).filter(course__is_started=True).select_related("user", "quiz")
         return queryset
 
     def get_serializer_class(self):

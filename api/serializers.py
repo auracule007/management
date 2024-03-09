@@ -305,15 +305,17 @@ class CertificateSerializer(serializers.ModelSerializer):
         model = Certificate
         fields = "__all__"
 
-
+from quiz.serializers import QuestionSerializer
 # content upload management
 class GetContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    quiz = QuestionSerializer(many=True, read_only=True)
     class Meta:
         model = ContentUpload
         fields = [
             "id",
             "user",
+            "quiz",
             "content",
             "content_title",
             "content_description",
@@ -327,13 +329,14 @@ class GetContentUploadSerializer(serializers.ModelSerializer):
 
 class GetContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
-
+    quiz = QuestionSerializer(many=True, read_only=True)
     class Meta:
         model = ContentUpload
         fields = [
             "id",
             "user",
             "content",
+            "quiz",
             "content_title",
             "content_description",
             "date_uploaded",
@@ -343,16 +346,17 @@ class GetContentUploadSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return obj.user.username
 
-
+from quiz.serializers import QuestionSerializer
 class ContentUploadSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source="user.username", read_only=True)
     # module = ModuleSerializer()
+    quiz= QuestionSerializer(many=True)
     class Meta:
         model = ContentUpload
         fields = [
             "id",
             "user",
-            # "modules",
+            "quiz",
             "content",
             "content_title",
             "content_description",
@@ -383,10 +387,11 @@ class ContentUploadSerializer(serializers.ModelSerializer):
 from quiz.serializers import QuestionSerializer
 class ModuleSerializer(serializers.ModelSerializer):
     lessons = GetContentUploadSerializer(many=True)
-    quiz= QuestionSerializer(many=True)
+    # quiz= QuestionSerializer(many=True)
     class Meta:
         model = Modules
-        fields = ["id", "module_name","is_starting_at","is_ending_at","is_active","is_approved","lessons", "quiz","date_uploaded","date_updated"]
+        fields = ["id", "module_name","is_starting_at","is_ending_at","is_active","is_approved","lessons","date_uploaded","date_updated"]
+        # fields = ["id", "module_name","is_starting_at","is_ending_at","is_active","is_approved","lessons", "quiz","date_uploaded","date_updated"]
 
 # class GetContentManagementSerializer(serializers.ModelSerializer):
 #     # course = serializers.SerializerMethodField()

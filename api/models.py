@@ -280,9 +280,10 @@ class CourseManagement(models.Model):
 
 #     class Meta:
 #         ordering = ('date_created',)
-    
+from quiz.models import *
 class ContentUpload(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ManyToManyField(Question)
     # module = models.ForeignKey(Module, on_delete=models.CASCADE, blank=True, null=True)
     # course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     content = models.FileField(
@@ -334,7 +335,7 @@ class Modules(models.Model):
     course = models.ForeignKey(Courses, on_delete=models.CASCADE, blank=True, null=True)
     module_name = models.CharField(max_length=255)
     lessons = models.ManyToManyField(ContentUpload)
-    quiz = models.ManyToManyField(Question)
+    # quiz = models.ManyToManyField(Question)
     is_starting_at = models.DateTimeField(blank=True, null=True)
     is_ending_at = models.DateTimeField(blank=True,null=True)
     is_active = models.BooleanField(default=False)

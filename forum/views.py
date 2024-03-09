@@ -13,7 +13,7 @@ from .serializers import *
 
 class ForumQuestionViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = BasePagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = ForumQuestionFilter
@@ -31,7 +31,7 @@ class ForumQuestionViewSet(viewsets.ModelViewSet):
         return {"user_id": self.request.user.id}
 
     @action(
-        methods=["post"], detail=True, permission_classes=[permissions.IsAuthenticated]
+        methods=["post"], detail=True, permission_classes=[permissions.IsAuthenticatedOrReadOnly]
     )
     def upvotes(self, request, pk):
         try:
@@ -76,7 +76,7 @@ class ForumQuestionViewSet(viewsets.ModelViewSet):
 
 class ForumAnswerViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "patch", "delete"]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = BasePagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ["forum_question__title", "description"]
@@ -105,7 +105,7 @@ class ForumAnswerViewSet(viewsets.ModelViewSet):
     @action(
         methods=["post"],
         detail=True,
-        permission_classes=[permissions.IsAuthenticated],
+        permission_classes=[permissions.IsAuthenticatedOrReadOnly],
         url_path="upvotes",
         url_name="upvotes",
     )
