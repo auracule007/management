@@ -4,7 +4,6 @@ from rest_framework.response import Response
 import uuid
 
 
-# def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone,status,transaction_id,tx_ref):
 def initiate_payment(amount, email, enrollment_id,user_id, first_name, last_name, phone):
     url = "https://api.flutterwave.com/v3/payments"
     headers = {

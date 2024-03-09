@@ -246,6 +246,8 @@ class Certificate(models.Model):
     def get_certificate_count(cls, user):
         return cls.objects.filter(enrollment__student__user=user).count()
 
+
+    
 class CourseManagement(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
     courses = models.ForeignKey(Courses, on_delete=models.CASCADE)
