@@ -8,12 +8,13 @@ router.register(
     "question-categories", views.QuestionCategoryViewset, basename="question-categories"
 )
 question_router = routers.NestedDefaultRouter(router, "question-categories", lookup="question_categories")
-question_router.register("questions", views.QuestionViewSet, basename="question_categories-questions")
+question_router.register("questions", views.QuizQuestionViewSet, basename="question_categories-questions")
+# question_router.register("questions", views.QuestionViewSet, basename="question_categories-questions")
 answer_router = routers.NestedDefaultRouter(question_router, "questions", lookup="questions")
 answer_router.register("answers", views.AnswerViewSet, basename="questions-answers")
 
 
-router.register("quiz-questions", views.QuizQuestionViewSet, basename="quiz-questions")
+# router.register("quiz-questions", views.QuizQuestionViewSet, basename="quiz-questions")
 # router.register("questions", views.QuestionViewSet, basename="questions")
 router.register(
     "quiz-submissions", views.QuizSubmissionViewSet, basename="quiz-submissions"
