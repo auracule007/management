@@ -415,7 +415,7 @@ class CertificateViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CertificateSerializer
     def get_queryset(self):
-        return Certificate.objects.filter(enrollment_id=self.kwargs.get('enrollment_pk'))
+        return Certificate.objects.filter(enrollment__student__user=self.request.user).filter(enrollment_id=self.kwargs.get('enrollment_pk'))
     
 
 class ContentUploadViewSet(ModelViewSet):

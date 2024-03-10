@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
-
+from utils.pdf import create_pdf
 from . import views
 
 router = routers.DefaultRouter()
@@ -73,4 +73,5 @@ urlpatterns = [
     # path('auth/users/', views.UserCreateView.as_view(), name='user-create'),
     path("search/<username>", views.SearchUserView.as_view()),
     path("grade-submission/", views.GradeSubmissionView.as_view()),
+    path("enrollment/<int:enrollment_id>/certificate/<int:pk>/pdf/", create_pdf, name='create_pdf')
 ]
