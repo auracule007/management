@@ -15,8 +15,8 @@ QUESTION_CHOICE_MODE = (
 )
 
 COMPLETION_STATUS = (
-    (("Complete"), ("Complete")),
-    (("Uncomplete"), ("Uncomplete")),
+    (("Completed"), ("Completed")),
+    (("Uncompleted"), ("Uncompleted")),
 )
 
 PLAN_CHIOCES = (

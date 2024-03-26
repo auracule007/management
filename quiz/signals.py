@@ -1,5 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db import IntegrityError
+from performance.models import UserPerformance
 from .models import *
 
 
@@ -17,6 +19,19 @@ def create_award_for_assignment_submission(sender, instance, created, **kwargs):
                 award_name=f"Award for {assignment.assignment_title}",
             )
 
+
+@receiver(post_save, sender=AssignmentSubmission)
+def update_user_performance(sender, instance, created, **kwargs):
+    try:
+        if created and instance.is_completed:
+            user_id = instance.user.id
+            user_performance, _ = UserPerformance.objects.get_or_create(user_id=user_id)
+            user_performance.calculate_overall_performance_percentage(user_id)
+            user_performance.update_performance_percentage(user_id)
+            user_performance.save()
+    except IntegrityError as e:
+        print("Integrity error occurred:", e)
+        
 
 @receiver(post_save, sender=QuizSubmission)
 def create_award_for_quiz_submission(sender, instance, created, **kwargs):

@@ -307,3 +307,8 @@ CELERY_BEAT_SCHEDULE = {
     "schedule": crontab(minute="*")
   },
 }
+
+# code editor
+CODE_EVALUATION_URL = u'https://api.hackerearth.com/v4/partner/code-evaluation/submissions/'
+CLIENT_SECRET = config('CLIENT_SECRET')
+

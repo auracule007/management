@@ -1,10 +1,10 @@
 from django.core.validators import FileExtensionValidator, MinValueValidator
-from django.db import models
+from django.db import IntegrityError, models, transaction
 
 from api.models import Courses, Instructor, Student, User
+
 from utils.choices import *
 from utils.validators import validate_file_size
-
 
 
 # Assignment
@@ -40,8 +40,10 @@ class Assignment(models.Model):
     date_given = models.DateTimeField()
     date_to_be_submitted = models.DateTimeField()
     date_created = models.DateTimeField(auto_now_add=True)
+
     class Meta:
-        ordering = ('date_created',)
+        ordering = ("date_created",)
+
     def __str__(self):
         return f"Assignment::{self.assignment_title}"
 
@@ -76,9 +78,10 @@ class AssignmentSubmission(models.Model):
     date_submitted = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ('date_submitted',)
+        ordering = ("date_submitted",)
+
     def __str__(self):
-        return f"{self.assignment.assignment_title}"
+        return f"{self.user}:::{self.assignment.assignment_title}"
 
     def __init__(self, *args, **kwargs):
         super(AssignmentSubmission, self).__init__(*args, **kwargs)
@@ -86,12 +89,17 @@ class AssignmentSubmission(models.Model):
 
     def save(self, *args, **kwargs):
         try:
+
             if not self.pk:
                 if self.is_completed:
                     self.points += 1
+                    # create the user performance for assignment
+
             else:
                 if self.is_completed and not self._original_is_completed:
                     self.points += 1
+                    # create the user performance for assignment
+
                 elif not self.is_completed and self._original_is_completed:
                     self.points -= 1
             super(AssignmentSubmission, self).save(*args, **kwargs)
@@ -217,13 +225,15 @@ class QuizSubmission(models.Model):
 
 
 class AwardForAssignmentSubmission(models.Model):
-    assignment_submission = models.ForeignKey(AssignmentSubmission, on_delete=models.CASCADE)
+    assignment_submission = models.ForeignKey(
+        AssignmentSubmission, on_delete=models.CASCADE
+    )
     award_name = models.CharField(max_length=255)
     issue_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.assignment_submission}'
-    
+        return f"{self.assignment_submission}"
+
 
 class AwardForQuizSubmission(models.Model):
     quiz_submission = models.ForeignKey(QuizSubmission, on_delete=models.CASCADE)
@@ -231,5 +241,4 @@ class AwardForQuizSubmission(models.Model):
     issue_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.quiz_submission}'
-    
+        return f"{self.quiz_submission}"
