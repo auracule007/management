@@ -23,6 +23,7 @@ course_requirement = routers.NestedDefaultRouter(cat_router, "courses",lookup="c
 course_requirement.register('requirements',views.CourseRequirementViewSet, basename="courses-requirements")
 course_module = routers.NestedDefaultRouter(cat_router, "courses",lookup="courses")
 course_module.register('module',views.ModuleViewSet, basename="courses-module")
+# category/1/courses/1/module/
 
 # router.register(
 #     "content-managements",
