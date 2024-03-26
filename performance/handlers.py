@@ -129,11 +129,74 @@ def calculate_completion_status_for_modules(user):
     else:
         return False
 
-def update_user_performance_for_modules(user):
-    user_performance, created = UserPerformanceForModuleCompletion.objects.get_or_create(user=user)
-    user_performance.progress_percentage = calculate_progress_percentage_for_module(user)
-    user_performance.completion_status = calculate_completion_status_for_modules(user)
+def update_user_performance(user_id):
+    user_performance, created = UserPerformance.objects.get_or_create(user_id=user_id)
+    # Calculate the number of each reward type
+    highfives = ModulesHighFive.objects.filter(user=user_performance.user).count()
+    points = PointForEachModule.objects.filter(user=user_performance.user).count()
+    gems = GemForEachPoint.objects.filter(user=user_performance.user).count()
+    coins = Coin.objects.filter(user=user_performance.user).count()
+    tokens = Token.objects.filter(user=user_performance.user).count()
+
+    # Award rewards based on the current count
+    while highfives >= 5:
+        user_performance.points += 1
+        highfives -= 5
+
+    while points >= 20:
+        user_performance.gems += 1
+        points -= 20
+
+    while gems >= 10:
+        user_performance.coins += 1
+        gems -= 10
+
+    while coins >= 10:
+        user_performance.tokens += 1
+        coins -= 10
+
+    while tokens >= 10:
+        user_performance.tokens -= 10
+        user_performance.badges += 1
+
     user_performance.save()
+
+# def update_user_performance(user_id):
+#     overall_percentage = UserPerformance.calculate_overall_performance_percentage(user_id)
+#     user_performance, created = UserPerformance.objects.get_or_create(user_id=user_id)
+#     user_performance.progress_percentage = overall_percentage
+#     user_performance.save()
+
+#     highfives = ModulesHighFive.objects.filter(user=user_performance.user).count()
+#     points = PointForEachModule.objects.filter(user=user_performance.user).count()
+#     gems = GemForEachPoint.objects.filter(user=user_performance.user).count()
+#     coins = Coin.objects.filter(user=user_performance.user).count()
+#     tokens = Token.objects.filter(user=user_performance.user).count()
+
+#     # Award rewards based on progress percentage
+#     if highfives >= 5:
+#         user_performance.points += 1
+#         ModulesHighFive.objects.filter(user=user_performance.user).delete()
+#     if user_performance.points >= 20:
+#         user_performance.gems += 1
+#         user_performance.points -= 20
+#     if user_performance.gems >= 10:
+#         user_performance.coins += 1
+#         user_performance.gems -= 10
+#     if user_performance.coins >= 10:
+#         user_performance.tokens += 1
+#         user_performance.coins -= 10
+#     if user_performance.tokens >= 10:
+#         user_performance.tokens -= 10
+#         user_performance.badges += 1
+
+#     user_performance.save()
+
+# def update_user_performance_for_modules(user):
+#     user_performance, created = UserPerformanceForModuleCompletion.objects.get_or_create(user=user)
+#     user_performance.progress_percentage = calculate_progress_percentage_for_module(user)
+#     user_performance.completion_status = calculate_completion_status_for_modules(user)
+#     user_performance.save()
 
 def calculate_score_percentage(user, quiz):
     total_questions = quiz.question.count()
