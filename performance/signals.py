@@ -14,8 +14,10 @@ from .handlers import *
 @receiver(post_save, sender=QuizSubmission)
 def quiz_completed_handler(sender, instance, created, **kwargs):
     if not created:
-        user = instance.user
+        user = instance.student.user.id
         update_user_performance(user)
+        # user = instance.user
+        # update_user_performance(user)
 
 
 @receiver(pre_save, sender=Modules)

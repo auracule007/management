@@ -73,15 +73,34 @@ def update_user_performance(user_id):
 
     # Award rewards based on progress percentage
     if overall_percentage <= 39:
-        ModulesHighFive.objects.create(user=user_id)
+        ModulesHighFive.objects.create(user=user_performance.user)
     elif 40 <= overall_percentage <= 50:
-        PointForEachModule.objects.create(user=user_id)
+        PointForEachModule.objects.create(user=user_performance.user)
     elif 51 <= overall_percentage <= 60:
-        GemForEachPoint.objects.create(user=user_id)
+        GemForEachPoint.objects.create(user=user_performance.user)
     elif 70 <= overall_percentage <= 90:
-        Coin.objects.create(user=user_id)
+        coin = Coin.objects.create(user=user_performance.user)
+        Token.objects.create(user=user_performance.user, coin=coin)
     elif 90 <= overall_percentage <= 100:
-        Token.objects.create(user=user_id)
+        Token.objects.create(user=user_performance.user, coin=None)
+
+# def update_user_performance(user_id):
+#     overall_percentage = UserPerformance.calculate_overall_performance_percentage(user_id)
+#     user_performance, created = UserPerformance.objects.get_or_create(user_id=user_id)
+#     user_performance.progress_percentage = overall_percentage
+#     user_performance.save()
+
+#     # Award rewards based on progress percentage
+#     if overall_percentage <= 39:
+#         ModulesHighFive.objects.create(user=user_id)
+#     elif 40 <= overall_percentage <= 50:
+#         PointForEachModule.objects.create(user=user_id)
+#     elif 51 <= overall_percentage <= 60:
+#         GemForEachPoint.objects.create(user=user_id)
+#     elif 70 <= overall_percentage <= 90:
+#         Coin.objects.create(user=user_id)
+#     elif 90 <= overall_percentage <= 100:
+#         Token.objects.create(user=user_id)
 
 
 # def update_user_performance(user):
@@ -115,3 +134,15 @@ def update_user_performance_for_modules(user):
     user_performance.progress_percentage = calculate_progress_percentage_for_module(user)
     user_performance.completion_status = calculate_completion_status_for_modules(user)
     user_performance.save()
+
+def calculate_score_percentage(user, quiz):
+    total_questions = quiz.question.count()
+    total_correct = QuizSubmission.objects.filter(
+        user=user, question__in=quiz.question.all(), is_completed=True
+    ).count()
+
+    if total_questions == 0:
+        return 0
+
+    score_percentage = (total_correct / total_questions) * 100
+    return score_percentage

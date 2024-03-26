@@ -1,9 +1,11 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import IntegrityError
-from performance.models import UserPerformance
 from .models import *
+from performance.models import ModulesHighFive, PointForEachModule, GemForEachPoint, Coin, Token, UserPerformance
+from performance.handlers import calculate_score_percentage
 
+# from performance.models import 
 
 @receiver(post_save, sender=AssignmentSubmission)
 def create_award_for_assignment_submission(sender, instance, created, **kwargs):
@@ -45,3 +47,21 @@ def create_award_for_quiz_submission(sender, instance, created, **kwargs):
             AwardForQuizSubmission.objects.create(
                 quiz_submission=instance, award_name=f"Award for {question.title}"
             )
+
+@receiver(post_save, sender=QuizSubmission)
+def award_rewards(sender, instance, created, **kwargs):
+    if created:
+        user = instance.user
+        quiz = instance.quiz
+        score_percentage = calculate_score_percentage(user, quiz)
+
+        if score_percentage <= 39:
+            ModulesHighFive.objects.create(user=user)
+        elif 40 <= score_percentage <= 50:
+            PointForEachModule.objects.create(user=user)
+        elif 51 <= score_percentage <= 60:
+            GemForEachPoint.objects.create(user=user)
+        elif 70 <= score_percentage <= 90:
+            Coin.objects.create(user=user)
+        elif 90 <= score_percentage <= 100:
+            Token.objects.create(user=user)

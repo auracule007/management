@@ -93,16 +93,16 @@ class PointForEachModule(GradingSystem):
         from api.models import Modules
     except Exception as e:
         print(e)
-    modules_high_five = models.ForeignKey(Modules, on_delete=models.CASCADE)
+    modules_high_five = models.ForeignKey(Modules, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class GemForEachPoint(GradingSystem):
-    point_for_each_module = models.ForeignKey(PointForEachModule, on_delete=models.CASCADE)
+    point_for_each_module = models.ForeignKey(PointForEachModule, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Coin(GradingSystem):
-    gems = models.ForeignKey(GemForEachPoint, on_delete=models.CASCADE)
+    gems = models.ForeignKey(GemForEachPoint, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Token(GradingSystem):
-    coin = models.ForeignKey(Coin, on_delete=models.CASCADE)
+    coin = models.ForeignKey(Coin, on_delete=models.CASCADE, null=True, blank=True)
