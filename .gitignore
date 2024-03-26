@@ -274,10 +274,8 @@ celerybeat-schedule.dir
 celerybeat-schedule
 dump.rdb 
 git restore --staged --worktree db.sqlite3
-# db.sqlite3
-# media/
-# /media
-# media
+db.sqlite3
+media
 note.txt 
 
 

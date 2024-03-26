@@ -331,6 +331,7 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
 
+
 from quiz.models import *
 class Modules(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE,blank=True, null=True)
@@ -342,6 +343,7 @@ class Modules(models.Model):
     is_ending_at = models.DateTimeField(blank=True,null=True)
     is_active = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
     date_uploaded = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     date_updated = models.DateField(auto_now=True)
 
@@ -468,3 +470,16 @@ class CourseEvent(models.Model):
 
     class Meta:
         ordering = ["-start_date"]
+
+
+# class Code(models.Model):
+#     LANGUAGE = (
+#         ('PYTHON3', 'PYTHON3'),
+#         ('JAVA', 'JAVA'),
+#         ('JAVASCRIPT', 'JAVASCRIPT'),
+#         ('SCRATCH', 'SCRATCH'),
+#     )
+#     title = models.CharField(max_length=255, blank=True, null=True)
+#     program_language = models.CharField(max_length=50, choices=LANGUAGE)
+#     program_code = models.TextField()
+#     created_at = models.DateField(auto_now_add=True)

@@ -2,6 +2,8 @@ from rest_framework import permissions, viewsets, response, status, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from api.models import Instructor, Student
 from django.db import transaction
+
+from performance.models import UserPerformance
 from .models import *
 from .serializers import *
 from django.db.models import Q
@@ -153,8 +155,24 @@ class AssignmentSubmissionViewSet(viewsets.ModelViewSet):
         if self.request.method in ['PUT','PATCH']:
             return UpdateAssignmentSubmissionSerializer
         return self.serializer_class
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    
+    # def perform_create(self, serializer):
+    #     try:
+
+    #         user_performance, created = UserPerformance.objects.get_or_create(user=self.request.user)
+    #         user_performance.update_performance_percentage(self.request.user)
+
+    #         return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     except Exception as e:
+    #         return response.Response(
+    #             {
+    #                 "status": "error",
+    #                 "message": "Failed to calculate the performance",
+    #                 "data": str(e),
+    #             },
+    #             status=status.HTTP_400_BAD_REQUEST,
+    #         )
+
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user).select_related('assignment', 'user').order_by('date_submitted')
 
