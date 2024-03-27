@@ -3,6 +3,7 @@ from django.db import IntegrityError, models, transaction
 
 from api.models import Courses, Instructor, Student, User
 
+from performance.models import UserPerformance
 from utils.choices import *
 from utils.validators import validate_file_size
 
@@ -93,15 +94,15 @@ class AssignmentSubmission(models.Model):
             if not self.pk:
                 if self.is_completed:
                     self.points += 1
-                    # create the user performance for assignment
-
+                    self.update_user_performance()
             else:
                 if self.is_completed and not self._original_is_completed:
                     self.points += 1
-                    # create the user performance for assignment
+                    self.update_user_performance()
 
                 elif not self.is_completed and self._original_is_completed:
                     self.points -= 1
+                    self.update_user_performance()
             super(AssignmentSubmission, self).save(*args, **kwargs)
             self._original_is_completed = self.is_completed
         except Exception as e:
@@ -110,7 +111,60 @@ class AssignmentSubmission(models.Model):
                 e,
             )
 
+    def update_user_performance(self):
+        try:
+            user_id = self.user_id
+            user_performance, _ = UserPerformance.objects.get_or_create(user_id=user_id)
+            user_performance.calculate_overall_performance_percentage(user_id)
+            user_performance.update_performance_percentage(user_id)
+            user_performance.save()
+        except Exception as e:
+            print("Integrity error occurred:", e)
 
+# ASSIGNMENT SUBMISSION
+    
+class PointForEachAssignmentSubmission(models.Model):
+    
+    assignment_submission = models.ForeignKey(AssignmentSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class GemForEachPointAssignmentSubmission(models.Model):
+    point_for_each_assignment_submission = models.ForeignKey(PointForEachAssignmentSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class CoinAssignmentSubmission(models.Model):
+    gems = models.ForeignKey(GemForEachPointAssignmentSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class TokenAssignmentSubmission(models.Model):
+    coin = models.ForeignKey(CoinAssignmentSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+    
+    
 # Quiz
 class QuestionCategory(models.Model):
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)

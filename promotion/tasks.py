@@ -1,6 +1,4 @@
 from datetime import datetime
-from decimal import Decimal
-from math import ceil
 from celery import shared_task
 from django.db import transaction
 from .models import *

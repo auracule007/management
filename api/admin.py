@@ -69,3 +69,8 @@ class InstructorAdmin(admin.ModelAdmin):
 class ChatMessageAdmin(admin.ModelAdmin):
     list_display = ["sender", "receiver", "message", "is_read"]
     list_editable = ["is_read"]
+
+admin.site.register(GemForEachPoint)
+admin.site.register(Coin)
+admin.site.register(Token)
+admin.site.register(ModulesHighFive)

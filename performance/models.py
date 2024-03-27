@@ -1,7 +1,4 @@
 from django.db import models
-
-
-
 from utils.choices import *
 
 
@@ -39,7 +36,7 @@ class UserPerformance(models.Model):
         user_performance.save()
         print('user_performance.progress_percentage :', user_performance.progress_percentage )
         # Update completion status if needed
-        if overall_percentage == 100:
+        if user_performance.progress_percentage == 100:
             user_performance.completion_status = "Complete"
         else:
             user_performance.completion_status = "Incomplete"
@@ -63,46 +60,4 @@ class UserPerformanceForModuleCompletion(models.Model):
 
 
 
-class GradingSystem(models.Model):
-    try:
-        from api.models import User
-    except Exception as e:
-        print(e)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    counter = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self) -> str:
-        return f'{self.user}'
-
-    class Meta:
-        abstract = True
-
-class ModulesHighFive(GradingSystem):
-    try:
-        from api.models import Modules
-    except Exception as e:
-        print(e)
-    '''This is the model for creating High five for the'''
-    modules = models.ForeignKey(Modules, on_delete=models.CASCADE)
-
-
-class PointForEachModule(GradingSystem):
-    try:
-        from api.models import Modules
-    except Exception as e:
-        print(e)
-    modules_high_five = models.ForeignKey(Modules, on_delete=models.CASCADE, null=True, blank=True)
-
-
-class GemForEachPoint(GradingSystem):
-    point_for_each_module = models.ForeignKey(PointForEachModule, on_delete=models.CASCADE, null=True, blank=True)
-
-
-class Coin(GradingSystem):
-    gems = models.ForeignKey(GemForEachPoint, on_delete=models.CASCADE, null=True, blank=True)
-
-
-class Token(GradingSystem):
-    coin = models.ForeignKey(Coin, on_delete=models.CASCADE, null=True, blank=True)
+    

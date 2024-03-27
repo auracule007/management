@@ -111,10 +111,10 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'codexterdb',
-#         'USER': 'postgres',
-#         'PASSWORD': 'samsung',
-#         'HOST': 'localhost',  # Or the IP address of your PostgreSQL server
+#         'NAME': config('NAME'),
+#         'USER': config('USER'),
+#         'PASSWORD': config('PASSWORD'),
+#         'HOST': '127.0.0.1',  # Or the IP address of your PostgreSQL server
 #         'PORT': 5432,        # Or the port your PostgreSQL server is listening on
 #     }
 # }
