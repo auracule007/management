@@ -15,7 +15,7 @@ from .handlers import *
 def quiz_completed_handler(sender, instance, created, **kwargs):
     if not created:
         user = instance.student.user.id
-        update_user_performance(user)
+        update_user_quiz_performance(user)
         # user = instance.user
         # update_user_performance(user)
 

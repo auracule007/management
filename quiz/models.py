@@ -3,7 +3,7 @@ from django.db import IntegrityError, models, transaction
 
 from api.models import Courses, Instructor, Student, User
 
-from performance.models import UserPerformance
+from performance.models import UserPerformance, UserQuizPerformance
 from utils.choices import *
 from utils.validators import validate_file_size
 
@@ -276,6 +276,86 @@ class QuizSubmission(models.Model):
 
     def __str__(self):
         return f"{self.student.user.username}::{self.question.title}"
+    
+
+    def __init__(self, *args, **kwargs):
+        super(QuizSubmission, self).__init__(*args, **kwargs)
+        self._original_is_completed = self.is_completed
+
+    def save(self, *args, **kwargs):
+        try:
+            if not self.pk:
+                if self.is_completed:
+                    self.points += 1
+                    self.update_user_quiz_performance()
+            else:
+                if self.is_completed and not self._original_is_completed:
+                    self.points += 1
+                    self.update_user_quiz_performance()
+
+                elif not self.is_completed and self._original_is_completed:
+                    self.points -= 1
+                    self.update_user_quiz_performance()
+            super(QuizSubmission, self).save(*args, **kwargs)
+            self._original_is_completed = self.is_completed
+        except Exception as e:
+            print(
+                "Error while saving assignment submission and incrementing the points: ",
+                e,
+            )
+
+    def update_user_quiz_performance(self):
+        try:
+            user_id = self.user_id
+            user_performance, _ = UserQuizPerformance.objects.get_or_create(user_id=user_id)
+            user_performance.calculate_overall_quiz_performance_percentage(user_id)
+            user_performance.update_performance_percentage(user_id)
+            user_performance.save()
+        except Exception as e:
+            print("Integrity error occurred:", e)
+
+
+class PointForEachQuizSubmission(models.Model):
+    
+    quiz_submission = models.ForeignKey(QuizSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class GemForEachPointQuizSubmission(models.Model):
+    point_for_each_quiz_submission = models.ForeignKey(PointForEachQuizSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class CoinQuizSubmission(models.Model):
+    gems = models.ForeignKey(GemForEachPointQuizSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class TokenQuizSubmission(models.Model):
+    coin = models.ForeignKey(CoinQuizSubmission, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+    
 
 
 class AwardForAssignmentSubmission(models.Model):

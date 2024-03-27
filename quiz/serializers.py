@@ -7,6 +7,7 @@ from utils.validators import validate_id
 from .emails import *
 from rest_framework.validators import UniqueTogetherValidator
 from django.utils import timezone
+from performance.models import UserQuizPerformance
 
 
 class QuestionCategorySerializer(serializers.ModelSerializer):
@@ -256,6 +257,69 @@ class QuizSubmissionSerializer(serializers.ModelSerializer):
         return validate_id(
             Instructor, value
         )
+    
+    def save(self, **kwargs):
+        user_id = self.validated_data['user_id']
+        quiz_id = self.validated_data['quiz_id']
+        quiz_submission_doc = self.validated_data['quiz_submission_doc']
+        submission_context = self.validated_data['submission_context']
+        try: 
+            quiz_submission = QuizSubmission.objects.create(quiz_id=quiz_id, user_id=user_id,
+            quiz_submission_doc=quiz_submission_doc,submission_context=submission_context)
+            quiz_submission.save()
+            with transaction.atomic():            
+                try:
+                    # using the grading criteria
+                    # 1. Beyond the due date
+                    today_date = datetime.now(timezone.utc)
+                    if quiz_submission.submitted_date > today_date:
+                        try:
+                            user_performance = UserQuizPerformance.objects.get(
+                                user_id=quiz_submission.user.id
+                            )
+                            if user_performance.progress_percentage <= 39:
+                                create_point = (
+                                    PointForEachQuizSubmission.objects.create(
+                                        user_id=quiz_submission.user.id
+                                    )
+                                )
+                                create_point.assignment_submission_id = quiz_submission.id
+                                create_point.counter += 1
+                                create_point.save()
+                        except Exception as error:
+                            raise serializers.ValidationError(
+                                {"error": str(error)}
+                            )
+                    # 2. within the due date
+                    else:
+                        try:
+                            user_performance = UserQuizPerformance.objects.get(
+                                user_id=quiz_submission.user.id
+                            )
+                            if 40 <= user_performance.progress_percentage <= 69:
+                                create_point = (
+                                    PointForEachQuizSubmission.objects.create(
+                                        user_id=quiz_submission.user.id
+                                    )
+                                )
+                                create_point.assignment_submission_id = quiz_submission.id
+                                create_point.counter = 10
+                                create_point.save()
+                                # then create the gems here
+                        except Exception as error:
+                            raise serializers.ValidationError(
+                                {"error": str(error)})
+                except Exception as error:
+                    raise serializers.ValidationError(
+                        {"error": str(error)}
+                    )
+                
+
+            # send_quiz_submission_email(assignment_id,submission_context)
+
+            return quiz_submission
+        except Exception as e:
+            print("Error while sending email to the instructor: ", e)
 
 
 class AwardForAssignmentSubmissionSerializer(serializers.ModelSerializer):
