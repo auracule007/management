@@ -33,8 +33,8 @@ def pre_module_save_handler(sender, instance, **kwargs):
                 except UserPerformanceForModuleCompletion.DoesNotExist:
                     pass
 
-@receiver(post_save, sender=Modules)
-def module_post_save_handler(sender, instance, created, **kwargs):
-    print('into the post save')
-    if created and instance.is_completed:
-        update_user_performance_for_modules(instance.user)
+# @receiver(post_save, sender=Modules)
+# def module_post_save_handler(sender, instance, created, **kwargs):
+#     print('into the post save')
+#     if created and instance.is_completed:
+#         update_user_performance_for_modules(instance.user)

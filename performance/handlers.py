@@ -1,7 +1,7 @@
-from api.models import Modules, User
+from api.models import *
 from quiz.models import AssignmentSubmission, Question, QuizSubmission
 
-from .models import UserPerformance, UserPerformanceForModuleCompletion, ModulesHighFive, PointForEachModule, GemForEachPoint, Coin, Token
+from .models import UserPerformance, UserPerformanceForModuleCompletion
 
 
 def calculate_progress_percentage(user):
@@ -209,3 +209,4 @@ def calculate_score_percentage(user, quiz):
 
     score_percentage = (total_correct / total_questions) * 100
     return score_percentage
+

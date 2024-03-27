@@ -351,6 +351,65 @@ class Modules(models.Model):
         return f"{self.module_name}"
 
 
+
+
+
+class ModulesHighFive(models.Model):
+    '''This is the model for creating High five for the'''
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    modules = models.ForeignKey(Modules, on_delete=models.CASCADE)
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+
+
+class PointForEachModule(models.Model):
+    modules_high_five = models.ForeignKey(Modules, on_delete=models.CASCADE, null=True, blank=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+
+class GemForEachPoint(models.Model):
+    point_for_each_module = models.ForeignKey(PointForEachModule, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class Coin(models.Model):
+    gems = models.ForeignKey(GemForEachPoint, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
+class Token(models.Model):
+    coin = models.ForeignKey(Coin, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    counter = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user}'
+
 # chat models
 class ChatMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")

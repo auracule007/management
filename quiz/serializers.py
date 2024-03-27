@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import serializers
 
 from api.models import Instructor, Student
@@ -5,6 +6,8 @@ from .models import *
 from utils.validators import validate_id
 from .emails import *
 from rest_framework.validators import UniqueTogetherValidator
+from django.utils import timezone
+
 
 class QuestionCategorySerializer(serializers.ModelSerializer):
     instructor_id = serializers.IntegerField()
@@ -92,7 +95,56 @@ class AssignmentSubmissionSerializer(serializers.ModelSerializer):
             assignment_submissions = AssignmentSubmission.objects.create(assignment_id=assignment_id, user_id=user_id,
             assignment_submission_doc=assignment_submission_doc,submission_context=submission_context)
             assignment_submissions.save()
+            with transaction.atomic():            
+                try:
+                    # using the grading criteria
+                    # 1. Beyond the due date
+                    today_date = datetime.now(timezone.utc)
+                    if assignment_submissions.assignment.date_to_be_submitted > today_date:
+                        try:
+                            user_performance = UserPerformance.objects.get(
+                                user_id=assignment_submissions.user.id
+                            )
+                            if user_performance.progress_percentage <= 39:
+                                create_point = (
+                                    PointForEachAssignmentSubmission.objects.create(
+                                        user_id=assignment_submissions.user.id
+                                    )
+                                )
+                                create_point.assignment_submission_id = assignment_submissions.id
+                                create_point.counter += 1
+                                create_point.save()
+                        except Exception as error:
+                            raise serializers.ValidationError(
+                                {"error": str(error)}
+                            )
+                    # 2. within the due date
+                    else:
+                        try:
+                            user_performance = UserPerformance.objects.get(
+                                user_id=assignment_submissions.user.id
+                            )
+                            if 40 <= user_performance.progress_percentage <= 69:
+                                create_point = (
+                                    PointForEachAssignmentSubmission.objects.create(
+                                        user_id=assignment_submissions.user.id
+                                    )
+                                )
+                                create_point.assignment_submission_id = assignment_submissions.id
+                                create_point.counter = 10
+                                create_point.save()
+                                # then create the gems here
+                        except Exception as error:
+                            raise serializers.ValidationError(
+                                {"error": str(error)})
+                except Exception as error:
+                    raise serializers.ValidationError(
+                        {"error": str(error)}
+                    )
+                
+
             send_assignment_submissions_email(assignment_id,submission_context)
+
             return assignment_submissions
         except Exception as e:
             print("Error while sending email to the instructor: ", e)
